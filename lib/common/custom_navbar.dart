@@ -13,7 +13,7 @@ class CustomNavbar extends StatelessWidget {
 
   static const Color primaryColor = Color(0xFFFF6B35);
 
-  // 🔹 SVG paths
+  //  SVG paths
   final List<String> _icons = const [
     'assets/homes.svg',
     'assets/medicine.svg',
@@ -48,13 +48,13 @@ class CustomNavbar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List.generate(_icons.length, (index) {
           if (index == currentIndex) {
-            // 🔥 Selected index → orange box + white SVG
+            //  Selected index → orange box + white SVG
             return _buildSelectedItem(
               iconPath: _icons[index],
               onTap: () => onTap(index),
             );
           } else {
-            // 🔹 Normal item
+            //  Normal item
             return _buildNavItem(
               iconPath: _icons[index],
               label: _labels[index],
@@ -66,7 +66,7 @@ class CustomNavbar extends StatelessWidget {
     );
   }
 
-  // 🔶 Selected item (orange box)
+  //  Selected item (orange box)
   Widget _buildSelectedItem({
     required String iconPath,
     required VoidCallback onTap,
@@ -102,7 +102,7 @@ class CustomNavbar extends StatelessWidget {
     );
   }
 
-  // 🔹 Normal nav item
+  //Normal nav item
   Widget _buildNavItem({
     required String iconPath,
     required String label,

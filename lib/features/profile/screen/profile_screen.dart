@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 
 import '../../../common/custom_navbar.dart';
 
-class NotificationScreen extends StatefulWidget {
-  const NotificationScreen({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> {
-  int _currentIndex = 3;
+class _ProfileScreenState extends State<ProfileScreen> {
+  int _currentIndex = 4;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffFFF0E6),
       body: SafeArea(
-        child: Center(
-
+        child: Text(
+" hi",style: TextStyle(fontSize: 24),
         ),
       ),
       bottomNavigationBar: CustomNavbar(
