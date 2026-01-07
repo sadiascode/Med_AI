@@ -11,7 +11,7 @@ class CustomNavbar extends StatelessWidget {
     required this.onTap,
   });
 
-  static const Color primaryColor = Color(0xFFFF6B35);
+  static const Color primaryColor = Color(0xFFE0712D);
 
   //  SVG paths
   final List<String> _icons = const [
@@ -36,13 +36,6 @@ class CustomNavbar extends StatelessWidget {
       height: 83,
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

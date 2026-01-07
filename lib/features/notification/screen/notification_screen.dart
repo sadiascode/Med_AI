@@ -17,14 +17,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
       backgroundColor: Color(0xffFFF0E6),
       body: SafeArea(
         child: Center(
-
         ),
       ),
       bottomNavigationBar: CustomNavbar(
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() {
-            _currentIndex = index;
+            _currentIndex = index; // This triggers the swap!
           });
         },
       ),
