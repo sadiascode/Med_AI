@@ -1,5 +1,9 @@
+import 'package:care_agent/features/doctor/doctor_screen.dart';
 import 'package:care_agent/features/home/home_screen.dart';
+import 'package:care_agent/features/medicine/screen/add_screen.dart';
 import 'package:care_agent/features/medicine/screen/medicine_screen.dart';
+import 'package:care_agent/features/notification/screen/notification_screen.dart';
+import 'package:care_agent/features/profile/screen/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -18,15 +22,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     final List<Widget> screens = [
       HomeScreen(),
       MedicineScreen(),
-      const Center(
-        child: Text("Doctor Screen", style: TextStyle(fontSize: 24)),
-      ),
-      const Center(
-        child: Text("Notification Screen", style: TextStyle(fontSize: 24)),
-      ),
-      const Center(
-        child: Text("Profile Screen", style: TextStyle(fontSize: 24)),
-      ),
+      DoctorScreen(),
+      NotificationScreen(),
+      ProfileScreen(),
     ];
 
     return Scaffold(

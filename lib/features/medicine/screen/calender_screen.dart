@@ -1,33 +1,40 @@
-import 'package:care_agent/features/home/widgets/action_input_bar_widget.dart';
-import 'package:care_agent/features/home/widgets/appointment_cart_widget.dart';
-import 'package:care_agent/features/home/widgets/calendar_widget.dart';
 import 'package:care_agent/features/home/widgets/dynamic_date_header_widget.dart';
-import 'package:care_agent/features/home/widgets/logo_header_widget.dart';
-import 'package:care_agent/features/home/widgets/medicine_card_widget.dart';
-import 'package:care_agent/features/home/widgets/time_header_widget.dart';
 import 'package:flutter/material.dart';
+import '../../home/widgets/calendar_widget.dart';
+import '../../home/widgets/medicine_card_widget.dart';
+import '../../home/widgets/time_header_widget.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class CalenderScreen extends StatefulWidget {
+  const CalenderScreen({super.key});
 
+  @override
+  State<CalenderScreen> createState() => _CalenderScreenState();
+}
+
+class _CalenderScreenState extends State<CalenderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFFFFFAF7),
-        body: SafeArea(
-          child: SingleChildScrollView(
+      backgroundColor: Color(0xFFFFFAF7),
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        leading: IconButton(onPressed: (){
+          Navigator.pop(context);
+        }, icon: ( Icon(Icons.arrow_back_ios, color: Color(0xffE0712D), size: 18))),
+      ),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            // Logo Header
-            LogoHeaderWidget(),
-            const SizedBox(height: 20),
-            // Basic usage
             const DynamicDateHeaderWidget(),
+
             const SizedBox(height: 15),
             const CalendarWidget(),
+
             const SizedBox(height: 30),
             const Text(
               "Today's Medicine",
@@ -64,26 +71,10 @@ class HomeScreen extends StatelessWidget {
               name: "Bisocor Tablet 2.5mg",
               dosage: "1 tablet",
             ),
-
             const SizedBox(height: 20),
-            const Text(
-              "Today's Appointments",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 15),
-            const AppointmentCartWidget(),
-            const SizedBox(height: 25),
-            const Text(
-              "Add prescription/appointment",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 15),
-            const ActionInputBarWidget(),
-            const SizedBox(height: 30),
           ],
         ),
       ),
-        ),
     );
   }
 }
