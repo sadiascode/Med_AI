@@ -1,7 +1,7 @@
+import 'package:care_agent/common/navbar/custom_bottom_navbar.dart';
 import 'package:care_agent/features/auth/screen/forget_screen.dart';
 import 'package:care_agent/features/auth/screen/signup_screen.dart';
 import 'package:care_agent/features/auth/widget/custom_field.dart';
-import 'package:care_agent/features/home/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import '../../../common/custom_button.dart';
 import '../widget/custom_google.dart';
@@ -67,7 +67,7 @@ class _SigninScreenState extends State<SigninScreen> {
               CustomButton(text: "Sign in", onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  MaterialPageRoute(builder: (context) => const BottomNavScreen()),
                 );
               },),
               SizedBox(height: 15),

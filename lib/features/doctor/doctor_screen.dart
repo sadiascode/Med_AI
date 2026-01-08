@@ -1,4 +1,4 @@
-import 'package:care_agent/common/custom_navbar.dart';
+
 import 'package:flutter/material.dart';
 
 class DoctorScreen extends StatefulWidget {
@@ -9,7 +9,7 @@ class DoctorScreen extends StatefulWidget {
 }
 
 class _DoctorScreenState extends State<DoctorScreen> {
-  int _currentIndex = 2;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,14 +18,6 @@ class _DoctorScreenState extends State<DoctorScreen> {
         child: Center(
 
         ),
-      ),
-      bottomNavigationBar: CustomNavbar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
       ),
 
     );

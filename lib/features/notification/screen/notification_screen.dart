@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../common/custom_navbar.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -10,24 +9,15 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
-  int _currentIndex = 3;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffFFF0E6),
       body: SafeArea(
         child: Center(
+
         ),
       ),
-      bottomNavigationBar: CustomNavbar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index; // This triggers the swap!
-          });
-        },
-      ),
-
     );
   }
 }
