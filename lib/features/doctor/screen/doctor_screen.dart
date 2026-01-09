@@ -1,3 +1,4 @@
+import 'package:care_agent/features/doctor/screen/view_screen.dart';
 import 'package:care_agent/features/medicine/widget/custom_search.dart';
 import 'package:flutter/material.dart';
 import '../widget/custom_doctor.dart';
@@ -85,7 +86,11 @@ class _DoctorScreenState extends State<DoctorScreen> {
                     doctorName: 'Dr. Shakil Mirja',
                     specialization: 'Cardiologist',
                     hospital: 'Evercare Hospital',
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ViewScreen()),
+                    );},
                   ),
                 ],
               ),
