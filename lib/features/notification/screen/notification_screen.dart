@@ -44,8 +44,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 thickness: 2,
                 height: 1,
               ),
-              SizedBox(height: 20),
 
+              SizedBox(height: 20),
               CustomNotification(
                 title: 'Medical test alert!',
                 message: 'You need to check your sugar level! ',
@@ -56,8 +56,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 thickness: 2,
                 height: 1,
               ),
-              SizedBox(height: 20),
 
+              SizedBox(height: 20),
               CustomNotification(
                 title: 'Medical test alert!',
                 message: 'You need to check your sugar level! ',
@@ -68,8 +68,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 thickness: 2,
                 height: 1,
               ),
-              SizedBox(height: 20),
 
+              SizedBox(height: 20),
               CustomNotification(
                 title: 'Medical test alert!',
                 message: 'You need to check your sugar level! ',
@@ -81,8 +81,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 height: 1,
               ),
               SizedBox(height: 20),
-
-
             ],
           ),
         ),

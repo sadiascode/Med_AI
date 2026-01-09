@@ -1,4 +1,4 @@
-import 'package:care_agent/features/doctor/doctor_screen.dart';
+import 'package:care_agent/features/doctor/screen/doctor_screen.dart';
 import 'package:care_agent/features/home/home_screen.dart';
 import 'package:care_agent/features/medicine/screen/add_screen.dart';
 import 'package:care_agent/features/medicine/screen/medicine_screen.dart';
