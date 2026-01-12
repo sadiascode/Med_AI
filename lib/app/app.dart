@@ -12,7 +12,7 @@ class CareAgent extends StatelessWidget {
 
       title: "Top Talent Agency",
       debugShowCheckedModeBanner: false,
-      home: SigninScreen(),
+      home: SplashScreen(),
     );
   }
 }
