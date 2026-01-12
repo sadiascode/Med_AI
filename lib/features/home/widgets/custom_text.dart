@@ -1,13 +1,18 @@
 import 'package:care_agent/features/home/widgets/action_input_bar_widget.dart';
 import 'package:flutter/material.dart';
+
 class CustomText extends StatelessWidget {
-  const CustomText({super.key});
+  final TextEditingController messageController;
+  final Function(String) onSend;
+
+  const CustomText({
+    super.key,
+    required this.messageController,
+    required this.onSend,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _messageController =
-    TextEditingController();
-
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -29,7 +34,7 @@ class CustomText extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _messageController,
+                    controller: messageController,
                     decoration: const InputDecoration(
                       hintText: 'Chat with MedAI.....',
                       hintStyle: TextStyle(
@@ -37,13 +42,14 @@ class CustomText extends StatelessWidget {
                         fontSize: 15,
                       ),
                       border: InputBorder.none,
-                      contentPadding:
-                      EdgeInsets.symmetric(vertical: 14),
+                      contentPadding: EdgeInsets.symmetric(vertical: 14),
                     ),
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    onSend(messageController.text);
+                  },
                   icon: const Icon(
                     Icons.send,
                     color: Color(0xFFFF6B35),
@@ -54,8 +60,7 @@ class CustomText extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          ActionInputBarWidget()
-
+          ActionInputBarWidget(),
         ],
       ),
     );

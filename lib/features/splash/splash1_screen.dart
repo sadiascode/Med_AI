@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import '../../common/custom_button.dart';
 import '../auth/screen/signin_screen.dart';
 
@@ -16,28 +15,28 @@ class _Splash1ScreenState extends State<Splash1Screen> {
     return Scaffold(
       body: Stack(
         children: [
-          SvgPicture.asset(
-            'assets/splash2.svg',
+          Image.asset(
+            'assets/splash2.jpg',
             width: double.infinity,
             height: double.infinity,
-            fit: BoxFit.cover, ),
-
-
+            fit: BoxFit.cover,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
+                const Text(
                   "Track and control your Health",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 24,
                     color: Colors.white,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 25),
-                Text(
+                const SizedBox(height: 10),
+                const Text(
                   "Where smart reminders meet better \nmedication",
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -46,11 +45,20 @@ class _Splash1ScreenState extends State<Splash1Screen> {
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(height: 120),
+                const SizedBox(height: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _dot(isActive: false),
+                    const SizedBox(width: 12),
+                    _dot(isActive: true),
+                  ],
+                ),
+                const SizedBox(height: 60),
                 CustomButton(
                   text: "Start",
                   onTap: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const SigninScreen(),
@@ -58,11 +66,23 @@ class _Splash1ScreenState extends State<Splash1Screen> {
                     );
                   },
                 ),
-                const SizedBox(height: 65),
+                const SizedBox(height: 95),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _dot({required bool isActive}) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      width: isActive ? 12 : 8,
+      height: 8,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(isActive ? 1 : 0.5),
+        borderRadius: BorderRadius.circular(10),
       ),
     );
   }

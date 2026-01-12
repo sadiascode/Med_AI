@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ActionInputBarWidget extends StatelessWidget {
   final VoidCallback? onTap;
@@ -20,7 +21,7 @@ class ActionInputBarWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             InkWell(
-              onTap: () {},
+              onTap: ()  {},
               child: SvgPicture.asset(
                 'assets/camera.svg',
                 height: 32,
@@ -51,7 +52,14 @@ class ActionInputBarWidget extends StatelessWidget {
             ),
 
             InkWell(
-              onTap: () {},
+              onTap: ()
+                async {
+                  final ImagePicker picker = ImagePicker();
+                  // Pick an image.
+                  final XFile? image = await picker.pickImage(
+                    source: ImageSource.gallery,
+                  );
+                },
               child: SvgPicture.asset(
                 'assets/plus.svg',
                 height: 32,

@@ -17,14 +17,18 @@ class SigninScreen extends StatefulWidget {
 class _SigninScreenState extends State<SigninScreen> {
   bool rememberMe = false;
 
+
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Color(0xffFFF0E6),
       body: CustomScreen(
         svgPath: 'assets/logo.svg',
-        svgHeight: 180,
-        svgWidth: 130,
+        svgHeight: screenHeight * 0.16,
+        svgWidth: screenWidth * 0.30,
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -70,11 +74,11 @@ class _SigninScreenState extends State<SigninScreen> {
                   MaterialPageRoute(builder: (context) => const BottomNavScreen()),
                 );
               },),
-              SizedBox(height: 15),
+              SizedBox(height: screenHeight * 0.02),
               CustomGoogle(text: "Sign in with Google", svgPath: "assets/google.svg"),
-              SizedBox(height: 10),
+              SizedBox(height: screenHeight * 0.011),
               CustomGoogle(text: "Sign in with Apple", svgPath: "assets/apple.svg"),
-              SizedBox(height: 17),
+              SizedBox(height: screenHeight * 0.020),
       Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -102,7 +106,6 @@ class _SigninScreenState extends State<SigninScreen> {
               ),
             ),
                 ]
-
         ),
       ]
       ),

@@ -118,14 +118,23 @@ class _DoctorScreenState extends State<DoctorScreen> {
                         doctorName: 'Dr. Shakil Mirja',
                         specialization: 'Cardiologist',
                         hospital: 'Evercare Hospital',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ViewScreen()),
+                        );},
                       ),
                       SizedBox(height: 10),
                       CustomDoctor(
                         doctorName: 'Dr. Shakil Mirja',
                         specialization: 'Cardiologist',
                         hospital: 'Evercare Hospital',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ViewScreen()),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -155,28 +164,52 @@ class _DoctorScreenState extends State<DoctorScreen> {
                         doctorName: 'Dr. Shakil Mirja',
                         specialization: 'Cardiologist',
                         hospital: 'Evercare Hospital',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ViewScreen()),
+                          );
+
+                        },
                       ),
                       SizedBox(height: 10),
                       CustomDoctor(
                         doctorName: 'Dr. Shakil Mirja',
                         specialization: 'Cardiologist',
                         hospital: 'Evercare Hospital',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ViewScreen()),
+                          );
+
+                        },
                       ),
                       SizedBox(height: 10),
                       CustomDoctor(
                         doctorName: 'Dr. Shakil Mirja',
                         specialization: 'Cardiologist',
                         hospital: 'Evercare Hospital',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ViewScreen()),
+                          );
+
+                        },
                       ),
                       SizedBox(height: 10),
                       CustomDoctor(
                         doctorName: 'Dr. Shakil Mirja',
                         specialization: 'Cardiologist',
                         hospital: 'Evercare Hospital',
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ViewScreen()),
+                          );
+
+                        },
                       ),
                     ],
                   ),

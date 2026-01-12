@@ -23,28 +23,25 @@ class _CustomScreenState extends State<CustomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xffFFF0E6),  // Dark background
+      backgroundColor: const Color(0xffFFF0E6),
       body: Stack(
         children: [
-          // Background color (dark)
-          Container(color: const Color(0xffFFF0E6)),
 
-          // Positioned SVG image at the top
+          Container(color: const Color(0xffFFF0E6)),
           Positioned(
             top: 110,
             left: 10,
             right: 10,
             child: Center(
               child: SvgPicture.asset(
-                widget.svgPath,  // Path to the SVG image
-                height: widget.svgHeight,  // Height of the SVG
-                width: widget.svgWidth,    // Width of the SVG
+                widget.svgPath,
+                height: widget.svgHeight,
+                width: widget.svgWidth,
                 fit: BoxFit.cover,
               ),
             ),
           ),
 
-          // Bottom container with the content inside it
           Align(
             alignment: Alignment.bottomCenter,
             child: FractionallySizedBox(
@@ -59,7 +56,7 @@ class _CustomScreenState extends State<CustomScreen> {
                     topRight: Radius.circular(22),
                   ),
                 ),
-                child: widget.child,  // Pass the content of the form or any widget here
+                child: widget.child,
               ),
             ),
           ),

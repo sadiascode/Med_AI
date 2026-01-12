@@ -64,8 +64,6 @@ class _CustomDetailsState extends State<CustomDetails> {
                     ),
                   ],
                 ),
-
-
         );
   }
 }

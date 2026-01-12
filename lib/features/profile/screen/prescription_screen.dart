@@ -1,5 +1,6 @@
 import 'package:care_agent/features/profile/widget/custom_details.dart';
 import 'package:care_agent/features/profile/widget/custom_details1.dart';
+import 'package:care_agent/features/profile/widget/custom_info.dart';
 import 'package:flutter/material.dart';
 
 import '../widget/custom_bull.dart';
@@ -68,7 +69,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                           const SizedBox(height: 10),
                           CustomDetails(name: 'Doctor’s name', medicine: 'Dr. Robert Henry',),
                           const SizedBox(height: 10),
-                          CustomDetails1(name: "Patient’s age"),
+                         CustomInfo(name: "Patient’s age", age: "45", sex: 'Sex', gender: 'Female'),
                           const SizedBox(height: 10),
                           CustomDetails(name: 'Health Issue', medicine: ' Coronary artery disease',),
                           const SizedBox(height: 10),

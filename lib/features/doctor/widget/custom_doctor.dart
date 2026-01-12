@@ -35,10 +35,10 @@ class CustomDoctor extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: SvgPicture.network(
-                "https://www.svgrepo.com/download/313265/doctor.svg",
-                fit: BoxFit.cover,
-              ),
+              child: Image.network(
+          'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
+          fit: BoxFit.cover,
+        ),
             ),
 
             SizedBox(width: 16),
