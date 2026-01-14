@@ -17,7 +17,6 @@ class CalendarWidget extends StatelessWidget {
           date.year == now.year;
 
       return {
-        // If it's today, show full name ('EEEE'), else short name ('E')
         'd': isToday
             ? DateFormat('EEEE').format(date)
             : DateFormat('E').format(date),
@@ -34,7 +33,7 @@ class CalendarWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment
-          .end, // Aligns short days with the bottom of the full day
+          .end,
       children: days.map((day) {
         bool isSel = day['s'] == true;
 
@@ -45,7 +44,7 @@ class CalendarWidget extends StatelessWidget {
               style: TextStyle(
                 color: isSel ? Colors.black : Colors.grey,
                 fontSize: 12,
-                // Make the full day name bold if it's today
+
                 fontWeight: isSel ? FontWeight.bold : FontWeight.normal,
               ),
             ),

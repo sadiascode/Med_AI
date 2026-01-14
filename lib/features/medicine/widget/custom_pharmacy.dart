@@ -33,7 +33,7 @@ class _CustomPharmacyState extends State<CustomPharmacy> {
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: widget.isSelected
-                      ? Color(0xFFFF6B35)
+                      ? Color(0xffE0712D)
                       : Colors.grey[400]!,
                   width: 2,
                 ),
@@ -44,7 +44,7 @@ class _CustomPharmacyState extends State<CustomPharmacy> {
                   width: 12,
                   height: 12,
                   decoration: BoxDecoration(
-                    color: Color(0xFFFF6B35),
+                    color: Color(0xffE0712D),
                     shape: BoxShape.circle,
                   ),
                 ),

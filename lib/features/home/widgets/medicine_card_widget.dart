@@ -55,7 +55,7 @@ class MedicineCard extends StatelessWidget {
                   ),
                   Text(
                     dosage,
-                    style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    style: const TextStyle(color: Colors.black, fontSize: 12),
                   ),
                 ],
               ),

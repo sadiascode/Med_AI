@@ -1,4 +1,4 @@
-import 'package:care_agent/features/home/widgets/action_input_bar_widget.dart';
+import 'package:care_agent/features/chat/widget/action_input_bar_widget.dart';
 import 'package:flutter/material.dart';
 
 class CustomText extends StatelessWidget {

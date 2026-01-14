@@ -21,7 +21,13 @@ class ActionInputBarWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             InkWell(
-              onTap: ()  {},
+              onTap: () async {
+                final ImagePicker picker = ImagePicker();
+                // Capture a photo.
+                final XFile? photo = await picker.pickImage(
+                    source: ImageSource.camera
+                );
+              },
               child: SvgPicture.asset(
                 'assets/camera.svg',
                 height: 32,
@@ -50,7 +56,6 @@ class ActionInputBarWidget extends StatelessWidget {
                 ),
               ),
             ),
-
             InkWell(
               onTap: ()
                 async {
@@ -69,7 +74,6 @@ class ActionInputBarWidget extends StatelessWidget {
           ],
         ),
       ),
-
     );
   }
 }

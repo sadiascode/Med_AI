@@ -5,25 +5,22 @@ import 'package:care_agent/features/profile/widget/custom_prescriptions.dart';
 import 'package:care_agent/features/profile/widget/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../../../common/app_shell.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+/// Content-only version for use inside AppShell (no navbar)
+class ProfileScreenContent extends StatelessWidget {
+  const ProfileScreenContent({super.key});
 
-  @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
-}
-
-class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFFAF7),
+      backgroundColor: const Color(0xFFFFFAF7),
       appBar: AppBar(
         centerTitle: true,
         automaticallyImplyLeading: false,
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text(
+        title: const Text(
           "Profile",
           style: TextStyle(
             color: Color(0xffE0712D),
@@ -37,7 +34,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Container(
                 height: 293,
                 width: 380,
@@ -91,14 +88,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           width: 35,
                           height: 35,
                           decoration: BoxDecoration(
-                            color: Color(0xFFFFF5F0),
+                            color: const Color(0xFFFFF5F0),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: SvgPicture.asset(
                             'assets/edi.svg',
                             width: 18,
                             height: 18,
-                            color: Color(0xffE0712D),
+                            colorFilter: const ColorFilter.mode(
+                              Color(0xffE0712D),
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
@@ -106,47 +106,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 15),
-              CustomMedium(text: "Profile Info", onTap: (){}),
-
-
-              SizedBox(height: 15),
-              CustomText(title: "Full Name:", subtitle: "Israt Jahan"),
-
-              SizedBox(height: 5),
-              CustomText(title: "Email:", subtitle: "abc@gmail.com"),
-
-              SizedBox(height: 5),
-              CustomText(title: "Phone Number:", subtitle: "075682145"),
-
-              SizedBox(height: 5),
-              CustomText(title: "Address:", subtitle: "20 Cooper Square, New York, NY \n10003, USA"),
-
-              SizedBox(height: 15),
-              CustomMedium(text: "Other Info", onTap: (){}),
-
-              SizedBox(height: 15),
-              CustomText(title: "Age:", subtitle: "28"),
-
-              SizedBox(height: 5),
-              CustomText(title: "Health condition:", subtitle: "Good"),
-
-              SizedBox(height: 5),
-              CustomText(title: "Wakeup time:", subtitle: "7:00 am"),
-
-              SizedBox(height: 5),
-              CustomText(title: "Breakfast time:", subtitle: "8:00 am"),
-
-              SizedBox(height: 5),
-              CustomText(title: "Lunch time:", subtitle: "2:00 pm"),
-
-              SizedBox(height: 5),
-              CustomText(title: "Dinner time:", subtitle: "9:00 am"),
-              
-              SizedBox(height: 15),
-              CustomMedium(text: "Your prescriptions", onTap: (){}),
-
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
+              CustomMedium(text: "Profile Info", onTap: () {}),
+              const SizedBox(height: 15),
+              const CustomText(title: "Full Name:", subtitle: "Israt Jahan"),
+              const SizedBox(height: 5),
+              const CustomText(title: "Email:", subtitle: "abc@gmail.com"),
+              const SizedBox(height: 5),
+              const CustomText(title: "Phone Number:", subtitle: "075682145"),
+              const SizedBox(height: 5),
+              const CustomText(
+                title: "Address:",
+                subtitle: "20 Cooper Square, New York, NY \n10003, USA",
+              ),
+              const SizedBox(height: 15),
+              CustomMedium(text: "Other Info", onTap: () {}),
+              const SizedBox(height: 15),
+              const CustomText(title: "Age:", subtitle: "28"),
+              const SizedBox(height: 5),
+              const CustomText(title: "Health condition:", subtitle: "Good"),
+              const SizedBox(height: 5),
+              const CustomText(title: "Wakeup time:", subtitle: "7:00 am"),
+              const SizedBox(height: 5),
+              const CustomText(title: "Breakfast time:", subtitle: "8:00 am"),
+              const SizedBox(height: 5),
+              const CustomText(title: "Lunch time:", subtitle: "2:00 pm"),
+              const SizedBox(height: 5),
+              const CustomText(title: "Dinner time:", subtitle: "9:00 am"),
+              const SizedBox(height: 15),
+              CustomMedium(text: "Your prescriptions", onTap: () {}),
+              const SizedBox(height: 15),
               CustomPrescriptions(
                 prescriptionName: 'Prescriptin-1',
                 date: '01/05/25',
@@ -159,8 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
                 onDelete: () {},
               ),
-
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               CustomPrescriptions(
                 prescriptionName: 'Prescriptin-1',
                 date: '01/05/25',
@@ -173,11 +161,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
                 onDelete: () {},
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+/// Standalone version with navbar - redirects to AppShell
+class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const AppShell(initialIndex: 4);
   }
 }

@@ -1,25 +1,28 @@
-import 'package:care_agent/features/profile/widget/custom_details.dart';
-import 'package:care_agent/features/profile/widget/custom_details1.dart';
-import 'package:care_agent/features/profile/widget/custom_info.dart';
 import 'package:flutter/material.dart';
-
 import '../../../common/app_shell.dart';
-import '../widget/custom_bull.dart';
+import '../../profile/widget/custom_bull.dart';
+import '../../profile/widget/custom_details.dart';
+import '../../profile/widget/custom_details1.dart';
+import '../../profile/widget/custom_info.dart';
+import '../widget/custom_minibutton.dart';
+import 'chatmed_screen.dart';
 
-class PrescriptionScreen extends StatefulWidget {
-  const PrescriptionScreen({super.key});
+class ChatdetailsScreen extends StatefulWidget {
+  const ChatdetailsScreen({super.key});
 
   @override
-  State<PrescriptionScreen> createState() => _PrescriptionScreenState();
+  State<ChatdetailsScreen> createState() => _ChatdetailsScreenState();
 }
 
-class _PrescriptionScreenState extends State<PrescriptionScreen> {
+class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
   String selectedMeal = 'After Meal';
+  
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return SubPageScaffold(
-      parentTabIndex: 4, // Profile is parent
-      backgroundColor: const Color(0xFFFFFAF7),
+      parentTabIndex: 3,
       appBar: AppBar(
         centerTitle: true,
         automaticallyImplyLeading: false,
@@ -54,10 +57,10 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: const Color(0xffE0712D), width: 1),
                   ),
-                  child: const Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Patient's information",
                         style: TextStyle(
                           fontSize: 20,
@@ -65,15 +68,15 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                           color: Colors.black87,
                         ),
                       ),
-                      SizedBox(height: 10),
-                      CustomDetails(name: "Patient's name", medicine: ' Smith Jaman'),
-                      SizedBox(height: 10),
-                      CustomDetails(name: "Doctor's name", medicine: 'Dr. Robert Henry'),
-                      SizedBox(height: 10),
-                      CustomInfo(name: "Patient's age", age: "45", sex: 'Sex', gender: 'Female'),
-                      SizedBox(height: 10),
-                      CustomDetails(name: 'Health Issue', medicine: ' Coronary artery disease'),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
+                      const CustomDetails(name: "Patient's name", medicine: ' Smith Jaman'),
+                      const SizedBox(height: 10),
+                      const CustomDetails(name: "Doctor's name", medicine: 'Dr. Robert Henry'),
+                      const SizedBox(height: 10),
+                      const CustomInfo(name: "Patient's age", age: "45", sex: 'Sex', gender: 'Female'),
+                      const SizedBox(height: 10),
+                      const CustomDetails(name: 'Health Issue', medicine: ' Coronary artery disease'),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
@@ -185,7 +188,42 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    const Center(child: Text("Next follow-up: 12/24/2025", style: TextStyle(color: Color(0xffE0712D)))),
+                    const Center(
+                      child: Text(
+                        "Next follow-up: 12/24/2025",
+                        style: TextStyle(color: Color(0xffE0712D)),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        SizedBox(width: screenWidth * 0.18),
+                        CustomMinibutton(
+                          text: "save",
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const ChatmedScreen()),
+                            );
+                          },
+                          textcolor: Colors.white,
+                          backgroundColor: const Color(0xffE0712D),
+                        ),
+                        SizedBox(width: screenWidth * 0.05),
+                        CustomMinibutton(
+                          text: "Decline",
+                          onTap: () {
+                            // Go back to Home via AppShell
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (_) => const AppShell(initialIndex: 0)),
+                              (route) => false,
+                            );
+                          },
+                          textcolor: const Color(0xffE0712D),
+                          backgroundColor: Colors.white,
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 20),
                   ],
                 ),

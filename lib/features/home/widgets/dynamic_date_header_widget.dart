@@ -7,13 +7,12 @@ class DynamicDateHeaderWidget extends StatelessWidget {
 
   const DynamicDateHeaderWidget({
     super.key,
-    this.prefix = 'Today', // Default prefix
+    this.prefix = 'Today',
     this.fontSize = 18.0,
   });
 
   @override
   Widget build(BuildContext context) {
-    // Generate the formatted date string
     String formattedDate = DateFormat('dd MMMM, yyyy').format(DateTime.now());
 
     return Padding(

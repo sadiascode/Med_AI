@@ -1,5 +1,6 @@
 import 'package:care_agent/features/home/widgets/dynamic_date_header_widget.dart';
 import 'package:flutter/material.dart';
+import '../../../common/app_shell.dart';
 import '../../home/widgets/calendar_widget.dart';
 import '../../home/widgets/medicine_card_widget.dart';
 import '../../home/widgets/time_header_widget.dart';
@@ -14,64 +15,62 @@ class CalenderScreen extends StatefulWidget {
 class _CalenderScreenState extends State<CalenderScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFFFFAF7),
+    return SubPageScaffold(
+      parentTabIndex: 1, // Medicine is parent
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
-        leading: IconButton(onPressed: (){
-          Navigator.pop(context);
-        }, icon: ( Icon(Icons.arrow_back_ios, color: Color(0xffE0712D), size: 18))),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xffE0712D), size: 18),
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      body: const SingleChildScrollView(
+        padding: EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 20),
-            const DynamicDateHeaderWidget(),
-
-            const SizedBox(height: 15),
-            const CalendarWidget(),
-
-            const SizedBox(height: 30),
-            const Text(
+            SizedBox(height: 20),
+            DynamicDateHeaderWidget(),
+            SizedBox(height: 15),
+            CalendarWidget(),
+            SizedBox(height: 30),
+            Text(
               "Today's Medicine",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-
-            const TimeHeader(svgPath: 'assets/morning.svg', title: "Morning"),
-            const MedicineCard(
+            TimeHeader(svgPath: 'assets/morning.svg', title: "Morning"),
+            MedicineCard(
               time: "08:00 AM",
               name: "Bisocor Tablet 2.5mg",
               dosage: "1 tablet",
             ),
-            const MedicineCard(
+            MedicineCard(
               time: "08:00 AM",
               name: "Bisocor Tablet 2.5mg",
               dosage: "1 tablet",
             ),
-
-            const TimeHeader(svgPath: 'assets/noon.svg', title: "Afternoon"),
-            const MedicineCard(
+            TimeHeader(svgPath: 'assets/noon.svg', title: "Afternoon"),
+            MedicineCard(
               time: "02:00 PM",
               name: "Bisocor Tablet 2.5mg",
               dosage: "1 tablet",
             ),
-
-            const TimeHeader(svgPath: 'assets/sunset.svg', title: "Evening"),
-            const MedicineCard(
+            TimeHeader(svgPath: 'assets/sunset.svg', title: "Evening"),
+            MedicineCard(
               time: "08:00 PM",
               name: "Bisocor Tablet 2.5mg",
               dosage: "1 tablet",
             ),
-            const MedicineCard(
+            MedicineCard(
               time: "08:00 PM",
               name: "Bisocor Tablet 2.5mg",
               dosage: "1 tablet",
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
           ],
         ),
       ),

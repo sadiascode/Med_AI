@@ -1,9 +1,9 @@
 import 'package:care_agent/common/custom_button.dart';
-import 'package:care_agent/features/medicine/screen/medicine_screen.dart';
 import 'package:care_agent/features/medicine/widget/custom_checkout.dart';
 import 'package:care_agent/features/medicine/widget/custom_pharmacy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../../../common/app_shell.dart';
 
 class CheckoutScreen extends StatefulWidget {
   const CheckoutScreen({super.key});
@@ -24,16 +24,19 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFFFFAF7),
+    return SubPageScaffold(
+      parentTabIndex: 1,
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
-        leading: IconButton(onPressed: (){
-          Navigator.pop(context);
-        }, icon: ( Icon(Icons.arrow_back_ios, color: Color(0xffE0712D), size: 18))),
-        title:  Text(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.arrow_back_ios, color: Color(0xffE0712D), size: 18),
+        ),
+        title: const Text(
           "Checkout",
           style: TextStyle(
             color: Color(0xffE0712D),
@@ -47,11 +50,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           padding: const EdgeInsets.all(13),
           child: Column(
             children: [
-              SizedBox(height: 20),
-              CustomCheckout(),
-
-              SizedBox(height: 24),
-              Row(
+              const SizedBox(height: 20),
+              const CustomCheckout(),
+              const SizedBox(height: 24),
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
@@ -64,16 +66,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Color(0xffFFF0E6),
+                  color: const Color(0xffFFF0E6),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: Text(
                         '20 Cooper Square, New York, NY 10003, USA',
                         style: TextStyle(
@@ -90,7 +92,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -100,8 +102,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       width: 20,
                       height: 20,
                     ),
-                    SizedBox(width: 8),
-                    Text(
+                    const SizedBox(width: 8),
+                    const Text(
                       'Select pharmacy',
                       style: TextStyle(
                         fontSize: 16,
@@ -132,7 +134,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: GestureDetector(
                   onTap: () {},
-                  child: Row(
+                  child: const Row(
                     children: [
                       Icon(Icons.add, color: Color(0xFFE0712D), size: 20),
                       SizedBox(width: 8),
@@ -151,20 +153,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFE0712D),
-                    padding: EdgeInsets.symmetric(vertical: 5),
+                    backgroundColor: const Color(0xFFE0712D),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 0,
                   ),
-                  child: Text(
+                  child: const Text(
                     'Your order will be redirected to CVS Pharmacy',
                     style: TextStyle(
                       fontSize: 15,
@@ -174,13 +176,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 50),
-              CustomButton(text: "Confirm", onTap: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MedicineScreen()),
-                );
-              })
+              const SizedBox(height: 50),
+              CustomButton(
+                text: "Confirm",
+                onTap: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const AppShell(initialIndex: 1)),
+                    (route) => false,
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
