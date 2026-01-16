@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../../common/app_shell.dart';
 import '../widget/custom_doctor.dart';
 
-/// Content-only version for use inside AppShell (no navbar)
+
 class DoctorScreenContent extends StatelessWidget {
   const DoctorScreenContent({super.key});
 
@@ -41,7 +41,7 @@ class DoctorScreenContent extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(Icons.add, color: Color(0xFFE0712D), size: 20),
-                      SizedBox(width: 8),
+                      SizedBox(width: 5),
                       Text(
                         'Add doctors',
                         style: TextStyle(
@@ -218,7 +218,6 @@ class DoctorScreenContent extends StatelessWidget {
   }
 }
 
-/// Standalone version with navbar - redirects to AppShell
 class DoctorScreen extends StatelessWidget {
   const DoctorScreen({super.key});
 
