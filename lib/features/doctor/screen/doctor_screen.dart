@@ -1,3 +1,4 @@
+import 'package:care_agent/features/doctor/screen/adddoctor_screen.dart';
 import 'package:care_agent/features/doctor/screen/view_screen.dart';
 import 'package:care_agent/features/medicine/widget/custom_search.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,12 @@ class DoctorScreenContent extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AdddoctorScreen()),
+                    );
+                  },
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [

@@ -1,17 +1,22 @@
-import 'package:care_agent/features/chat/screen/chats_screen.dart';
-import 'package:care_agent/features/chat/widget/action_input_bar_widget.dart';
-import 'package:care_agent/features/home/widgets/appointment_cart_widget.dart';
-import 'package:care_agent/features/home/widgets/calendar_widget.dart';
-import 'package:care_agent/features/home/widgets/dynamic_date_header_widget.dart';
-import 'package:care_agent/features/home/widgets/medicine_card_widget.dart';
-import 'package:care_agent/features/home/widgets/time_header_widget.dart';
 import 'package:care_agent/features/home/screen/notification_screen.dart';
+import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../common/app_shell.dart';
+import '../widgets/appointment_cart_widget.dart';
+import '../widgets/custom_apointment.dart';
+import '../widgets/medicine_card_widget.dart';
+import '../widgets/time_header_widget.dart';
 
-class HomeScreenContent extends StatelessWidget {
+class HomeScreenContent extends StatefulWidget {
   const HomeScreenContent({super.key});
+
+  @override
+  State<HomeScreenContent> createState() => _HomeScreenContentState();
+}
+
+class _HomeScreenContentState extends State<HomeScreenContent> {
+  DateTime selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +55,54 @@ class HomeScreenContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              const DynamicDateHeaderWidget(),
+              Row(
+                children: [
+                  Text(
+                    'Today 01 December, 2025',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Spacer(),
+                  InkWell(
+                    onTap: () {},
+                    child: SvgPicture.asset(
+                      'assets/calender.svg',
+                      height: 28,
+                      width: 28,
+                    ),
+                  ),
+                ],
+              ),
+
               const SizedBox(height: 15),
-              const CalendarWidget(),
+              DatePicker(
+                DateTime.now(),
+                initialSelectedDate: selectedDate,
+                height: 75,
+                width: 48,
+                selectionColor: Color(0xffE0712D),
+                selectedTextColor: Colors.white,
+                dateTextStyle: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                dayTextStyle: const TextStyle(
+                  fontSize: 10,
+                  color: Color(0xff1C1C1C),
+                ),
+                monthTextStyle: const TextStyle(
+                  fontSize: 10,
+                  color: Color(0xff1C1C1C),
+                ),
+                onDateChange: (date) {
+                  setState(() {
+                    selectedDate = date;
+                  });
+                },
+              ),
               const SizedBox(height: 30),
               const Text(
                 "Today's Medicine",
@@ -99,12 +149,7 @@ class HomeScreenContent extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 15),
-              ActionInputBarWidget(onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ChatsScreen()),
-                );
-              }),
+              CustomApointment(),
               const SizedBox(height: 30),
             ],
           ),

@@ -123,34 +123,72 @@ class _ViewScreenState extends State<ViewScreen> {
                   height: 1,
                 ),
               ),
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: GestureDetector(
-                  onTap: () {},
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
+              const SizedBox(height: 12),
+                  Row(
                     children: [
                       SizedBox(width: 5),
-                      Icon(Icons.add, color: Color(0xFFE0712D), size: 20),
-                      SizedBox(width: 8),
+                      SvgPicture.asset(
+                        'assets/su.svg',
+                        height: 20,
+                        width:20,
+                      ),
+                      SizedBox(width: 10),
                       Text(
-                        'Add more suggestions',
+                        'Suggestions from your doctor',
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFFE0712D),
-                          fontWeight: FontWeight.w500,
-                          decoration: TextDecoration.underline,
-                          decorationColor: Color(0xFFE0712D),
-                          decorationThickness: 1.5,
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold
                         ),
                       ),
                     ],
                   ),
-                ),
-              ),
               const SizedBox(height: 10),
               const CustomDoctext(),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Icon(Icons.add, color: Color(0xFFE0712D), size: 20),
+                  SizedBox(width: 5),
+                  Text(
+                    'Add Notes',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFFE0712D),
+                      fontWeight: FontWeight.w500,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Color(0xFFE0712D),
+                      decorationThickness: 1.5,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Container(
+                height: 147,
+                width: 372,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Color(0xffE0712D),
+                    width: 1,
+                  ),
+                ),
+                child: TextField(
+                  maxLines: null,
+                  expands: true,
+                  keyboardType: TextInputType.multiline,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Type your notes here...',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
               CustomMedium(text: "Prescriptions from this doctor", onTap: () {}),
               const SizedBox(height: 15),

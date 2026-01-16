@@ -1,5 +1,5 @@
 import 'package:care_agent/common/custom_button.dart';
-import 'package:care_agent/features/medicine/screen/checkout_screen.dart';
+import 'package:care_agent/features/medicine/screen/medicine_screen.dart';
 import 'package:care_agent/features/medicine/widget/custom_dosages.dart';
 import 'package:care_agent/features/medicine/widget/custom_napa.dart';
 import 'package:flutter/material.dart';
@@ -56,11 +56,11 @@ class _AddScreenState extends State<AddScreen> {
             Padding(
               padding: const EdgeInsets.all(15),
               child: CustomButton(
-                text: "Next",
+                text: "Save",
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const CheckoutScreen()),
+                    MaterialPageRoute(builder: (context) => const MedicineScreen()),
                   );
                 },
               ),

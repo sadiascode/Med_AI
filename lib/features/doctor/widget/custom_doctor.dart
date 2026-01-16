@@ -73,7 +73,6 @@ class CustomDoctor extends StatelessWidget {
                 ],
               ),
             ),
-            // Arrow Icon
             Container(
               width: 37,
               height: 37,

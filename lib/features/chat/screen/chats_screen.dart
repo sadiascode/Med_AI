@@ -1,8 +1,7 @@
-
 import 'package:care_agent/features/chat/widget/custom_text.dart';
 import 'package:flutter/material.dart';
 import '../../../common/app_shell.dart';
-import 'chatdetails_screen.dart';
+
 
 class ChatsScreenContent extends StatefulWidget {
   const ChatsScreenContent({super.key});
@@ -67,21 +66,6 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ChatdetailsScreen()),
-              );
-            },
-            icon: const Icon(
-              Icons.more_vert,
-              color: Color(0xffE0712D),
-              size: 24,
-            ),
-          ),
-        ],
       ),
       body: Column(
         children: [

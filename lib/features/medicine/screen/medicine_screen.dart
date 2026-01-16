@@ -25,23 +25,6 @@ class MedicineScreenContent extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: IconButton(
-              icon: const Icon(
-                Icons.calendar_month,
-                color: Color(0xffE0712D),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CalenderScreen()),
-                );
-              },
-            ),
-          ),
-        ],
       ),
       body: SingleChildScrollView(
         child: Column(

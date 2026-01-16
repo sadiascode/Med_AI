@@ -1,7 +1,5 @@
-import 'package:care_agent/features/home/widgets/dynamic_date_header_widget.dart';
 import 'package:flutter/material.dart';
 import '../../../common/app_shell.dart';
-import '../../home/widgets/calendar_widget.dart';
 import '../../home/widgets/medicine_card_widget.dart';
 import '../../home/widgets/time_header_widget.dart';
 
@@ -16,7 +14,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
   @override
   Widget build(BuildContext context) {
     return SubPageScaffold(
-      parentTabIndex: 1, // Medicine is parent
+      parentTabIndex: 1,
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
@@ -33,10 +31,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 20),
-            DynamicDateHeaderWidget(),
             SizedBox(height: 15),
-            CalendarWidget(),
             SizedBox(height: 30),
             Text(
               "Today's Medicine",
