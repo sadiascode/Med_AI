@@ -165,11 +165,76 @@ class ProfileScreenContent extends StatelessWidget {
               ),
               const SizedBox(height: 15),
               CustomButton(text: "Sign Out", onTap: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SigninScreen()),
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Dialog(
+                      backgroundColor: Color(0xffFFFAF7),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      insetPadding: const EdgeInsets.symmetric(horizontal: 35),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Confirm Sign Out",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              "Are you sure you want to sign out?",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                height: 1.4,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Buttons
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text(
+                                    "Cancel",
+                                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const SigninScreen()),
+                                    );
+                                  },
+                                  child: const Text(
+                                    "Sign Out",
+                                    style: TextStyle(color: Colors.red, fontSize: 16),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 );
-              }),
+              },
+              ),
               SizedBox(height: 10),
             ],
           ),
