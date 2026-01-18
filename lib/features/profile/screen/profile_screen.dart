@@ -1,4 +1,6 @@
+import 'package:care_agent/common/custom_button.dart';
 import 'package:care_agent/common/custom_medium.dart';
+import 'package:care_agent/features/auth/screen/signin_screen.dart';
 import 'package:care_agent/features/profile/screen/edit_screen.dart';
 import 'package:care_agent/features/profile/screen/prescription_screen.dart';
 import 'package:care_agent/features/profile/widget/custom_prescriptions.dart';
@@ -162,6 +164,13 @@ class ProfileScreenContent extends StatelessWidget {
                 onDelete: () {},
               ),
               const SizedBox(height: 15),
+              CustomButton(text: "Sign Out", onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SigninScreen()),
+                );
+              }),
+              SizedBox(height: 10),
             ],
           ),
         ),

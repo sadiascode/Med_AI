@@ -2,7 +2,7 @@ flutter_native_splash:
   android: true
   ios: true
 
-  color: "#FFFFFF"
+  color: "#000000"
   image: "assets/applogo.png"
 
   #DARK MODE
