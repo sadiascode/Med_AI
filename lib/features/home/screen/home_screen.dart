@@ -66,8 +66,30 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                   ),
                   Spacer(),
                   InkWell(
-                    onTap: () {},
-                    child: SvgPicture.asset(
+                    onTap: () async {
+                      // Date Picker
+                      final DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                        builder: (context, child) {
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                              colorScheme: const ColorScheme.light(
+                                primary: Color(0xFFFF6B35),
+                                onPrimary: Colors.white,
+                                surface: Colors.white,
+                                onSurface: Colors.black87,
+                              ),
+                            ),
+                            child: child!,
+                          );
+                        },
+                      );
+                    },
+
+                      child: SvgPicture.asset(
                       'assets/calender.svg',
                       height: 28,
                       width: 28,

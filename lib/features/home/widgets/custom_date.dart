@@ -58,6 +58,15 @@ class _CustomDateState extends State<CustomDate> {
                 surface: Colors.white,
                 onSurface: Colors.black87,
               ),
+              timePickerTheme: TimePickerThemeData(
+                backgroundColor: Colors.white,
+                hourMinuteTextColor: Colors.black87,
+                dayPeriodTextColor:Colors.black87, // AM/PM text
+                dayPeriodColor: Color(0xffE0712D),
+                dayPeriodBorderSide: BorderSide(color: Color(0xffE0712D), width: 1),
+                dialHandColor: Color(0xffE0712D),
+                dialBackgroundColor: Color(0xFFFFF0E6),
+              ),
             ),
             child: child!,
           );
