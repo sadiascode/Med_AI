@@ -87,7 +87,6 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
                         },
                       );
                     },
-
                       child: SvgPicture.asset(
                       'assets/calender.svg',
                       height: 28,
