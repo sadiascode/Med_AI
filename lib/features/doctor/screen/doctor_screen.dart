@@ -1,6 +1,6 @@
-import 'package:care_agent/features/doctor/screen/adddoctor_screen.dart';
 import 'package:care_agent/features/doctor/screen/view_screen.dart';
 import 'package:care_agent/features/medicine/widget/custom_search.dart';
+import 'package:care_agent/features/profile/widget/custom_edit.dart';
 import 'package:flutter/material.dart';
 import '../../../common/app_shell.dart';
 import '../widget/custom_doctor.dart';
@@ -38,9 +38,54 @@ class DoctorScreenContent extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const AdddoctorScreen()),
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          backgroundColor: const Color(0xFFFFFAF7),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          content: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                CustomEdit(
+                                  title: "Doctor Name",
+                                  hintText: "Type doctor name here ",
+                                ),
+                                const SizedBox(height: 10),
+                                CustomEdit(
+                                  title: "Sex",
+                                  hintText: "Select sex",
+                                ),
+                                const SizedBox(height: 10),
+                                CustomEdit(
+                                  title: "Specialization",
+                                  hintText: "Type your pharmacy address",
+                                ),
+                                const SizedBox(height: 10),
+                                CustomEdit(
+                                  title: "Hospital name",
+                                  hintText: "Please enter the website URL",
+                                ),
+                                const SizedBox(height: 15),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xffE0712D),
+                                    padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 11),
+                                  ),
+                                  child: const Text('Confirm',style: TextStyle(color: Colors.white,),),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
                   child: const Row(

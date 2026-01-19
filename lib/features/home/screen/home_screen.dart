@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../common/app_shell.dart';
 import '../widgets/appointment_cart_widget.dart';
-import '../widgets/custom_apointment.dart';
 import '../widgets/medicine_card_widget.dart';
 import '../widgets/time_header_widget.dart';
 
@@ -166,13 +165,6 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               const SizedBox(height: 15),
               const AppointmentCartWidget(),
               const SizedBox(height: 25),
-              const Text(
-                "Add prescription/appointment",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 15),
-              CustomApointment(),
-              const SizedBox(height: 30),
             ],
           ),
         ),

@@ -35,10 +35,11 @@ class CustomDoctor extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Image.network(
-          'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
-          fit: BoxFit.cover,
-        ),
+              child: Icon(
+                Icons.person,
+                color: Colors.grey[400],
+                size: 70,
+              ),
             ),
 
             SizedBox(width: 16),

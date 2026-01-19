@@ -1,31 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../../common/app_shell.dart';
 import '../../home/widgets/medicine_card_widget.dart';
 import '../../home/widgets/time_header_widget.dart';
 
-class CalenderScreen extends StatefulWidget {
+class CalenderScreen extends StatelessWidget {
   const CalenderScreen({super.key});
 
   @override
-  State<CalenderScreen> createState() => _CalenderScreenState();
-}
-
-class _CalenderScreenState extends State<CalenderScreen> {
-  @override
   Widget build(BuildContext context) {
-    return SubPageScaffold(
-      parentTabIndex: 1,
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.arrow_back_ios, color: Color(0xffE0712D), size: 18),
-        ),
-      ),
+    return Scaffold(
       body: const SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
