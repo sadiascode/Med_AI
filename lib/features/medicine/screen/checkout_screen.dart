@@ -214,13 +214,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     elevation: 0,
                   ),
                   child: Text(
-                    'Your order will be redirected to CVS Pharmacy',
+                    'Your order will be redirected to ${pharmacies[selectedPharmacyIndex]}',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
                   ),
+
                 ),
               ),
               SizedBox(height: 50),
