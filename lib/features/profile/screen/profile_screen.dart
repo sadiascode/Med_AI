@@ -2,19 +2,33 @@ import 'package:care_agent/common/custom_button.dart';
 import 'package:care_agent/common/custom_medium.dart';
 import 'package:care_agent/features/auth/screen/signin_screen.dart';
 import 'package:care_agent/features/profile/screen/edit_screen.dart';
+import 'package:care_agent/features/profile/screen/myprofile_screen.dart';
+import 'package:care_agent/features/profile/screen/prescp_screen.dart';
 import 'package:care_agent/features/profile/screen/prescription_screen.dart';
+import 'package:care_agent/features/profile/widget/custom_new.dart';
 import 'package:care_agent/features/profile/widget/custom_prescriptions.dart';
 import 'package:care_agent/features/profile/widget/custom_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../common/app_shell.dart';
+import '../../chat/widget/custom_minibutton.dart';
+import '../widget/custom_edit.dart';
 
 /// Content-only version for use inside AppShell (no navbar)
-class ProfileScreenContent extends StatelessWidget {
+class ProfileScreenContent extends StatefulWidget {
   const ProfileScreenContent({super.key});
 
   @override
+  State<ProfileScreenContent> createState() => _ProfileScreenContentState();
+}
+
+class _ProfileScreenContentState extends State<ProfileScreenContent> {
+
+  @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFAF7),
       appBar: AppBar(
@@ -36,134 +50,146 @@ class ProfileScreenContent extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
             children: [
-              const SizedBox(height: 20),
-              Container(
-                height: 293,
-                width: 380,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Stack(
-                  children: [
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 170,
-                            height: 170,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: ClipOval(
-                              child: Image.network(
-                                'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          const Text(
-                            'Smith Jaman',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xffE0712D),
-                            ),
-                          ),
-                        ],
+              SizedBox(height: 15),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyprofileScreen()),
+                  );
+                },
+                 child:  Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.05,
+                      vertical: screenWidth * 0.02,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(screenWidth * 0.03),
+                      border: const Border(
+                        left: BorderSide(color: Color(0xffE0712D), width: 5),
+                        top: BorderSide(color: Color(0xffE0712D), width: 1),
+                        right: BorderSide(color: Color(0xffE0712D), width: 1),
+                        bottom: BorderSide(color: Color(0xffE0712D), width: 1),
                       ),
                     ),
-                    Positioned(
-                      top: 16,
-                      right: 16,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const EditScreen()),
-                          );
-                        },
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFF5F0),
-                            borderRadius: BorderRadius.circular(10),
+                    child: Row(
+                      children: [
+                        ClipOval(
+                          child: Image.network(
+                            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
+                           height: 45,
+                            width: 45,
                           ),
-                          child: SvgPicture.asset(
-                            'assets/edi.svg',
-                            width: 18,
-                            height: 18,
-                            colorFilter: const ColorFilter.mode(
-                              Color(0xffE0712D),
-                              BlendMode.srcIn,
+                        ),
+
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
+                        Expanded(
+                          child: Text(
+                            "My Profile",
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width * 0.045,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
                             ),
                           ),
                         ),
-                      ),
+
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          size: MediaQuery.of(context).size.width * 0.045,
+                          color: Color(0xffE0712D),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
               ),
-              const SizedBox(height: 15),
-              CustomMedium(text: "Profile Info", onTap: () {}),
-              const SizedBox(height: 15),
-              const CustomText(title: "Full Name:", subtitle: "Israt Jahan"),
-              const SizedBox(height: 5),
-              const CustomText(title: "Email:", subtitle: "abc@gmail.com"),
-              const SizedBox(height: 5),
-              const CustomText(title: "Phone Number:", subtitle: "075682145"),
-              const SizedBox(height: 5),
-              const CustomText(
-                title: "Address:",
-                subtitle: "20 Cooper Square, New York, NY \n10003, USA",
-              ),
-              const SizedBox(height: 15),
-              CustomMedium(text: "Other Info", onTap: () {}),
-              const SizedBox(height: 15),
-              const CustomText(title: "Age:", subtitle: "28"),
-              const SizedBox(height: 5),
-              const CustomText(title: "Health condition:", subtitle: "Good"),
-              const SizedBox(height: 5),
-              const CustomText(title: "Wakeup time:", subtitle: "7:00 am"),
-              const SizedBox(height: 5),
-              const CustomText(title: "Breakfast time:", subtitle: "8:00 am"),
-              const SizedBox(height: 5),
-              const CustomText(title: "Lunch time:", subtitle: "2:00 pm"),
-              const SizedBox(height: 5),
-              const CustomText(title: "Dinner time:", subtitle: "9:00 am"),
-              const SizedBox(height: 15),
-              CustomMedium(text: "Your prescriptions", onTap: () {}),
-              const SizedBox(height: 15),
-              CustomPrescriptions(
-                prescriptionName: 'Prescriptin-1',
-                date: '01/05/25',
-                onDownload: () {},
-                onShow: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const PrescriptionScreen()),
+              SizedBox(height: 25),
+              CustomNew(
+                text: "Change Password",
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        backgroundColor: const Color(0xFFFFFAF7),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        content: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CustomEdit(
+                                title: "Current password",
+                                hintText: "Admin User",
+                              ),
+                              const SizedBox(height: 10),
+                              CustomEdit(
+                                title: "New Password",
+                                hintText: "**************",
+                              ),
+                              const SizedBox(height: 10),
+                              CustomEdit(
+                                title: "Confirm Password",
+                                hintText: "**************",
+                              ),
+                              const SizedBox(height: 15),
+                            ],
+                          ),
+                        ),
+                        actions: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              CustomMinibutton(
+                                text: 'Yes',
+                                textcolor: Colors.white,
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                backgroundColor: const Color(0xFFE0712D),
+                              ),
+                              const SizedBox(width: 7),
+                              CustomMinibutton(
+                                text: 'No',
+                                textcolor: const Color(0xffE0712D),
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                                backgroundColor: const Color(0xffFFFAF7),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
-                onDelete: () {},
               ),
-              const SizedBox(height: 15),
-              CustomPrescriptions(
-                prescriptionName: 'Prescriptin-1',
-                date: '01/05/25',
-                onDownload: () {},
-                onShow: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const PrescriptionScreen()),
-                  );
-                },
-                onDelete: () {},
-              ),
-              const SizedBox(height: 15),
+
+              SizedBox(height: 10),
+
+              CustomNew(text: "Your Prescriptions", onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PrescpScreen()),
+                );
+              }),
+              SizedBox(height: 10),
+
+              CustomNew(text: "Privacy Policy"),
+              SizedBox(height: 10),
+
+              CustomNew(text: "Terms and Conditions"),
+              SizedBox(height: 10),
+
+              CustomNew(text: "Deactivate"),
+              SizedBox(height: 10),
+
+
+              SizedBox(height: 35),
               CustomButton(text: "Sign Out", onTap: (){
                 showDialog(
                   context: context,
@@ -198,8 +224,6 @@ class ProfileScreenContent extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 24),
-
-                            // Buttons
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -235,8 +259,7 @@ class ProfileScreenContent extends StatelessWidget {
                 );
               },
               ),
-              SizedBox(height: 10),
-            ],
+             ],
           ),
         ),
       ),

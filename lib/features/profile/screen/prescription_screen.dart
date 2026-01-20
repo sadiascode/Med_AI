@@ -18,7 +18,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return SubPageScaffold(
-      parentTabIndex: 4, // Profile is parent
+      parentTabIndex: 4,
       backgroundColor: const Color(0xFFFFFAF7),
       appBar: AppBar(
         centerTitle: true,
