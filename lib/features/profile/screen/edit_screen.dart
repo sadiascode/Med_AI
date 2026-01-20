@@ -1,5 +1,6 @@
 import 'package:care_agent/common/custom_button.dart';
 import 'package:care_agent/common/custom_medium.dart';
+import 'package:care_agent/features/profile/screen/profile_screen.dart';
 import 'package:care_agent/features/profile/widget/custom_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -145,7 +146,12 @@ class _EditScreenState extends State<EditScreen> {
                 controller: TextEditingController(),
               ),
               const SizedBox(height: 30),
-              CustomButton(text: "Save", onTap: () {}),
+              CustomButton(text: "Save", onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                );
+              }),
               const SizedBox(height: 20),
             ],
           ),
