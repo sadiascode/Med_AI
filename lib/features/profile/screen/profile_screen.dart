@@ -6,8 +6,7 @@ import 'package:care_agent/features/profile/screen/myprofile_screen.dart';
 import 'package:care_agent/features/profile/screen/prescp_screen.dart';
 import 'package:care_agent/features/profile/screen/prescription_screen.dart';
 import 'package:care_agent/features/profile/widget/custom_new.dart';
-import 'package:care_agent/features/profile/widget/custom_prescriptions.dart';
-import 'package:care_agent/features/profile/widget/custom_text.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../common/app_shell.dart';
@@ -78,8 +77,8 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                         ClipOval(
                           child: Image.network(
                             'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
-                           height: 45,
-                            width: 45,
+                           height: 47,
+                            width: 47,
                           ),
                         ),
 

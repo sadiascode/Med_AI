@@ -7,6 +7,7 @@ import '../../../common/custom_medium.dart';
 import '../../auth/screen/signin_screen.dart';
 import '../../chat/widget/custom_text.dart';
 import '../widget/custom_prescriptions.dart';
+import '../widget/custom_txt.dart';
 import 'edit_screen.dart';
 
 class MyprofileScreen extends StatefulWidget {
@@ -126,35 +127,35 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
               const SizedBox(height: 15),
               CustomMedium(text: "Profile Info", onTap: () {}),
                SizedBox(height: 15),
-              //work to do here
-              CustomMedium(text: "Your prescriptions", onTap: () {}),
               const SizedBox(height: 15),
-              CustomPrescriptions(
-                prescriptionName: 'Prescriptin-1',
-                date: '01/05/25',
-                onDownload: () {},
-                onShow: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const PrescriptionScreen()),
-                  );
-                },
-                onDelete: () {},
+              const CustomTxt(title: "Full Name:", subtitle: "Israt Jahan"),
+              const SizedBox(height: 5),
+              const CustomTxt(title: "Email:", subtitle: "abc@gmail.com"),
+              const SizedBox(height: 5),
+              const CustomTxt(title: "Phone Number:", subtitle: "075682145"),
+              const SizedBox(height: 5),
+              const CustomTxt(
+                title: "Address:",
+                subtitle: "20 Cooper Square, New York, NY \n10003, USA",
               ),
+
+              SizedBox(height: 20),
+              CustomMedium(text: "Other Info", onTap: () {}),
+
               const SizedBox(height: 15),
-              CustomPrescriptions(
-                prescriptionName: 'Prescriptin-1',
-                date: '01/05/25',
-                onDownload: () {},
-                onShow: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const PrescriptionScreen()),
-                  );
-                },
-                onDelete: () {},
-              ),
-              const SizedBox(height: 15),
+              const CustomTxt(title: "Age:", subtitle: "28"),
+              const SizedBox(height: 5),
+              const CustomTxt(title: "Health condition:", subtitle: "Good"),
+              const SizedBox(height: 5),
+              const CustomTxt(title: "Wakeup time:", subtitle: "7:00 am"),
+              const SizedBox(height: 5),
+              const CustomTxt(title: "Breakfast time:", subtitle: "8:00 am"),
+              const SizedBox(height: 5),
+              const CustomTxt(title: "Lunch time:", subtitle: "2:00 pm"),
+              const SizedBox(height: 5),
+              const CustomTxt(title: "Dinner time:", subtitle: "9:00 am"),
+              SizedBox(height: 15),
+
             ],
           ),
         ),

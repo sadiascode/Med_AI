@@ -19,7 +19,7 @@ class CustomNew extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: screenHeight * 0.06,
-        width: screenWidth * 0.9,
+        width: screenWidth * 0.95,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(screenWidth * 0.03),
