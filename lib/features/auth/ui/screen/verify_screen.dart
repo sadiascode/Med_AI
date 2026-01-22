@@ -1,9 +1,9 @@
 import 'package:care_agent/common/custom_button.dart';
-import 'package:care_agent/features/auth/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../widget/custom_screen.dart';
+import 'successful_screen.dart';
 
 class VerifyScreen extends StatefulWidget {
   const VerifyScreen({super.key});

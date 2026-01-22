@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../common/custom_button.dart';
-import '../auth/screen/signin_screen.dart';
+import '../auth/ui/screen/signin_screen.dart';
 
 class Splash1Screen extends StatefulWidget {
   const Splash1Screen({super.key});

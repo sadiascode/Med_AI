@@ -1,5 +1,5 @@
 import 'package:care_agent/common/custom_button.dart';
-import 'package:care_agent/features/auth/screen/signin_screen.dart';
+import 'package:care_agent/features/auth/ui/screen/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../widget/custom_screen.dart';

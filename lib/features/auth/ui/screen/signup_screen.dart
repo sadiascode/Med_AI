@@ -1,8 +1,8 @@
 import 'package:care_agent/common/custom_button.dart';
-import 'package:care_agent/features/auth/screen/signin_screen.dart';
-import 'package:care_agent/features/auth/widget/custom_field.dart';
+import 'package:care_agent/features/auth/ui/screen/signin_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../widget/custom_field.dart';
 import '../widget/custom_screen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -13,6 +13,10 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -33,13 +37,13 @@ class _SignupScreenState extends State<SignupScreen> {
                   Center(child: Text("Sign up to get started",style: TextStyle(fontSize: 17),)),
                   SizedBox(height: 45),
 
-                  CustomField(hintText: "Full Name",),
+                  CustomField(hintText: "Full Name", controller: fullNameController,),
                   SizedBox(height: 18),
 
-                  CustomField(hintText: "Email/Phone Number",),
+                  CustomField(hintText: "Email/Phone Number",controller: emailController,),
                   SizedBox(height: 18),
 
-                  CustomField(hintText: "Password",isPassword: true,),
+                  CustomField(hintText: "Password",isPassword: true,controller:passwordController),
                   SizedBox(height: 35),
 
                   CustomButton(text: "Sign up", onTap: (){

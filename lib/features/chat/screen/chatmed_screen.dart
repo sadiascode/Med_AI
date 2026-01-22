@@ -45,7 +45,7 @@ class _ChatmedScreenState extends State<ChatmedScreen> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Medicine quantity',
+                  'Medicine quantity you already have',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

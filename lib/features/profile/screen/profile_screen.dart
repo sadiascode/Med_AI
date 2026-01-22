@@ -1,6 +1,5 @@
 import 'package:care_agent/common/custom_button.dart';
 import 'package:care_agent/common/custom_medium.dart';
-import 'package:care_agent/features/auth/screen/signin_screen.dart';
 import 'package:care_agent/features/profile/screen/edit_screen.dart';
 import 'package:care_agent/features/profile/screen/myprofile_screen.dart';
 import 'package:care_agent/features/profile/screen/prescp_screen.dart';
@@ -10,6 +9,7 @@ import 'package:care_agent/features/profile/widget/custom_new.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../common/app_shell.dart';
+import '../../auth/ui/screen/signin_screen.dart';
 import '../../chat/widget/custom_minibutton.dart';
 import '../widget/custom_edit.dart';
 

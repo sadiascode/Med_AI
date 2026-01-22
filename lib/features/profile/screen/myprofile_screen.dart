@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import '../../../common/app_shell.dart';
 import '../../../common/custom_button.dart';
 import '../../../common/custom_medium.dart';
-import '../../auth/screen/signin_screen.dart';
 import '../../chat/widget/custom_text.dart';
 import '../widget/custom_prescriptions.dart';
 import '../widget/custom_txt.dart';

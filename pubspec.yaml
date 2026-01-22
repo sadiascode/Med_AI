@@ -40,6 +40,11 @@ dependencies:
   date_picker_timeline: ^1.2.6
   image_picker: ^1.2.1
   flutter_native_splash: ^2.4.7
+  shared_preferences: ^2.5.3
+  get: ^4.7.2
+  logger: ^1.2.2
+  http: ^1.1.0
+  get_storage: ^2.1.1
 
 dev_dependencies:
   flutter_test:
