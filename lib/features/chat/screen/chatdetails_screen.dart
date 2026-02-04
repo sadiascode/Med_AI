@@ -110,7 +110,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           const SizedBox(height: 10),
                           const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
                           const SizedBox(height: 10),
-                          const CustomDetails1(name: "How many time/day"),
+                          const CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 10),
                           CustomBull(
                             selectedMeal: selectedMeal,
@@ -123,7 +123,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           const SizedBox(height: 20),
                           const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
                           const SizedBox(height: 10),
-                          const CustomDetails1(name: "How many time/day"),
+                          const CustomDetails1(name: "How many time/day",subtitle: "2",),
                           const SizedBox(height: 10),
                           CustomBull(
                             selectedMeal: selectedMeal,
@@ -136,7 +136,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           const SizedBox(height: 20),
                           const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
                           const SizedBox(height: 10),
-                          const CustomDetails1(name: "How many time/day"),
+                          const CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 10),
                           CustomBull(
                             selectedMeal: selectedMeal,

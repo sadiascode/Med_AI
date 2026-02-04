@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 class CustomDetails1 extends StatefulWidget {
   final String name;
+  final String subtitle;
+  final Function(String)? onChanged;
 
   const CustomDetails1({
     super.key,
     required this.name,
+    required this.subtitle ,
+    this.onChanged,
   });
 
   @override
@@ -13,11 +17,18 @@ class CustomDetails1 extends StatefulWidget {
 }
 
 class _CustomDetails1State extends State<CustomDetails1> {
-  final TextEditingController valueController = TextEditingController();
+  late TextEditingController _subtitleController;
+  bool _isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _subtitleController = TextEditingController(text: widget.subtitle);
+  }
 
   @override
   void dispose() {
-    valueController.dispose();
+    _subtitleController.dispose();
     super.dispose();
   }
 
@@ -58,21 +69,44 @@ class _CustomDetails1State extends State<CustomDetails1> {
                   bottomRight: Radius.circular(6),
                 ),
               ),
-              child: TextField(
-                controller: valueController,
-                keyboardType: TextInputType.number,
-                textAlignVertical: TextAlignVertical.center,
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-                decoration: const InputDecoration(
-                  hintText: '3',
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: EdgeInsets.zero,
-                ),
-              ),
+              child: _isEditing
+                  ? TextField(
+                      controller: _subtitleController,
+                      keyboardType: TextInputType.number,
+                      textAlignVertical: TextAlignVertical.center,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        isDense: true,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      autofocus: true,
+                      onSubmitted: (value) {
+                        setState(() {
+                          _isEditing = false;
+                        });
+                        if (widget.onChanged != null) {
+                          widget.onChanged!(value);
+                        }
+                      },
+                    )
+                  : GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _isEditing = true;
+                        });
+                      },
+                      child: Text(
+                        _subtitleController.text,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
             ),
           ),
 
