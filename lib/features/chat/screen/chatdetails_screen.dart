@@ -118,7 +118,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                             selectedMeal: selectedMeal1,
                             onChanged: (value) {
                               setState(() {
-                                selectedMeal3 = value;
+                                selectedMeal1 = value;
                               });
                             },
                           ),
@@ -141,7 +141,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           const CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 10),
                           CustomBull(
-                            selectedMeal: selectedMeal1,
+                            selectedMeal: selectedMeal3,
                             onChanged: (value) {
                               setState(() {
                                 selectedMeal3 = value;
