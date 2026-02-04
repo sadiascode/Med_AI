@@ -15,7 +15,9 @@ class ChatdetailsScreen extends StatefulWidget {
 }
 
 class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
-  String selectedMeal = 'After Meal';
+  String selectedMeal1 = 'After Meal';
+  String selectedMeal2 = 'After Meal';
+  String selectedMeal3 = 'After Meal';
 
   @override
   Widget build(BuildContext context) {
@@ -113,10 +115,10 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           const CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 10),
                           CustomBull(
-                            selectedMeal: selectedMeal,
+                            selectedMeal: selectedMeal1,
                             onChanged: (value) {
                               setState(() {
-                                selectedMeal = value;
+                                selectedMeal3 = value;
                               });
                             },
                           ),
@@ -126,10 +128,10 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           const CustomDetails1(name: "How many time/day",subtitle: "2",),
                           const SizedBox(height: 10),
                           CustomBull(
-                            selectedMeal: selectedMeal,
+                            selectedMeal: selectedMeal2,
                             onChanged: (value) {
                               setState(() {
-                                selectedMeal = value;
+                                selectedMeal2 = value;
                               });
                             },
                           ),
@@ -139,10 +141,10 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           const CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 10),
                           CustomBull(
-                            selectedMeal: selectedMeal,
+                            selectedMeal: selectedMeal1,
                             onChanged: (value) {
                               setState(() {
-                                selectedMeal = value;
+                                selectedMeal3 = value;
                               });
                             },
                           ),
