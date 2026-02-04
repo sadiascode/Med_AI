@@ -75,11 +75,7 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                     child: Row(
                       children: [
                         ClipOval(
-                          child: Image.network(
-                            'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
-                           height: 47,
-                            width: 47,
-                          ),
+                          child: Icon(Icons.person,size: 50,color: Colors.grey[600],)
                         ),
 
                         SizedBox(width: MediaQuery.of(context).size.width * 0.03),

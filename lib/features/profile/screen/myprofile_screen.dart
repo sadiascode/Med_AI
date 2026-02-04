@@ -1,11 +1,7 @@
-import 'package:care_agent/features/profile/screen/prescription_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../common/app_shell.dart';
-import '../../../common/custom_button.dart';
 import '../../../common/custom_medium.dart';
-import '../../chat/widget/custom_text.dart';
-import '../widget/custom_prescriptions.dart';
 import '../widget/custom_txt.dart';
 import 'edit_screen.dart';
 
@@ -73,10 +69,7 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
                               shape: BoxShape.circle,
                             ),
                             child: ClipOval(
-                              child: Image.network(
-                                'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
-                                fit: BoxFit.cover,
-                              ),
+                              child: Icon(Icons.person,size: 150,color: Colors.grey[600],)
                             ),
                           ),
                           const SizedBox(height: 15),

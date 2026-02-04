@@ -3,14 +3,14 @@ import 'package:care_agent/features/auth/ui/screen/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../widget/custom_screen.dart';
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class SuccessfulScreen extends StatefulWidget {
+  const SuccessfulScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SuccessfulScreen> createState() => _SuccessfulScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SuccessfulScreenState extends State<SuccessfulScreen> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;

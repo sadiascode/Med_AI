@@ -47,27 +47,20 @@ class _ViewScreenState extends State<ViewScreen> {
             children: [
               Column(
                 children: [
-                  SizedBox(
-                    width: screenWidth,
-                    child: Image.asset(
-                      'assets/doc.png',
-                      fit: BoxFit.fitWidth,
-                    ),
-                  ),
+                  Icon(Icons.person,size: 150,color: Colors.grey[600],)
                 ],
               ),
-              const SizedBox(height: 20),
               const Text(
                 "Dr. Shakil Mirja",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Color(0xffE0712D)),
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffE0712D)),
               ),
               const Text(
                 "Cardiologist",
-                style: TextStyle(fontSize: 18, color: Color(0xff646464)),
+                style: TextStyle(fontSize: 16, color: Color(0xff646464)),
               ),
               const Text(
                 "LABAID Hospital",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
               ),
               const SizedBox(height: 20),
               const Padding(

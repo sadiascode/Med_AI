@@ -1,3 +1,4 @@
+import 'package:care_agent/features/chat/widget/action_input_bar_widget.dart';
 import 'package:care_agent/features/home/screen/notification_screen.dart';
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
@@ -128,7 +129,9 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
               ),
               const SizedBox(height: 15),
               const AppointmentCartWidget(),
-              const SizedBox(height: 25),
+              const SizedBox(height: 20),
+              const ActionInputBarWidget(),
+              const SizedBox(height: 10),
             ],
           ),
         ),

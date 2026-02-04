@@ -1,9 +1,5 @@
-import 'package:care_agent/features/auth/controller/login_controller.dart';
-import 'package:care_agent/features/auth/model/login_model.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../../../../common/custom_button.dart';
-import '../../controller/auth_controller.dart';
 import '../widget/custom_field.dart';
 import '../widget/custom_screen.dart';
 import '../widget/custom_google.dart';
@@ -19,44 +15,8 @@ class SigninScreen extends StatefulWidget {
 }
 
 class _SigninScreenState extends State<SigninScreen> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
   bool rememberMe = false;
   bool isLoading = false;
-
-  Future<void> _handleLogin() async {
-    if (emailController.text.trim().isEmpty ||
-        passwordController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter email and password")),
-      );
-      return;
-    }
-
-    setState(() => isLoading = true);
-
-    final loginController = Get.find<LoginController>();
-
-    final success = await loginController.login(
-      LoginRequestModel(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      ),
-    );
-
-    setState(() => isLoading = false);
-
-    if (success) {
-      Get.offAll(() => const HomeScreen());
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(loginController.errorMessage ?? "Login failed")),
-      );
-    }
-  }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -81,14 +41,14 @@ class _SigninScreenState extends State<SigninScreen> {
             CustomField(
               hintText: "Email",
               borderColor: const Color(0xffE0712D),
-              controller: emailController,
+              // controller: emailController,
             ),
             const SizedBox(height: 17),
             CustomField(
               hintText: "Password",
               borderColor: const Color(0xffE0712D),
               isPassword: true,
-              controller: passwordController,
+              // controller: passwordController,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,7 +83,12 @@ class _SigninScreenState extends State<SigninScreen> {
             const SizedBox(height: 15),
              CustomButton(
               text: "Sign In",
-              onTap: _handleLogin,
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HomeScreen()),
+                );
+              },
             ),
             SizedBox(height: screenHeight * 0.02),
             const CustomGoogle(
