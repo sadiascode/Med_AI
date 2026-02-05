@@ -35,7 +35,7 @@ class _CustomFieldState extends State<CustomField> {
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: const TextStyle(
-          color: Colors.black12,
+          color: Colors.grey,
           fontSize: 15,
         ),
         enabledBorder: OutlineInputBorder(

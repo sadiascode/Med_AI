@@ -1,4 +1,5 @@
 import 'package:care_agent/common/custom_button.dart';
+import 'package:care_agent/features/auth/ui/screen/set_password.dart';
 import 'package:care_agent/features/auth/ui/screen/signin_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -104,7 +105,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   CustomButton(text: "Verify Code", onTap: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const SigninScreen()),
+                      MaterialPageRoute(builder: (context) => const SetPassword()),
                     );
                   })
 

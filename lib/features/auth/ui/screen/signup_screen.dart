@@ -40,7 +40,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   CustomField(hintText: "Full Name", controller: fullNameController,),
                   SizedBox(height: 18),
 
-                  CustomField(hintText: "Email/Phone Number",controller: emailController,),
+                  CustomField(hintText: "Email ",controller: emailController,),
                   SizedBox(height: 18),
 
                   CustomField(hintText: "Password",isPassword: true,controller:passwordController),

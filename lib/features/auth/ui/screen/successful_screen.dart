@@ -57,7 +57,7 @@ class _SuccessfulScreenState extends State<SuccessfulScreen> {
                   ),
 
                   SizedBox(height: screenHeight * 0.04),
-                  CustomButton(text: "Log in", onTap: (){
+                  CustomButton(text: "Save Successfully", onTap: (){
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const SigninScreen()),

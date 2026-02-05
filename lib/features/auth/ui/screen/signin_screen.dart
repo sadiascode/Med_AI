@@ -41,14 +41,14 @@ class _SigninScreenState extends State<SigninScreen> {
             CustomField(
               hintText: "Email",
               borderColor: const Color(0xffE0712D),
-              // controller: emailController,
+
             ),
             const SizedBox(height: 17),
             CustomField(
               hintText: "Password",
               borderColor: const Color(0xffE0712D),
               isPassword: true,
-              // controller: passwordController,
+
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
