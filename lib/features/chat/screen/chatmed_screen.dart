@@ -147,7 +147,7 @@ class _ChatmedScreenState extends State<ChatmedScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 20),
             CustomMinibutton(
               text: "save",
               onTap: () {
@@ -159,6 +159,7 @@ class _ChatmedScreenState extends State<ChatmedScreen> {
               textcolor: Colors.white,
               backgroundColor: const Color(0xffE0712D),
             ),
+            SizedBox(height: 10)
           ],
         ),
       ),
