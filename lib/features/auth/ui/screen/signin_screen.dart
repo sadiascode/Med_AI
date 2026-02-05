@@ -6,6 +6,10 @@ import '../widget/custom_google.dart';
 import 'signup_screen.dart';
 import 'forget_screen.dart';
 import '../../../home/screen/home_screen.dart';
+import '../../data/signin_model.dart';
+import '../../../../app/urls.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -17,6 +21,88 @@ class SigninScreen extends StatefulWidget {
 class _SigninScreenState extends State<SigninScreen> {
   bool rememberMe = false;
   bool isLoading = false;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> _signinUser() async {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill all fields'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final signinData = SigninModel(
+      email: emailController.text.trim(),
+      password: passwordController.text,
+    );
+
+    try {
+      final response = await http.post(
+        Uri.parse(Urls.User_signin),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(signinData.toJson()),
+      );
+
+      print('Signin Response status: ${response.statusCode}');
+      print('Signin Response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Login successful!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+        );
+      } else {
+        String errorMessage = 'Login failed';
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['message'] != null) {
+            errorMessage = errorData['message'];
+          } else if (errorData['email'] != null) {
+            errorMessage = errorData['email'];
+          } else if (errorData['password'] != null) {
+            errorMessage = errorData['password'];
+          }
+        } catch (e) {
+          errorMessage = response.body;
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Signin Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Network error. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +127,14 @@ class _SigninScreenState extends State<SigninScreen> {
             CustomField(
               hintText: "Email",
               borderColor: const Color(0xffE0712D),
-
+              controller: emailController,
             ),
             const SizedBox(height: 17),
             CustomField(
               hintText: "Password",
               borderColor: const Color(0xffE0712D),
               isPassword: true,
-
+              controller: passwordController,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,12 +169,8 @@ class _SigninScreenState extends State<SigninScreen> {
             const SizedBox(height: 15),
              CustomButton(
               text: "Sign In",
-              onTap: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const HomeScreen()),
-                );
-              },
+              onTap: _signinUser,
+              isLoading: isLoading,
             ),
             SizedBox(height: screenHeight * 0.02),
             const CustomGoogle(

@@ -1,20 +1,115 @@
 import 'package:care_agent/common/custom_button.dart';
+import 'package:care_agent/features/auth/data/signup_otp_model.dart';
 import 'package:care_agent/features/auth/ui/screen/set_password.dart';
 import 'package:care_agent/features/auth/ui/screen/signin_screen.dart';
+import 'package:care_agent/app/urls.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../widget/custom_screen.dart';
-import 'successful_screen.dart';
 
-class VerifyScreen extends StatefulWidget {
-  const VerifyScreen({super.key});
+
+class VerifyForsignup extends StatefulWidget {
+  final String email;
+  
+  const VerifyForsignup({super.key, required this.email});
 
   @override
-  State<VerifyScreen> createState() => _VerifyScreenState();
+  State<VerifyForsignup> createState() => _VerifyForsignupState();
 }
 
-class _VerifyScreenState extends State<VerifyScreen> {
+class _VerifyForsignupState extends State<VerifyForsignup> {
+  final TextEditingController otpController = TextEditingController();
+  bool isLoading = false;
+
+  Future<void> _verifyOTP() async {
+    if (otpController.text.length != 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter 6 digit OTP code'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final verifyData = SignupOtp(
+      email: widget.email,
+      otp: otpController.text.trim(),
+    );
+
+    print('Sending verification data: ${verifyData.toJson()}');
+    print('Request body: ${jsonEncode(verifyData.toJson())}');
+    print('Purpose field value: ${verifyData.purpose}');
+
+    try {
+      final response = await http.post(
+        Uri.parse(Urls.signup_verifyotp),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(verifyData.toJson()),
+      );
+
+      print('OTP Verify Response status: ${response.statusCode}');
+      print('OTP Verify Response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Email verified successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SigninScreen()),
+        );
+      } else {
+        String errorMessage = 'Verification failed';
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['message'] != null) {
+            errorMessage = errorData['message'];
+          } else if (errorData['error'] != null) {
+            errorMessage = errorData['error'];
+          } else if (errorData['otp'] != null) {
+            errorMessage = errorData['otp'];
+          } else if (errorData['code'] != null) {
+            errorMessage = errorData['code'];
+          } else if (errorData['detail'] != null) {
+            errorMessage = errorData['detail'];
+          }
+        } catch (e) {
+          errorMessage = response.body.isNotEmpty ? response.body : 'Invalid OTP';
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('OTP Verify Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Network error. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -38,7 +133,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "We sent a reset link to contact@gmail.com",
+                          "We sent a reset link to ${widget.email}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: screenWidth * 0.035,
@@ -61,6 +156,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   SizedBox(height: 35),
                   PinCodeTextField(
                     length: 6,
+                    controller: otpController,
                     obscureText: false,
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     keyboardType: TextInputType.number,
@@ -72,12 +168,13 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         fieldWidth: 40,
                         activeColor: Color(0xffE0712D),
                         selectedColor: Color(0xffE0712D),
-                        inactiveColor: Color(0xffE0712D)),
+                        inactiveColor: Color(0xffE0712D),
+                      ),
                     animationDuration: const Duration(milliseconds: 300),
-                    // controller: OTPController,
+
                     appContext: context,
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 20),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Column(
@@ -101,13 +198,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     ),
                   ),
                   SizedBox(height: 35),
-                  CustomButton(text: "Verify OTP", onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SetPassword()),
-                    );
-                  })
-
+                  CustomButton(text: "Verify OTP", onTap: _verifyOTP, isLoading: isLoading),
 
                 ]
             )
