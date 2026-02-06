@@ -71,42 +71,42 @@ class _CustomDetails1State extends State<CustomDetails1> {
               ),
               child: _isEditing
                   ? TextField(
-                      controller: _subtitleController,
-                      keyboardType: TextInputType.number,
-                      textAlignVertical: TextAlignVertical.center,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      autofocus: true,
-                      onSubmitted: (value) {
-                        setState(() {
-                          _isEditing = false;
-                        });
-                        if (widget.onChanged != null) {
-                          widget.onChanged!(value);
-                        }
-                      },
-                    )
+                controller: _subtitleController,
+                keyboardType: TextInputType.number,
+                textAlignVertical: TextAlignVertical.center,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                autofocus: true,
+                onSubmitted: (value) {
+                  setState(() {
+                    _isEditing = false;
+                  });
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(value);
+                  }
+                },
+              )
                   : GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isEditing = true;
-                        });
-                      },
-                      child: Text(
-                        _subtitleController.text,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                onTap: () {
+                  setState(() {
+                    _isEditing = true;
+                  });
+                },
+                child: Text(
+                  _subtitleController.text,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             ),
           ),
 

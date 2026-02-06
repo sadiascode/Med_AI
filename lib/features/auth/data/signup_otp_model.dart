@@ -6,14 +6,14 @@ class SignupOtp {
   SignupOtp({
     required this.email,
     required this.otp,
-    this.purpose = 'signup',  // Add purpose field
+    this.purpose = 'signup',
   });
 
   Map<String, dynamic> toJson() {
     return {
       "email": email,
       "otp": otp,
-      "purpose": purpose,  // Include purpose field
+      "purpose": purpose,
     };
   }
 }

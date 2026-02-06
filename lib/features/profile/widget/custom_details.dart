@@ -71,41 +71,41 @@ class _CustomDetailsState extends State<CustomDetails> {
               ),
               child: _isEditing
                   ? TextField(
-                      controller: _medicineController,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      autofocus: true,
-                      onSubmitted: (value) {
-                        setState(() {
-                          _isEditing = false;
-                        });
-                        // You can add a callback here to notify parent of the change
-                        if (widget.onChanged != null) {
-                          widget.onChanged!(value);
-                        }
-                      },
-                    )
+                controller: _medicineController,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                autofocus: true,
+                onSubmitted: (value) {
+                  setState(() {
+                    _isEditing = false;
+                  });
+                  // You can add a callback here to notify parent of the change
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(value);
+                  }
+                },
+              )
                   : GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isEditing = true;
-                        });
-                      },
-                      child: Text(
-                        _medicineController.text,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                onTap: () {
+                  setState(() {
+                    _isEditing = true;
+                  });
+                },
+                child: Text(
+                  _medicineController.text,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             ),
           ),
         ],

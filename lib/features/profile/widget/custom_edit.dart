@@ -47,8 +47,8 @@ class _CustomEditState extends State<CustomEdit> {
             filled: true,
             fillColor: widget.fillColor,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide.none),
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 17,
               vertical: 14,

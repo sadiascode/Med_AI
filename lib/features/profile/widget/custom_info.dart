@@ -80,40 +80,40 @@ class _CustomInfoState extends State<CustomInfo> {
               ),
               child: _isEditingAge
                   ? TextField(
-                      controller: _ageController,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      autofocus: true,
-                      onSubmitted: (value) {
-                        setState(() {
-                          _isEditingAge = false;
-                        });
-                        if (widget.onChanged != null) {
-                          widget.onChanged!(value, _genderController.text);
-                        }
-                      },
-                    )
+                controller: _ageController,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                autofocus: true,
+                onSubmitted: (value) {
+                  setState(() {
+                    _isEditingAge = false;
+                  });
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(value, _genderController.text);
+                  }
+                },
+              )
                   : GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isEditingAge = true;
-                        });
-                      },
-                      child: Text(
-                        _ageController.text,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                onTap: () {
+                  setState(() {
+                    _isEditingAge = true;
+                  });
+                },
+                child: Text(
+                  _ageController.text,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 5),
@@ -147,40 +147,40 @@ class _CustomInfoState extends State<CustomInfo> {
               ),
               child: _isEditingGender
                   ? TextField(
-                      controller: _genderController,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      autofocus: true,
-                      onSubmitted: (value) {
-                        setState(() {
-                          _isEditingGender = false;
-                        });
-                        if (widget.onChanged != null) {
-                          widget.onChanged!(_ageController.text, value);
-                        }
-                      },
-                    )
+                controller: _genderController,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                ),
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                autofocus: true,
+                onSubmitted: (value) {
+                  setState(() {
+                    _isEditingGender = false;
+                  });
+                  if (widget.onChanged != null) {
+                    widget.onChanged!(_ageController.text, value);
+                  }
+                },
+              )
                   : GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isEditingGender = true;
-                        });
-                      },
-                      child: Text(
-                        _genderController.text,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
+                onTap: () {
+                  setState(() {
+                    _isEditingGender = true;
+                  });
+                },
+                child: Text(
+                  _genderController.text,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
             ),
           ),
         ],
