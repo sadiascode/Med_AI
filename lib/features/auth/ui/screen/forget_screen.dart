@@ -1,7 +1,11 @@
 import 'package:care_agent/common/custom_button.dart';
 import 'package:care_agent/features/auth/ui/screen/verify_screen.dart';
+import 'package:care_agent/features/auth/ui/screen/set_password.dart';
+import 'package:care_agent/features/auth/data/forget_model.dart';
+import 'package:care_agent/app/urls.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../widget/custom_field.dart';
 import '../widget/custom_screen.dart';
 
@@ -13,6 +17,163 @@ class ForgetScreen extends StatefulWidget {
 }
 
 class _ForgetScreenState extends State<ForgetScreen> {
+  final TextEditingController emailController = TextEditingController();
+  bool isLoading = false;
+
+  Future<void> _sendResetCode() async {
+    if (emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter your email address'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final forgetData = ForgetModel(
+      email: emailController.text.trim(),
+    );
+
+    try {
+      final response = await http.post(
+        Uri.parse(Urls.forgot_pass),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(forgetData.toJson()),
+      );
+
+      print('Forgot Password Response status: ${response.statusCode}');
+      print('Forgot Password Response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Check if OTP was sent by parsing response
+        bool otpSent = true;
+        try {
+          final responseData = jsonDecode(response.body);
+          // If response indicates no OTP sent, skip verification
+          if (responseData['message'] != null && 
+              responseData['message'].toString().toLowerCase().contains('no otp')) {
+            otpSent = false;
+          }
+        } catch (e) {
+          // Default to OTP verification if response parsing fails
+        }
+        
+        if (otpSent) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Reset code sent to your email!'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => VerifyScreen(email: emailController.text.trim())),
+          );
+        } else {
+          // Skip OTP verification and go directly to SetPassword
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Proceed to set new password'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SetPassword(email: emailController.text.trim())),
+          );
+        }
+      } else if (response.statusCode == 400) {
+        // Check for "User already verified" error and treat as success
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['error'] == 'User already verified') {
+            // Check if OTP was sent for verified users
+            bool otpSent = true;
+            try {
+              // For verified users, check if response indicates OTP sent
+              if (errorData['message'] != null && 
+                  errorData['message'].toString().toLowerCase().contains('no otp')) {
+                otpSent = false;
+              }
+            } catch (e) {
+              // Default to OTP verification
+            }
+            
+            if (otpSent) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Reset code sent to your email!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => VerifyScreen(email: emailController.text.trim())),
+              );
+            } else {
+              // Skip OTP verification and go directly to SetPassword
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Proceed to set new password'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SetPassword(email: emailController.text.trim())),
+              );
+            }
+            return;
+          }
+        } catch (e) {
+          // Continue with normal error handling
+        }
+        
+        // Normal error handling for other 400 errors
+        String errorMessage = 'Failed to send reset code';
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['message'] != null) {
+            errorMessage = errorData['message'];
+          } else if (errorData['email'] != null) {
+            errorMessage = errorData['email'];
+          } else if (errorData['detail'] != null) {
+            errorMessage = errorData['detail'];
+          } else if (errorData['error'] != null) {
+            errorMessage = errorData['error'];
+          }
+        } catch (e) {
+          errorMessage = response.body.isNotEmpty ? response.body : 'Something went wrong';
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Forgot Password Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Network error. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -43,15 +204,17 @@ class _ForgetScreenState extends State<ForgetScreen> {
                   ),
 
                   SizedBox(height: 60),
-                  CustomField(hintText: "Email",),
+                  CustomField(
+                    hintText: "Email",
+                    controller: emailController,
+                  ),
                   
                   SizedBox(height: 20),
-                  CustomButton(text: "Send Code", onTap: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const VerifyScreen()),
-                    );
-                  })
+                  CustomButton(
+                    text: "Send Code",
+                    onTap: _sendResetCode,
+                    isLoading: isLoading,
+                  )
 
                 ]
             )

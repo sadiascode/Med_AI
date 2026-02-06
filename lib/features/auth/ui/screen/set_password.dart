@@ -7,7 +7,9 @@ import '../widget/custom_field.dart';
 import '../widget/custom_screen.dart';
 
 class SetPassword extends StatefulWidget {
-  const SetPassword({super.key});
+  final String email;
+
+  const SetPassword({super.key, required this.email});
 
   @override
   State<SetPassword> createState() => _SetPasswordState();
