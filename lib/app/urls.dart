@@ -11,7 +11,10 @@ class Urls {
   // login
   static const String User_signin = "$baseUrl/users/login/";
 
+
+
 // profile
   static const String profile = "$baseUrl/users/profile/";
+  static const String update_profile = "$baseUrl/users/profile/";
 
 }

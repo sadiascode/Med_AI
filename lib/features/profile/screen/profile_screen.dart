@@ -3,7 +3,6 @@ import 'package:care_agent/features/profile/screen/edit_screen.dart';
 import 'package:care_agent/features/profile/screen/myprofile_screen.dart';
 import 'package:care_agent/features/profile/screen/prescp_screen.dart';
 import 'package:care_agent/features/profile/widget/custom_new.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import '../../../common/app_shell.dart';
@@ -13,7 +12,6 @@ import '../services/profile_services.dart';
 import '../widget/custom_edit.dart';
 import '../models/profile_model.dart';
 
-/// Content-only version for use inside AppShell (no navbar)
 class ProfileScreenContent extends StatefulWidget {
   const ProfileScreenContent({super.key});
 
@@ -25,7 +23,6 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
   ProfileModel? _profile;
   bool _isLoading = true;
   String? _error;
-  final box = GetStorage();
 
   @override
   void initState() {
@@ -35,23 +32,12 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
 
   Future<void> _loadProfile() async {
     try {
-      // Check if user is authenticated
-      final token = box.read('access_token');
-      if (token == null) {
-        setState(() {
-          _isLoading = false;
-          _error = 'Please login to access your profile';
-        });
-        return;
-      }
-
-      print('Loading profile with token: ${token.substring(0, 10)}...');
       final profile = await ProfileService.getProfile();
       print('Profile loaded: ${profile.fullName}');
       print('Profile picture URL from API: ${profile.profilePicture}');
 
       // Check for locally stored image path since API doesn't support profile pictures
-      final localImagePath = box.read('profile_image_path');
+      final localImagePath = await ProfileService.getLocalImagePath();
       print('Local image path: $localImagePath');
 
       ProfileModel updatedProfile = profile;
@@ -441,10 +427,9 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                                   ),
                                   const SizedBox(width: 12),
                                   TextButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       // Clear stored tokens on sign out
-                                      box.remove('access_token');
-                                      box.remove('refresh_token');
+                                      await ProfileService.signOut();
 
                                       Navigator.pushAndRemoveUntil(
                                         context,

@@ -21,51 +21,22 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
   ProfileModel? _profile;
   bool _isLoading = true;
   String? _error;
-  final box = GetStorage();
-  String? _debugMessage;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _debugMessage = 'Checking for login token...';
-    });
     _loadProfile();
   }
 
   Future<void> _loadProfile() async {
     try {
-      // Check if user is authenticated
-      final token = box.read('access_token');
-      if (token == null) {
-        setState(() {
-          _isLoading = false;
-          _error = 'Please login to access your profile';
-          _debugMessage = 'No token found in storage';
-        });
-        return;
-      }
-
-      setState(() {
-        _debugMessage = 'Token found: ${token.substring(0, 10)}...';
-      });
-
-      print(
-        'MyProfile: Loading profile with token: ${token.substring(0, 10)}...',
-      );
       final profile = await ProfileService.getProfile();
-      print('MyProfile: Profile loaded: ${profile.fullName}');
-      print(
-        'MyProfile: Profile picture URL from API: ${profile.profilePicture}',
-      );
 
       // Check for locally stored image path since API doesn't support profile pictures
-      final localImagePath = box.read('profile_image_path');
-      print('MyProfile: Local image path: $localImagePath');
+      final localImagePath = await ProfileService.getLocalImagePath();
 
       ProfileModel updatedProfile = profile;
       if (localImagePath != null) {
-        print('MyProfile: Using local image path: $localImagePath');
         updatedProfile = profile.copyWith(profilePicture: localImagePath);
       }
 
@@ -75,11 +46,9 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
         _error = null;
       });
     } catch (e) {
-      print('MyProfile: Error loading profile: $e');
       setState(() {
         _isLoading = false;
         _error = e.toString();
-        _debugMessage = 'Error: $e';
       });
     }
   }
@@ -214,20 +183,6 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              if (_debugMessage != null) ...[
-                Container(
-                  margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(10),
-                  color: Colors.orange.shade100,
-                  child: Text(
-                    _debugMessage!,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.orange.shade800,
-                    ),
-                  ),
-                ),
-              ],
               Container(
                 height: 293,
                 width: 380,
@@ -252,16 +207,10 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
                               child: _profile?.profilePicture != null
                                   ? Builder(
                                 builder: (context) {
-                                  print(
-                                    'MyProfile: Attempting to display image: ${_profile!.profilePicture}',
-                                  );
                                   if (_profile!.profilePicture!
                                       .startsWith('/data/') ||
                                       _profile!.profilePicture!
                                           .startsWith('file://')) {
-                                    print(
-                                      'MyProfile: Loading local file: ${_profile!.profilePicture!}',
-                                    );
                                     return Image.file(
                                       File(_profile!.profilePicture!),
                                       width: 150,
@@ -269,9 +218,6 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
                                       fit: BoxFit.cover,
                                       errorBuilder:
                                           (context, error, stackTrace) {
-                                        print(
-                                          'MyProfile: Local image load error: $error',
-                                        );
                                         return Icon(
                                           Icons.person,
                                           size: 150,
@@ -280,9 +226,6 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
                                       },
                                     );
                                   } else {
-                                    print(
-                                      'MyProfile: Loading network image: ${_profile!.profilePicture!}',
-                                    );
                                     return Image.network(
                                       _profile!.profilePicture!,
                                       width: 150,
@@ -290,9 +233,6 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
                                       fit: BoxFit.cover,
                                       errorBuilder:
                                           (context, error, stackTrace) {
-                                        print(
-                                          'MyProfile: Network image load error: $error',
-                                        );
                                         return Icon(
                                           Icons.person,
                                           size: 150,

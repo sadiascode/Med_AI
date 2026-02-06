@@ -48,18 +48,18 @@ class ProfileService {
     try {
       final profileData = profile.toJson();
       print('Sending to API: $profileData');
-
       final response = await http.put(
-        Uri.parse(Urls.profile),
+        Uri.parse(Urls.update_profile),
         headers: _getAuthHeaders(),
-        body: json.encode(profileData),
+        body: jsonEncode(profileData),
       );
 
-      print('Profile update response status: ${response.statusCode}');
-      print('Profile update response body: ${response.body}');
+      print('Update profile response status: ${response.statusCode}');
+      print('Update profile response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
+        print('Profile updated successfully: $data');
         return ProfileModel.fromJson(data);
       } else {
         throw Exception('Failed to update profile: ${response.statusCode}');
@@ -67,6 +67,16 @@ class ProfileService {
     } catch (e) {
       throw Exception('Error updating profile: $e');
     }
+  }
+
+  static Future<String?> getLocalImagePath() async {
+    return box.read('profile_image_path');
+  }
+
+  static Future<void> signOut() async {
+    await box.remove('access_token');
+    await box.remove('refresh_token');
+    print('User signed out successfully');
   }
 
   static Future<String> uploadProfilePicture(String imagePath) async {
