@@ -1,7 +1,8 @@
 import 'package:care_agent/common/custom_button.dart';
 import 'package:care_agent/features/auth/ui/screen/set_password.dart';
 import 'package:care_agent/features/auth/ui/screen/signin_screen.dart';
-import 'package:care_agent/features/auth/data/forget_model.dart';
+import 'package:care_agent/features/auth/data/verify_model.dart';
+import 'package:care_agent/features/auth/data/set_password_model.dart';
 import 'package:care_agent/app/urls.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -21,7 +22,127 @@ class VerifyScreen extends StatefulWidget {
 
 class _VerifyScreenState extends State<VerifyScreen> {
   final TextEditingController otpController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
   bool isLoading = false;
+
+  Future<void> _resetPassword() async {
+    // Field validations
+    if (newPasswordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter new password'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (confirmPasswordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please confirm your password'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (newPasswordController.text != confirmPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Passwords do not match'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (newPasswordController.text.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Password must be at least 6 characters'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final resetData = SetPasswordModel(
+      email: widget.email,
+      newPassword: newPasswordController.text.trim(),
+      confirmPassword: confirmPasswordController.text.trim(),
+    );
+
+    try {
+      final response = await http.post(
+        Uri.parse(Urls.reset_password),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(resetData.toJson()),
+      );
+
+      print('Reset Password Response status: ${response.statusCode}');
+      print('Reset Password Response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Password reset successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SuccessfulScreen()),
+        );
+      } else {
+        String errorMessage = 'Password reset failed';
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['message'] != null) {
+            errorMessage = errorData['message'];
+          } else if (errorData['new_password'] != null) {
+            errorMessage = errorData['new_password'];
+          } else if (errorData['confirm_password'] != null) {
+            errorMessage = errorData['confirm_password'];
+          } else if (errorData['email'] != null) {
+            errorMessage = errorData['email'];
+          } else if (errorData['detail'] != null) {
+            errorMessage = errorData['detail'];
+          } else if (errorData['error'] != null) {
+            errorMessage = errorData['error'];
+          }
+        } catch (e) {
+          errorMessage = response.body.isNotEmpty ? response.body : 'Something went wrong';
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Reset Password Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Network error. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   Future<void> _verifyOTP() async {
     if (otpController.text.length != 6) {
@@ -38,7 +159,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
       isLoading = true;
     });
 
-    final verifyData = ForgetModel(
+    final verifyData = VerifyModel(
       email: widget.email,
       otp: otpController.text.trim(),
       purpose: 'password_reset',
