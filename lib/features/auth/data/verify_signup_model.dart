@@ -1,8 +1,8 @@
-class SignupReotpModel {
+class VerifySignupModel {
   final String email;
   final String purpose;
 
-  SignupReotpModel({
+  VerifySignupModel({
     required this.email,
     this.purpose = 'signup',
   });
@@ -14,8 +14,8 @@ class SignupReotpModel {
     };
   }
 
-  factory SignupReotpModel.fromJson(Map<String, dynamic> json) {
-    return SignupReotpModel(
+  factory VerifySignupModel.fromJson(Map<String, dynamic> json) {
+    return VerifySignupModel(
       email: json['email'],
       purpose: json['purpose'] ?? 'signup',
     );

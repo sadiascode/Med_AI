@@ -1,5 +1,6 @@
 import 'package:care_agent/common/custom_button.dart';
 import 'package:care_agent/features/auth/data/signup_otp_model.dart';
+import 'package:care_agent/features/auth/data/verify_signup_model.dart';
 import 'package:care_agent/features/auth/ui/screen/set_password.dart';
 import 'package:care_agent/features/auth/ui/screen/signin_screen.dart';
 import 'package:care_agent/app/urls.dart';
@@ -22,6 +23,73 @@ class VerifyForsignup extends StatefulWidget {
 class _VerifyForsignupState extends State<VerifyForsignup> {
   final TextEditingController otpController = TextEditingController();
   bool isLoading = false;
+
+  Future<void> _resendOTP() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final resendData = VerifySignupModel(
+      email: widget.email,
+    );
+
+    try {
+      final response = await http.post(
+        Uri.parse(Urls.resend_otp),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(resendData.toJson()),
+      );
+
+      print('Resend OTP Response status: ${response.statusCode}');
+      print('Resend OTP Response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('OTP resent successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        String errorMessage = 'Failed to resend OTP';
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['message'] != null) {
+            errorMessage = errorData['message'];
+          } else if (errorData['email'] != null) {
+            errorMessage = errorData['email'];
+          } else if (errorData['detail'] != null) {
+            errorMessage = errorData['detail'];
+          } else if (errorData['error'] != null) {
+            errorMessage = errorData['error'];
+          }
+        } catch (e) {
+          errorMessage = response.body.isNotEmpty ? response.body : 'Something went wrong';
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Resend OTP Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Network error. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   Future<void> _verifyOTP() async {
     if (otpController.text.length != 6) {
@@ -177,24 +245,27 @@ class _VerifyForsignupState extends State<VerifyForsignup> {
                   SizedBox(height: 20),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          "Resend OTP",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w500,
+                    child: GestureDetector(
+                      onTap: _resendOTP,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            "Resend OTP",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 2),
-                        Container(
-                          width: 83,
-                          height: 1,
-                          color: Colors.black54,
-                        ),
-                      ],
+                          SizedBox(height: 2),
+                          Container(
+                            width: 83,
+                            height: 1,
+                            color: Colors.blue,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 35),

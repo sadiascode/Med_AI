@@ -3,6 +3,7 @@ import 'package:care_agent/features/auth/ui/screen/set_password.dart';
 import 'package:care_agent/features/auth/ui/screen/signin_screen.dart';
 import 'package:care_agent/features/auth/data/verify_model.dart';
 import 'package:care_agent/features/auth/data/set_password_model.dart';
+import 'package:care_agent/features/auth/data/verify_screen_model.dart';
 import 'package:care_agent/app/urls.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -25,6 +26,72 @@ class _VerifyScreenState extends State<VerifyScreen> {
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   bool isLoading = false;
+
+  Future<void> _resendOTP() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final resendData = VerifyScreenModel(
+      email: widget.email,
+    );
+
+    try {
+      final response = await http.post(
+        Uri.parse(Urls.resend_otp),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(resendData.toJson()),
+      );
+
+      print('Resend OTP Response status: ${response.statusCode}');
+      print('Resend OTP Response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('OTP resent successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } else {
+        String errorMessage = 'Failed to resend OTP';
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['message'] != null) {
+            errorMessage = errorData['message'];
+          } else if (errorData['email'] != null) {
+            errorMessage = errorData['email'];
+          } else if (errorData['detail'] != null) {
+            errorMessage = errorData['detail'];
+          } else if (errorData['error'] != null) {
+            errorMessage = errorData['error'];
+          }
+        } catch (e) {
+          errorMessage = response.body.isNotEmpty ? response.body : 'Something went wrong';
+        }
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      print('Resend OTP Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Network error. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+  }}
 
   Future<void> _resetPassword() async {
     // Field validations
@@ -294,12 +361,15 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          "Resend OTP",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w500,
+                        GestureDetector(
+                          onTap: _resendOTP,
+                          child: Text(
+                            "Resend OTP",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                         SizedBox(height: 2),
