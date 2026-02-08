@@ -22,10 +22,14 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
   // Text editing controllers for add doctor dialog
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _sexController = TextEditingController();
   final TextEditingController _specializationController = TextEditingController();
   final TextEditingController _hospitalNameController = TextEditingController();
   final TextEditingController _designationController = TextEditingController();
+  
+  // Sex dropdown
+  String? _selectedSex;
+  final List<String> _sexOptions = ['male', 'female', 'other'];
+  
   bool _isAddingDoctor = false;
 
   @override
@@ -46,6 +50,20 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
         error = e.toString();
         isLoading = false;
       });
+    }
+  }
+
+  // Map UI values to API-compatible lowercase values
+  String _mapSexToApiValue(String? uiValue) {
+    switch (uiValue?.toLowerCase()) {
+      case 'male':
+        return 'male';
+      case 'female':
+        return 'female';
+      case 'other':
+        return 'other';
+      default:
+        return uiValue?.toLowerCase() ?? 'other';
     }
   }
 
@@ -71,7 +89,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
       return;
     }
 
-    if (_sexController.text.trim().isEmpty) {
+    if (_selectedSex == null || _selectedSex!.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Please select sex'),
@@ -118,7 +136,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
     try {
       await DoctorApiService.addDoctor(
         name: _nameController.text.trim(),
-        sex: _sexController.text.trim(),
+        sex: _mapSexToApiValue(_selectedSex),
         specialization: _specializationController.text.trim(),
         hospitalName: _hospitalNameController.text.trim(),
         designation: _designationController.text.trim(),
@@ -128,10 +146,10 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
       // Clear controllers
       _nameController.clear();
       _emailController.clear();
-      _sexController.clear();
       _specializationController.clear();
       _hospitalNameController.clear();
       _designationController.clear();
+      _selectedSex = null;
 
       // Close dialog
       Navigator.pop(context);
@@ -189,7 +207,13 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
                 CustomEdit(
                   title: "Sex",
                   hintText: "Select sex",
-                  controller: _sexController,
+                  dropdownItems: _sexOptions,
+                  selectedValue: _selectedSex,
+                  onDropdownChanged: (String? value) {
+                    setState(() {
+                      _selectedSex = value;
+                    });
+                  },
                 ),
                 const SizedBox(height: 10),
                 CustomEdit(
