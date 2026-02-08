@@ -364,9 +364,10 @@ class _EditScreenState extends State<EditScreen> {
                       _profile!.profilePicture!,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return Image.network(
-                          'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200',
-                          fit: BoxFit.cover,
+                        return Icon(
+                          Icons.person,
+                          size: 150,
+                          color: Colors.grey,
                         );
                       },
                     )
