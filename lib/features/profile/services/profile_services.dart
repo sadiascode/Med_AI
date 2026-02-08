@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:get_storage/get_storage.dart';
-import '../models/profile_model.dart';
+import 'package:http/http.dart' as http;
 import '../../../app/urls.dart';
+import '../models/profile_model.dart';
 
 class ProfileService {
   static final box = GetStorage();

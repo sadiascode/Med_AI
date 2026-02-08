@@ -283,7 +283,6 @@ class _ViewScreenState extends State<ViewScreen> {
                   'No prescriptions available',
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
-              const SizedBox(height: 20),
             ],
           ),
         ),

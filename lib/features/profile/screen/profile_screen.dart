@@ -289,6 +289,11 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               CustomEdit(
+                                title: "Current Password",
+                                hintText: "**************",
+                              ),
+                              const SizedBox(height: 10),
+                              CustomEdit(
                                 title: "New Password",
                                 hintText: "**************",
                               ),
