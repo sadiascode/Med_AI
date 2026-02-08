@@ -5,15 +5,46 @@ import '../../../common/app_shell.dart';
 import '../../profile/screen/prescription_screen.dart';
 import '../../profile/widget/custom_prescriptions.dart';
 import '../widget/custom_doctext.dart';
+import '../models/doctor_model.dart';
+import '../services/doctor_api_service.dart';
 
 class ViewScreen extends StatefulWidget {
-  const ViewScreen({super.key});
+  final int doctorId;
+
+  const ViewScreen({super.key, required this.doctorId});
 
   @override
   State<ViewScreen> createState() => _ViewScreenState();
 }
 
 class _ViewScreenState extends State<ViewScreen> {
+  DoctorModel? doctor;
+  bool isLoading = true;
+  String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDoctor();
+  }
+
+  Future<void> _fetchDoctor() async {
+    try {
+      final doctorData = await DoctorApiService.getSingleDoctor(
+        widget.doctorId,
+      );
+      setState(() {
+        doctor = doctorData;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -29,7 +60,11 @@ class _ViewScreenState extends State<ViewScreen> {
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: const Icon(Icons.arrow_back_ios, color: Color(0xffE0712D), size: 18),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: Color(0xffE0712D),
+            size: 18,
+          ),
         ),
         title: const Text(
           "Doctor",
@@ -40,27 +75,54 @@ class _ViewScreenState extends State<ViewScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : error != null
+          ? Center(
+        child: Text(
+          'Error: $error',
+          style: const TextStyle(color: Colors.red),
+        ),
+      )
+          : doctor == null
+          ? const Center(
+        child: Text(
+          'Doctor not found',
+          style: TextStyle(fontSize: 16, color: Colors.grey),
+        ),
+      )
+          : SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               Column(
                 children: [
-                  Icon(Icons.person,size: 150,color: Colors.grey[600],)
+                  Icon(Icons.person, size: 150, color: Colors.grey[600]),
                 ],
               ),
-              const Text(
-                "Dr. Shakil Mirja",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xffE0712D)),
+              Text(
+                doctor!.name,
+                style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xffE0712D),
+                ),
               ),
-              const Text(
-                "Cardiologist",
-                style: TextStyle(fontSize: 16, color: Color(0xff646464)),
+              Text(
+                doctor!.specialization,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xff646464),
+                ),
               ),
-              const Text(
-                "LABAID Hospital",
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.black),
+              Text(
+                doctor!.hospitalName,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
               const SizedBox(height: 20),
               const Padding(
@@ -117,35 +179,39 @@ class _ViewScreenState extends State<ViewScreen> {
                 ),
               ),
               const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      SizedBox(width: 5),
-                      SvgPicture.asset(
-                        'assets/su.svg',
-                        height: 20,
-                        width:20,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        'Suggestions from your doctor',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
-                    ],
+              Row(
+                children: [
+                  const SizedBox(width: 5),
+                  SvgPicture.asset(
+                    'assets/su.svg',
+                    height: 20,
+                    width: 20,
                   ),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Suggestions from your doctor',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 10),
               const CustomDoctext(),
               const SizedBox(height: 20),
               Row(
                 children: [
-                  Icon(Icons.add, color: Color(0xFFE0712D), size: 20),
-                  SizedBox(width: 5),
+                  const Icon(
+                    Icons.add,
+                    color: Color(0xFFE0712D),
+                    size: 20,
+                  ),
+                  const SizedBox(width: 5),
                   Text(
                     'Add Notes',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Color(0xFFE0712D),
                       fontWeight: FontWeight.w500,
@@ -163,7 +229,7 @@ class _ViewScreenState extends State<ViewScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: Color(0xffE0712D),
+                    color: const Color(0xffE0712D),
                     width: 1,
                   ),
                 ),
@@ -171,45 +237,52 @@ class _ViewScreenState extends State<ViewScreen> {
                   maxLines: null,
                   expands: true,
                   keyboardType: TextInputType.multiline,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                   ),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Type your notes here...',
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-              CustomMedium(text: "Prescriptions from this doctor", onTap: () {}),
-              const SizedBox(height: 15),
-              CustomPrescriptions(
-                prescriptionName: 'Prescriptin-1',
-                date: '01/05/25',
-                onDownload: () {},
-                onShow: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const PrescriptionScreen()),
-                  );
-                },
-                onDelete: () {},
+              CustomMedium(
+                text: "Prescriptions from this doctor",
+                onTap: () {},
               ),
               const SizedBox(height: 15),
-              CustomPrescriptions(
-                prescriptionName: 'Prescriptin-1',
-                date: '01/05/25',
-                onDownload: () {},
-                onShow: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const PrescriptionScreen()),
+              if (doctor!.prescriptions.isNotEmpty)
+                ...doctor!.prescriptions.map((prescriptionId) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: CustomPrescriptions(
+                      prescriptionName: 'Prescription-$prescriptionId',
+                      date: '01/05/25',
+                      onDownload: () {},
+                      onShow: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                            const PrescriptionScreen(),
+                          ),
+                        );
+                      },
+                      onDelete: () {},
+                    ),
                   );
-                },
-                onDelete: () {},
-              ),
+                }).toList()
+              else
+                const Text(
+                  'No prescriptions available',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
               const SizedBox(height: 20),
             ],
           ),

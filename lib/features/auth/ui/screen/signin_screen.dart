@@ -138,100 +138,102 @@ class _SigninScreenState extends State<SigninScreen> {
         svgPath: 'assets/logo.svg',
         svgHeight: screenHeight * 0.16,
         svgWidth: screenWidth * 0.30,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(
-              child: Text(
-                "Welcome to Med AI",
-                style: TextStyle(fontSize: 24),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Center(
+                child: Text(
+                  "Welcome to Med AI",
+                  style: TextStyle(fontSize: 24),
+                ),
               ),
-            ),
-            const SizedBox(height: 15),
-            CustomField(
-              hintText: "Email",
-              borderColor: const Color(0xffE0712D),
-              controller: emailController,
-            ),
-            const SizedBox(height: 17),
-            CustomField(
-              hintText: "Password",
-              borderColor: const Color(0xffE0712D),
-              isPassword: true,
-              controller: passwordController,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Checkbox(
-                      value: rememberMe,
-                      onChanged: (value) {
-                        setState(() {
-                          rememberMe = value ?? false;
-                        });
-                      },
+              const SizedBox(height: 15),
+              CustomField(
+                hintText: "Email",
+                borderColor: const Color(0xffE0712D),
+                controller: emailController,
+              ),
+              const SizedBox(height: 17),
+              CustomField(
+                hintText: "Password",
+                borderColor: const Color(0xffE0712D),
+                isPassword: true,
+                controller: passwordController,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: rememberMe,
+                        onChanged: (value) {
+                          setState(() {
+                            rememberMe = value ?? false;
+                          });
+                        },
+                      ),
+                      const Text("Remember Me", style: TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ForgetScreen()),
+                      );
+                    },
+                    child: const Text(
+                      "Forgot Password?",
+                      style: TextStyle(fontSize: 14, color: Color(0xff333333)),
                     ),
-                    const Text("Remember Me", style: TextStyle(fontSize: 14)),
-                  ],
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ForgetScreen()),
-                    );
-                  },
-                  child: const Text(
-                    "Forgot Password?",
-                    style: TextStyle(fontSize: 14, color: Color(0xff333333)),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 15),
-             CustomButton(
-              text: "Sign In",
-              onTap: _signinUser,
-              isLoading: isLoading,
-            ),
-            SizedBox(height: screenHeight * 0.02),
-            const CustomGoogle(
-                text: "Sign in with Google", svgPath: "assets/google.svg"),
-            SizedBox(height: screenHeight * 0.011),
-            const CustomGoogle(
-                text: "Sign in with Apple", svgPath: "assets/apple.svg"),
-            SizedBox(height: screenHeight * 0.020),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Don't have an account? ",
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey[700],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const SignupScreen()),
-                    );
-                  },
-                  child: const Text(
-                    "Sign up",
+                ],
+              ),
+              const SizedBox(height: 15),
+               CustomButton(
+                text: "Sign In",
+                onTap: _signinUser,
+                isLoading: isLoading,
+              ),
+              SizedBox(height: screenHeight * 0.02),
+              const CustomGoogle(
+                  text: "Sign in with Google", svgPath: "assets/google.svg"),
+              SizedBox(height: screenHeight * 0.011),
+              const CustomGoogle(
+                  text: "Sign in with Apple", svgPath: "assets/apple.svg"),
+              SizedBox(height: screenHeight * 0.020),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't have an account? ",
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFFE0712D),
+                      color: Colors.grey[700],
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SignupScreen()),
+                      );
+                    },
+                    child: const Text(
+                      "Sign up",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFFE0712D),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

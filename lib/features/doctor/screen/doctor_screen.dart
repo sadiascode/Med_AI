@@ -3,11 +3,243 @@ import 'package:care_agent/features/medicine/widget/custom_search.dart';
 import 'package:care_agent/features/profile/widget/custom_edit.dart';
 import 'package:flutter/material.dart';
 import '../../../common/app_shell.dart';
+import '../models/doctor_list_model.dart';
 import '../widget/custom_doctor.dart';
+import '../services/doctor_api_service.dart';
 
-
-class DoctorScreenContent extends StatelessWidget {
+class DoctorScreenContent extends StatefulWidget {
   const DoctorScreenContent({super.key});
+
+  @override
+  State<DoctorScreenContent> createState() => _DoctorScreenContentState();
+}
+
+class _DoctorScreenContentState extends State<DoctorScreenContent> {
+  List<DoctorListModel> doctors = [];
+  bool isLoading = true;
+  String? error;
+
+  // Text editing controllers for add doctor dialog
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _sexController = TextEditingController();
+  final TextEditingController _specializationController = TextEditingController();
+  final TextEditingController _hospitalNameController = TextEditingController();
+  final TextEditingController _designationController = TextEditingController();
+  bool _isAddingDoctor = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDoctors();
+  }
+
+  Future<void> _fetchDoctors() async {
+    try {
+      final doctorList = await DoctorApiService.getDoctorList();
+      setState(() {
+        doctors = doctorList;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _addDoctor() async {
+    // Validate fields
+    if (_nameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter doctor name'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (_emailController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter email address'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (_sexController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please select sex'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (_specializationController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter specialization'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (_hospitalNameController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter hospital name'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (_designationController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter designation'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isAddingDoctor = true;
+    });
+
+    try {
+      await DoctorApiService.addDoctor(
+        name: _nameController.text.trim(),
+        sex: _sexController.text.trim(),
+        specialization: _specializationController.text.trim(),
+        hospitalName: _hospitalNameController.text.trim(),
+        designation: _designationController.text.trim(),
+        doctorEmail: _emailController.text.trim(),
+      );
+
+      // Clear controllers
+      _nameController.clear();
+      _emailController.clear();
+      _sexController.clear();
+      _specializationController.clear();
+      _hospitalNameController.clear();
+      _designationController.clear();
+
+      // Close dialog
+      Navigator.pop(context);
+
+      // Refresh doctor list
+      await _fetchDoctors();
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Doctor added successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to add doctor: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isAddingDoctor = false;
+      });
+    }
+  }
+
+  void _showAddDoctorDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: const Color(0xFFFFFAF7),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CustomEdit(
+                  title: "Doctor Name",
+                  hintText: "doctor name here",
+                  controller: _nameController,
+                ),
+                const SizedBox(height: 10),
+                CustomEdit(
+                  title: "Email",
+                  hintText: "Email address",
+                  controller: _emailController,
+                ),
+                const SizedBox(height: 10),
+                CustomEdit(
+                  title: "Sex",
+                  hintText: "Select sex",
+                  controller: _sexController,
+                ),
+                const SizedBox(height: 10),
+                CustomEdit(
+                  title: "Specialization",
+                  hintText: "specialization",
+                  controller: _specializationController,
+                ),
+                const SizedBox(height: 10),
+                CustomEdit(
+                  title: "Hospital name",
+                  hintText: "Please enter hospital name",
+                  controller: _hospitalNameController,
+                ),
+                const SizedBox(height: 10),
+                CustomEdit(
+                  title: "Designation",
+                  hintText: "Please enter designation",
+                  controller: _designationController,
+                ),
+                const SizedBox(height: 15),
+                ElevatedButton(
+                  onPressed: _isAddingDoctor ? null : _addDoctor,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xffE0712D),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 70,
+                      vertical: 11,
+                    ),
+                  ),
+                  child: _isAddingDoctor
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : const Text(
+                          'Confirm',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +259,16 @@ class DoctorScreenContent extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : error != null
+          ? Center(
+        child: Text(
+          'Error: $error',
+          style: const TextStyle(color: Colors.red),
+        ),
+      )
+          : SingleChildScrollView(
         child: Column(
           children: [
             const CustomSearch(),
@@ -37,57 +278,7 @@ class DoctorScreenContent extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          backgroundColor: const Color(0xFFFFFAF7),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          content: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CustomEdit(
-                                  title: "Doctor Name",
-                                  hintText: "Type doctor name here ",
-                                ),
-                                const SizedBox(height: 10),
-                                CustomEdit(
-                                  title: "Sex",
-                                  hintText: "Select sex",
-                                ),
-                                const SizedBox(height: 10),
-                                CustomEdit(
-                                  title: "Specialization",
-                                  hintText: "Type your pharmacy address",
-                                ),
-                                const SizedBox(height: 10),
-                                CustomEdit(
-                                  title: "Hospital name",
-                                  hintText: "Please enter the website URL",
-                                ),
-                                const SizedBox(height: 15),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xffE0712D),
-                                    padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 11),
-                                  ),
-                                  child: const Text('Confirm',style: TextStyle(color: Colors.white,),),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+                  onTap: _showAddDoctorDialog,
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -110,38 +301,45 @@ class DoctorScreenContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'Most recent',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+            if (doctors.isNotEmpty) ...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'Most recent',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    children: [
-                      CustomDoctor(
-                        doctorName: 'Dr. Shakil Mirja',
-                        specialization: 'Cardiologist',
-                        hospital: 'Evercare Hospital',
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ViewScreen()),
-                          );
-                        },
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Column(
+                      children: [
+                        CustomDoctor(
+                          doctorName: doctors[0].name,
+                          specialization: doctors[0].specialization,
+                          hospital: doctors[0].hospitalName,
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ViewScreen(doctorId: doctors[0].id),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
+              ),
+              if (doctors.length > 1) ...[
                 const SizedBox(height: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,35 +358,31 @@ class DoctorScreenContent extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(15),
                       child: Column(
-                        children: [
-                          CustomDoctor(
-                            doctorName: 'Dr. Shakil Mirja',
-                            specialization: 'Cardiologist',
-                            hospital: 'Evercare Hospital',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const ViewScreen()),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          CustomDoctor(
-                            doctorName: 'Dr. Shakil Mirja',
-                            specialization: 'Cardiologist',
-                            hospital: 'Evercare Hospital',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const ViewScreen()),
-                              );
-                            },
-                          ),
-                        ],
+                        children: doctors.skip(1).take(2).map((doctor) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: CustomDoctor(
+                              doctorName: doctor.name,
+                              specialization: doctor.specialization,
+                              hospital: doctor.hospitalName,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ViewScreen(doctorId: doctor.id),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
                 ),
+              ],
+              if (doctors.length > 3) ...[
                 const SizedBox(height: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -207,61 +401,38 @@ class DoctorScreenContent extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(15),
                       child: Column(
-                        children: [
-                          CustomDoctor(
-                            doctorName: 'Dr. Shakil Mirja',
-                            specialization: 'Cardiologist',
-                            hospital: 'Evercare Hospital',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const ViewScreen()),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          CustomDoctor(
-                            doctorName: 'Dr. Shakil Mirja',
-                            specialization: 'Cardiologist',
-                            hospital: 'Evercare Hospital',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const ViewScreen()),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          CustomDoctor(
-                            doctorName: 'Dr. Shakil Mirja',
-                            specialization: 'Cardiologist',
-                            hospital: 'Evercare Hospital',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const ViewScreen()),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          CustomDoctor(
-                            doctorName: 'Dr. Shakil Mirja',
-                            specialization: 'Cardiologist',
-                            hospital: 'Evercare Hospital',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const ViewScreen()),
-                              );
-                            },
-                          ),
-                        ],
+                        children: doctors.skip(3).map((doctor) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: CustomDoctor(
+                              doctorName: doctor.name,
+                              specialization: doctor.specialization,
+                              hospital: doctor.hospitalName,
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ViewScreen(doctorId: doctor.id),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ),
                   ],
                 ),
               ],
-            ),
+            ] else ...[
+              const Center(
+                child: Text(
+                  'No doctors found',
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
+                ),
+              ),
+            ],
           ],
         ),
       ),

@@ -36,7 +36,7 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
       print('Profile loaded: ${profile.fullName}');
       print('Profile picture URL from API: ${profile.profilePicture}');
 
-      // Check for locally stored image path since API doesn't support profile pictures
+
       final localImagePath = await ProfileService.getLocalImagePath();
       print('Local image path: $localImagePath');
 
@@ -289,17 +289,12 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               CustomEdit(
-                                title: "Current password",
-                                hintText: "Admin User",
-                              ),
-                              const SizedBox(height: 10),
-                              CustomEdit(
                                 title: "New Password",
                                 hintText: "**************",
                               ),
                               const SizedBox(height: 10),
                               CustomEdit(
-                                title: "Confirm Password",
+                                title: "Retype New Password",
                                 hintText: "**************",
                               ),
                               const SizedBox(height: 15),
@@ -368,7 +363,89 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
               CustomNew(text: "Terms and Conditions"),
               SizedBox(height: 10),
 
-              CustomNew(text: "Deactivate"),
+              CustomNew(text: "Delete Account",onTap: (){
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return Dialog(
+                      backgroundColor: Color(0xffFFFAF7),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      insetPadding: const EdgeInsets.symmetric(
+                        horizontal: 35,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Confirm Delete Account",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              "Are you sure you want to delete your account?",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                height: 1.4,
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text(
+                                    "Cancel",
+                                    style: TextStyle(
+                                      color: Colors.blue,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                TextButton(
+                                  onPressed: () async {
+                                    // Clear stored tokens on sign out
+                                    await ProfileService.signOut();
+
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                        const SigninScreen(),
+                                      ),
+                                          (route) => false,
+                                    );
+                                  },
+                                  child: const Text(
+                                    "Delete",
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+                );
+              },),
               SizedBox(height: 10),
 
               SizedBox(height: 35),

@@ -1,10 +1,9 @@
 class Urls {
-  static const String baseUrl = "https://medicalai.pythonanywhere.com";
-
+  static const String baseUrl = "https://test15.fireai.agency";
 
   // Signup
   static const String Signup = "$baseUrl/users/signup/";
-  
+
   // verify otp for signup and forgot
   static const String signup_verifyotp = "$baseUrl/users/otp/verify/";
 
@@ -23,9 +22,20 @@ class Urls {
   // login
   static const String User_signin = "$baseUrl/users/login/";
 
-
-// profile
+  // profile
   static const String profile = "$baseUrl/users/profile/";
   static const String update_profile = "$baseUrl/users/profile/";
+
+  // All Doctor list
+  static const String Doctor_list = "$baseUrl/doctors/profile/";
+
+  // Single Doctor
+  static String singleDoctor(int id) {
+    return "$baseUrl/doctors/profile/$id/";
+  }
+
+  // Add doctor
+  static const String Add_doctor = "$baseUrl/doctors/profile/";
+
 
 }
