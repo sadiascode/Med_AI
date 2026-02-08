@@ -24,6 +24,7 @@ class Urls {
 
   // profile
   static const String profile = "$baseUrl/users/profile/";
+
   static const String update_profile = "$baseUrl/users/profile/";
 
   // All Doctor list
