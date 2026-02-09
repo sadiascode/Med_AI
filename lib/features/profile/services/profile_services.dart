@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import '../../../app/urls.dart';
-import '../models/profile_model.dart';
+import '../data/profile_model.dart';
+import '../data/delete_account_request_model.dart';
+import '../data/change_password_model.dart';
 
 class ProfileService {
   static final box = GetStorage();
@@ -113,6 +115,73 @@ class ProfileService {
       }
     } catch (e) {
       throw Exception('Error uploading profile picture: $e');
+    }
+  }
+
+  static Future<bool> deleteAccount(String password) async {
+    try {
+      final deleteRequest = DeleteAccountRequestModel(password: password);
+      
+      final response = await http.post(
+        Uri.parse(Urls.Delete_Account),
+        headers: _getAuthHeaders(),
+        body: jsonEncode(deleteRequest.toJson()),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return true;
+      } else {
+        throw Exception('Failed to delete account');
+      }
+    } catch (e) {
+      throw Exception('Network error: $e');
+    }
+  }
+
+  static Future<bool> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    try {
+      final changeRequest = ChangePasswordModel(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword,
+      );
+      
+      final response = await http.post(
+        Uri.parse(Urls.Change_Password),
+        headers: _getAuthHeaders(),
+        body: jsonEncode(changeRequest.toJson()),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return true;
+      } else {
+        String errorMessage = 'Failed to change password';
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['message'] != null) {
+            errorMessage = errorData['message'];
+          } else if (errorData['current_password'] != null) {
+            errorMessage = errorData['current_password'];
+          } else if (errorData['new_password'] != null) {
+            errorMessage = errorData['new_password'];
+          } else if (errorData['confirm_password'] != null) {
+            errorMessage = errorData['confirm_password'];
+          } else if (errorData['detail'] != null) {
+            errorMessage = errorData['detail'];
+          } else if (errorData['error'] != null) {
+            errorMessage = errorData['error'];
+          }
+        } catch (e) {
+          errorMessage = response.body.isNotEmpty ? response.body : 'Something went wrong';
+        }
+        throw Exception(errorMessage);
+      }
+    } catch (e) {
+      throw Exception('Network error: $e');
     }
   }
 }

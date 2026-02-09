@@ -43,6 +43,7 @@ class _CustomDetails1State extends State<CustomDetails1> {
       child: Row(
         children: [
           Container(
+            width: 130,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: const BoxDecoration(
               color: Color(0xffE0712D),

@@ -24,8 +24,9 @@ class Urls {
 
   // profile
   static const String profile = "$baseUrl/users/profile/";
-
   static const String update_profile = "$baseUrl/users/profile/";
+  static const String Delete_Account = "$baseUrl/users/account/deactivate/";
+  static const String Change_Password = "$baseUrl/users/password/change/";
 
   // All Doctor list
   static const String Doctor_list = "$baseUrl/doctors/profile/";

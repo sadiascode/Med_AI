@@ -10,7 +10,7 @@ import '../../auth/ui/screen/signin_screen.dart';
 import '../../chat/widget/custom_minibutton.dart';
 import '../services/profile_services.dart';
 import '../widget/custom_edit.dart';
-import '../models/profile_model.dart';
+import '../data/profile_model.dart';
 
 class ProfileScreenContent extends StatefulWidget {
   const ProfileScreenContent({super.key});
@@ -23,6 +23,12 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
   ProfileModel? _profile;
   bool _isLoading = true;
   String? _error;
+  final TextEditingController _deletePasswordController = TextEditingController();
+  
+  // Change Password controllers
+  final TextEditingController _currentPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   void initState() {
@@ -49,14 +55,91 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
       setState(() {
         _profile = updatedProfile;
         _isLoading = false;
-        _error = null;
       });
     } catch (e) {
-      print('Error loading profile: $e');
       setState(() {
-        _isLoading = false;
         _error = e.toString();
+        _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _changePassword() async {
+    final currentPassword = _currentPasswordController.text.trim();
+    final newPassword = _newPasswordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    // Validation
+    if (currentPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter your current password'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (newPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter your new password'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please confirm your new password'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    if (newPassword != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('New password and confirm password do not match'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    try {
+      final success = await ProfileService.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword,
+      );
+
+      if (success) {
+        // Clear controllers
+        _currentPasswordController.clear();
+        _newPasswordController.clear();
+        _confirmPasswordController.clear();
+
+        // Close dialog
+        Navigator.of(context).pop();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Password changed successfully'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to change password: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -291,16 +374,19 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                               CustomEdit(
                                 title: "Current Password",
                                 hintText: "**************",
+                                controller: _currentPasswordController,
                               ),
                               const SizedBox(height: 10),
                               CustomEdit(
                                 title: "New Password",
                                 hintText: "**************",
+                                controller: _newPasswordController,
                               ),
                               const SizedBox(height: 10),
                               CustomEdit(
                                 title: "Retype New Password",
                                 hintText: "**************",
+                                controller: _confirmPasswordController,
                               ),
                               const SizedBox(height: 15),
                             ],
@@ -313,9 +399,7 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                               CustomMinibutton(
                                 text: 'Yes',
                                 textcolor: Colors.white,
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
+                                onTap: _changePassword,
                                 backgroundColor: const Color(0xFFE0712D),
                               ),
                               const SizedBox(width: 7),
@@ -403,7 +487,13 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                                 height: 1.4,
                               ),
                             ),
-                            const SizedBox(height: 24),
+                            const SizedBox(height: 10),
+                            CustomEdit(
+                              title: "Current Password",
+                              hintText: "**************",
+                              controller: _deletePasswordController,
+                            ),
+                            const SizedBox(height: 15),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -422,23 +512,54 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                                 const SizedBox(width: 12),
                                 TextButton(
                                   onPressed: () async {
-                                    // Clear stored tokens on sign out
-                                    await ProfileService.signOut();
+                                    final password = _deletePasswordController.text.trim();
+                                    
+                                    if (password.isEmpty) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Please enter your password'),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                      return;
+                                    }
 
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                        const SigninScreen(),
-                                      ),
+                                    try {
+                                      final success = await ProfileService.deleteAccount(password);
+                                      
+                                      if (success) {
+                                        await ProfileService.signOut();
+                                        
+                                        Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => const SigninScreen(),
+                                          ),
                                           (route) => false,
-                                    );
+                                        );
+                                        
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('Account deleted successfully'),
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        );
+                                      }
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text('Failed to delete account: ${e.toString()}'),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    }
                                   },
                                   child: const Text(
                                     "Delete",
                                     style: TextStyle(
                                       color: Colors.red,
                                       fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
