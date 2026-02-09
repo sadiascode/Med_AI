@@ -1,16 +1,24 @@
 import 'dart:convert';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import '../../../app/urls.dart';
 import '../models/doctor_list_model.dart';
 import '../models/doctor_model.dart';
+
+final box = GetStorage();
+final token = box.read('access_token');
 
 class DoctorApiService {
   static Future<List<DoctorListModel>> getDoctorList() async {
     try {
       final response = await http.get(
         Uri.parse(Urls.Doctor_list),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
       );
+
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonData = json.decode(response.body);
@@ -27,7 +35,8 @@ class DoctorApiService {
     try {
       final response = await http.get(
         Uri.parse(Urls.singleDoctor(id)),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',},
       );
 
       if (response.statusCode == 200) {
