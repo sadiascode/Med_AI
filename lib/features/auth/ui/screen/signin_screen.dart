@@ -1,27 +1,15 @@
 import 'package:flutter/material.dart';
-
 import '../../../../common/custom_button.dart';
-
 import '../widget/custom_field.dart';
-
 import '../widget/custom_screen.dart';
-
 import '../widget/custom_google.dart';
-
 import 'signup_screen.dart';
-
 import 'forget_screen.dart';
-
 import '../../../home/screen/home_screen.dart';
-
 import '../../data/signin_model.dart';
-
 import '../../../../app/urls.dart';
-
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
 import 'package:get_storage/get_storage.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -73,7 +61,7 @@ class _SigninScreenState extends State<SigninScreen> {
         // Parse response and extract access token
         final responseData = jsonDecode(response.body);
         String? accessToken = responseData['access'];
-        
+
         if (accessToken != null && accessToken.isNotEmpty) {
           // Store access token in GetStorage
           final box = GetStorage();
@@ -105,7 +93,7 @@ class _SigninScreenState extends State<SigninScreen> {
         } catch (e) {
           errorMessage = response.body;
         }
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
@@ -192,7 +180,7 @@ class _SigninScreenState extends State<SigninScreen> {
                 ],
               ),
               const SizedBox(height: 15),
-               CustomButton(
+              CustomButton(
                 text: "Sign In",
                 onTap: _signinUser,
                 isLoading: isLoading,

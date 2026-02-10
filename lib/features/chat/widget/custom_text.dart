@@ -38,7 +38,7 @@ class CustomText extends StatelessWidget {
                     decoration: const InputDecoration(
                       hintText: 'Chat with MedAI.....',
                       hintStyle: TextStyle(
-                        color: Color(0xFFFF6B35),
+                        color: Color(0xFFE67E22),
                         fontSize: 15,
                       ),
                       border: InputBorder.none,
@@ -52,7 +52,7 @@ class CustomText extends StatelessWidget {
                   },
                   icon: const Icon(
                     Icons.send,
-                    color: Color(0xFFFF6B35),
+                    color: Color(0xFFE67E22),
                     size: 24,
                   ),
                 ),

@@ -198,9 +198,8 @@ class _ViewScreenState extends State<ViewScreen> {
                   ),
                 ],
               ),
+              CustomDoctext(doctor: doctor),
               const SizedBox(height: 10),
-              const CustomDoctext(),
-              const SizedBox(height: 20),
               Row(
                 children: [
                   const Icon(

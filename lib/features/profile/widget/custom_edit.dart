@@ -60,7 +60,6 @@ class _CustomEditState extends State<CustomEdit> {
           ),
         ),
         const SizedBox(height: 5),
-        // Show dropdown if dropdownItems are provided, otherwise show TextField
         widget.dropdownItems != null
             ? Container(
                 padding: const EdgeInsets.symmetric(horizontal: 17, vertical: 4),

@@ -1,31 +1,36 @@
 import 'package:flutter/material.dart';
+import '../models/doctor_model.dart';
 
 class CustomDoctext extends StatelessWidget {
-  const CustomDoctext({super.key});
+  final DoctorModel? doctor;
+  
+  const CustomDoctext({super.key, this.doctor});
 
   @override
   Widget build(BuildContext context) {
+    // Use real doctor notes if available, otherwise show empty state
+    final notes = doctor?.notes ?? [];
+    
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildDateSection(
-            date: 'Dec 01, 2025',
-            advices: [
-              'Limit Salt Intake To Reduce Blood Pressure',
-              'Avoid Oily, Fried And Highly Processed Foods',
-            ],
-          ),
-          SizedBox(height: 24),
-
-          _buildDateSection(
-            date: 'October 11, 2025',
-            advices: [
-              'Do Light To Moderate Exercise For 20-30 Minutes A Day, Unless Advised Otherwise.',
-              'Stop Exercising Immediately If You Feel Chest Pain, Shortness Of Breath, Or Dizziness',
-            ],
-          ),
+          if (notes.isNotEmpty) ...[
+            ...notes.asMap().entries.map((entry) {
+              final index = entry.key;
+              final note = entry.value;
+              return _buildDateSection(
+                date: 'Note ${index + 1}',
+                advices: [note.note],
+              );
+            }).toList(),
+          ] else ...[
+            _buildDateSection(
+              date: 'No notes available',
+              advices: ['Your doctor has not added any suggestions yet'],
+            ),
+          ],
         ],
       ),
     );
@@ -38,7 +43,6 @@ class CustomDoctext extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-
         Text(
           date,
           style: TextStyle(

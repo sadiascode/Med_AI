@@ -24,7 +24,7 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
   bool _isLoading = true;
   String? _error;
   final TextEditingController _deletePasswordController = TextEditingController();
-  
+
   // Change Password controllers
   final TextEditingController _currentPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
@@ -454,122 +454,122 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
 
               CustomNew(text: "Delete Account",onTap: (){
                 showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Dialog(
-                      backgroundColor: Color(0xffFFFAF7),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      insetPadding: const EdgeInsets.symmetric(
-                        horizontal: 35,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Confirm Delete Account",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        backgroundColor: Color(0xffFFFAF7),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        insetPadding: const EdgeInsets.symmetric(
+                          horizontal: 35,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Confirm Delete Account",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              "Are you sure you want to delete your account?",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15,
-                                height: 1.4,
+                              const SizedBox(height: 16),
+                              const Text(
+                                "Are you sure you want to delete your account?",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 15,
+                                  height: 1.4,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            CustomEdit(
-                              title: "Current Password",
-                              hintText: "**************",
-                              controller: _deletePasswordController,
-                            ),
-                            const SizedBox(height: 15),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text(
-                                    "Cancel",
-                                    style: TextStyle(
-                                      color: Colors.blue,
-                                      fontSize: 16,
+                              const SizedBox(height: 10),
+                              CustomEdit(
+                                title: "Current Password",
+                                hintText: "**************",
+                                controller: _deletePasswordController,
+                              ),
+                              const SizedBox(height: 15),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text(
+                                      "Cancel",
+                                      style: TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(width: 12),
-                                TextButton(
-                                  onPressed: () async {
-                                    final password = _deletePasswordController.text.trim();
-                                    
-                                    if (password.isEmpty) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text('Please enter your password'),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                      return;
-                                    }
+                                  const SizedBox(width: 12),
+                                  TextButton(
+                                    onPressed: () async {
+                                      final password = _deletePasswordController.text.trim();
 
-                                    try {
-                                      final success = await ProfileService.deleteAccount(password);
-                                      
-                                      if (success) {
-                                        await ProfileService.signOut();
-                                        
-                                        Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => const SigninScreen(),
-                                          ),
-                                          (route) => false,
-                                        );
-                                        
+                                      if (password.isEmpty) {
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
-                                            content: Text('Account deleted successfully'),
-                                            backgroundColor: Colors.green,
+                                            content: Text('Please enter your password'),
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                        return;
+                                      }
+
+                                      try {
+                                        final success = await ProfileService.deleteAccount(password);
+
+                                        if (success) {
+                                          await ProfileService.signOut();
+
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => const SigninScreen(),
+                                            ),
+                                                (route) => false,
+                                          );
+
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('Account deleted successfully'),
+                                              backgroundColor: Colors.green,
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('Failed to delete account: ${e.toString()}'),
+                                            backgroundColor: Colors.red,
                                           ),
                                         );
                                       }
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text('Failed to delete account: ${e.toString()}'),
-                                          backgroundColor: Colors.red,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  child: const Text(
-                                    "Delete",
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
+                                    },
+                                    child: const Text(
+                                      "Delete",
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  }
+                      );
+                    }
                 );
               },),
               SizedBox(height: 10),

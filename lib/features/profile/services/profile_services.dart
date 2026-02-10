@@ -80,12 +80,12 @@ class ProfileService {
       // Call logout API first
       final token = box.read('access_token');
       final refreshToken = box.read('refresh_token');
-      
+
       if (token != null && token.isNotEmpty) {
         final logoutData = {
           'refresh': refreshToken ?? '',
         };
-        
+
         final response = await http.post(
           Uri.parse(Urls.Log_Out),
           headers: {
@@ -152,7 +152,7 @@ class ProfileService {
   static Future<bool> deleteAccount(String password) async {
     try {
       final deleteRequest = DeleteAccountRequestModel(password: password);
-      
+
       final response = await http.post(
         Uri.parse(Urls.Delete_Account),
         headers: _getAuthHeaders(),
@@ -180,7 +180,7 @@ class ProfileService {
         newPassword: newPassword,
         confirmPassword: confirmPassword,
       );
-      
+
       final response = await http.post(
         Uri.parse(Urls.Change_Password),
         headers: _getAuthHeaders(),

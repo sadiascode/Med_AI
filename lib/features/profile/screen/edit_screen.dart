@@ -354,24 +354,24 @@ class _EditScreenState extends State<EditScreen> {
                     shape: BoxShape.circle,
                   ),
                   child: ClipOval(
-                    child: _selectedImagePath != null
-                        ? Image.file(
-                      File(_selectedImagePath!),
-                      fit: BoxFit.cover,
-                    )
-                        : _profile?.profilePicture != null
-                        ? Image.network(
-                      _profile!.profilePicture!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.person,
-                          size: 150,
-                          color: Colors.grey,
-                        );
-                      },
-                    )
-                        :Icon(Icons.person,size: 140,color: Colors.grey,)
+                      child: _selectedImagePath != null
+                          ? Image.file(
+                        File(_selectedImagePath!),
+                        fit: BoxFit.cover,
+                      )
+                          : _profile?.profilePicture != null
+                          ? Image.network(
+                        _profile!.profilePicture!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.person,
+                            size: 150,
+                            color: Colors.grey,
+                          );
+                        },
+                      )
+                          :Icon(Icons.person,size: 140,color: Colors.grey,)
                   ),
                 ),
               ),
