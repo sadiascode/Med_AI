@@ -76,9 +76,40 @@ class ProfileService {
   }
 
   static Future<void> signOut() async {
-    await box.remove('access_token');
-    await box.remove('refresh_token');
-    print('User signed out successfully');
+    try {
+      // Call logout API first
+      final token = box.read('access_token');
+      final refreshToken = box.read('refresh_token');
+      
+      if (token != null && token.isNotEmpty) {
+        final logoutData = {
+          'refresh': refreshToken ?? '',
+        };
+        
+        final response = await http.post(
+          Uri.parse(Urls.Log_Out),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(logoutData),
+        );
+
+        print('Logout API Response status: ${response.statusCode}');
+        print('Logout API Response body: ${response.body}');
+      }
+
+      // Clear stored tokens
+      await box.remove('access_token');
+      await box.remove('refresh_token');
+      print('User signed out successfully');
+    } catch (e) {
+      print('Error during logout: $e');
+      // Still clear tokens even if API call fails
+      await box.remove('access_token');
+      await box.remove('refresh_token');
+      throw Exception('Error signing out: $e');
+    }
   }
 
   static Future<String> uploadProfilePicture(String imagePath) async {

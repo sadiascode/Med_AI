@@ -22,6 +22,10 @@ class Urls {
   // login
   static const String User_signin = "$baseUrl/users/login/";
 
+  // Log out
+  static const String Log_Out = "$baseUrl/users/logout/";
+
+
   // profile
   static const String profile = "$baseUrl/users/profile/";
   static const String update_profile = "$baseUrl/users/profile/";
