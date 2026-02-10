@@ -4,7 +4,7 @@ class VerifyScreenModel {
 
   VerifyScreenModel({
     required this.email,
-    this.purpose = 'forgot_passwrd',
+    this.purpose = 'password_reset',
   });
 
   Map<String, dynamic> toJson() {
@@ -17,7 +17,7 @@ class VerifyScreenModel {
   factory VerifyScreenModel.fromJson(Map<String, dynamic> json) {
     return VerifyScreenModel(
       email: json['email'],
-      purpose: json['purpose'] ?? 'forgot_passwrd',
+      purpose: json['purpose'] ?? 'password_reset',
     );
   }
 }

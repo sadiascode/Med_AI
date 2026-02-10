@@ -11,7 +11,7 @@ class Urls {
   static const String forget_password = "$baseUrl/users/otp/request/";
 
   //resend otp for Signup and Forget
-  static const String resend_otp = "$baseUrl/users/otp/resend/";
+  static const String resend_otp = "$baseUrl/users/otp/request/";
 
   //reset password
   static const String reset_password = "$baseUrl/users/password/reset/";

@@ -1,6 +1,5 @@
 import 'package:care_agent/common/custom_button.dart';
 import 'package:care_agent/features/auth/ui/screen/set_password.dart';
-import 'package:care_agent/features/auth/ui/screen/signin_screen.dart';
 import 'package:care_agent/features/auth/data/verify_model.dart';
 import 'package:care_agent/features/auth/data/set_password_model.dart';
 import 'package:care_agent/features/auth/data/verify_screen_model.dart';
@@ -36,6 +35,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
       email: widget.email,
     );
 
+    print('Sending resend OTP data: ${resendData.toJson()}');
+    print('Request body: ${jsonEncode(resendData.toJson())}');
+
     try {
       final response = await http.post(
         Uri.parse(Urls.resend_otp),
@@ -59,6 +61,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
         String errorMessage = 'Failed to resend OTP';
         try {
           final errorData = jsonDecode(response.body);
+          print('Parsed error data: $errorData');
+          
           if (errorData['message'] != null) {
             errorMessage = errorData['message'];
           } else if (errorData['email'] != null) {
@@ -67,8 +71,11 @@ class _VerifyScreenState extends State<VerifyScreen> {
             errorMessage = errorData['detail'];
           } else if (errorData['error'] != null) {
             errorMessage = errorData['error'];
+          } else if (errorData['non_field_errors'] != null) {
+            errorMessage = errorData['non_field_errors'];
           }
         } catch (e) {
+          print('Error parsing response: $e');
           errorMessage = response.body.isNotEmpty ? response.body : 'Something went wrong';
         }
         
@@ -91,7 +98,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
       setState(() {
         isLoading = false;
       });
-  }}
+    }}
 
   Future<void> _resetPassword() async {
     // Field validations
@@ -232,6 +239,10 @@ class _VerifyScreenState extends State<VerifyScreen> {
       purpose: 'password_reset',
     );
 
+    print('Sending verification data: ${verifyData.toJson()}');
+    print('Request body: ${jsonEncode(verifyData.toJson())}');
+    print('Purpose field value: ${verifyData.purpose}');
+
     try {
       final response = await http.post(
         Uri.parse(Urls.signup_verifyotp),
@@ -259,6 +270,8 @@ class _VerifyScreenState extends State<VerifyScreen> {
         String errorMessage = 'OTP verification failed';
         try {
           final errorData = jsonDecode(response.body);
+          print('Parsed error data: $errorData');
+          
           if (errorData['message'] != null) {
             errorMessage = errorData['message'];
           } else if (errorData['otp'] != null) {
@@ -267,8 +280,13 @@ class _VerifyScreenState extends State<VerifyScreen> {
             errorMessage = errorData['email'];
           } else if (errorData['detail'] != null) {
             errorMessage = errorData['detail'];
+          } else if (errorData['error'] != null) {
+            errorMessage = errorData['error'];
+          } else if (errorData['non_field_errors'] != null) {
+            errorMessage = errorData['non_field_errors'];
           }
         } catch (e) {
+          print('Error parsing response: $e');
           errorMessage = response.body.isNotEmpty ? response.body : 'Invalid OTP';
         }
         
@@ -367,7 +385,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                             "Resend OTP",
                             style: TextStyle(
                               fontSize: 15,
-                              color: Colors.black54,
+                              color: Colors.blue,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -376,7 +394,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                         Container(
                           width: 83,
                           height: 1,
-                          color: Colors.black54,
+                          color: Colors.blue,
                         ),
                       ],
                     ),

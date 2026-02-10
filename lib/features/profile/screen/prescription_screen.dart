@@ -14,9 +14,6 @@ class PrescriptionScreen extends StatefulWidget {
 }
 
 class _PrescriptionScreenState extends State<PrescriptionScreen> {
-  String selectedMeal1 = 'After Meal';
-  String selectedMeal2 = 'After Meal';
-  String selectedMeal3 = 'After Meal';
 
   @override
   Widget build(BuildContext context) {
@@ -117,15 +114,16 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                           const CustomDetails1(name: "Evening",subtitle: "05:00 ",),
                           const SizedBox(height: 10),
                           const CustomDetails1(name: "Night",subtitle: "09:00",),
+                          const SizedBox(height: 20),
+                          const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
                           const SizedBox(height: 10),
-                          CustomBull(
-                            selectedMeal: selectedMeal1,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedMeal1 = value;
-                              });
-                            },
-                          ),
+                          const CustomDetails1(name: "Morning",subtitle: "8:00",),
+                          const SizedBox(height: 10),
+                          const CustomDetails1(name: "Afternoon",subtitle: "01:00",),
+                          const SizedBox(height: 10),
+                          const CustomDetails1(name: "Evening",subtitle: "05:00 ",),
+                          const SizedBox(height: 10),
+                          const CustomDetails1(name: "Night",subtitle: "09:00",),
                           const SizedBox(height: 20),
                           const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
                           const SizedBox(height: 10),
@@ -137,33 +135,6 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                           const SizedBox(height: 10),
                           const CustomDetails1(name: "Night",subtitle: "09:00",),
                           const SizedBox(height: 10),
-                          CustomBull(
-                            selectedMeal: selectedMeal2,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedMeal2 = value;
-                              });
-                            },
-                          ),
-                          const SizedBox(height: 20),
-                          const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Morning",subtitle: "8:00",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Afternoon",subtitle: "01:00",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Evening",subtitle: "05:00 ",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Night",subtitle: "09:00",),
-                          const SizedBox(height: 10),
-                          CustomBull(
-                            selectedMeal: selectedMeal3,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedMeal3 = value;
-                              });
-                            },
-                          ),
                         ],
                       ),
                     ),

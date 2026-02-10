@@ -18,6 +18,11 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
   String selectedMeal1 = 'After Meal';
   String selectedMeal2 = 'After Meal';
   String selectedMeal3 = 'After Meal';
+  String selectedMeal4 = 'After Meal';
+  String selectedMeal5 = 'After Meal';
+  String selectedMeal6 = 'After Meal';
+  String selectedMeal7 = 'After Meal';
+  String selectedMeal8 = 'After Meal';
 
   @override
   Widget build(BuildContext context) {
@@ -112,8 +117,8 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           const SizedBox(height: 10),
                           const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
                           const SizedBox(height: 10),
-                          const CustomDetails1(name: "How many time/day",subtitle: "3",),
-                          const SizedBox(height: 10),
+                          const CustomDetails1(name: "Morning",subtitle: "8:00",),
+                          const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal1,
                             onChanged: (value) {
@@ -122,11 +127,9 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                               });
                             },
                           ),
-                          const SizedBox(height: 20),
-                          const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "How many time/day",subtitle: "2",),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 15),
+                          const CustomDetails1(name: "Afternoon",subtitle: "01:00",),
+                          const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal2,
                             onChanged: (value) {
@@ -135,16 +138,71 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                               });
                             },
                           ),
-                          const SizedBox(height: 20),
-                          const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "How many time/day",subtitle: "3",),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 15),
+                          const CustomDetails1(name: "Evening",subtitle: "05:00 ",),
+                          const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal3,
                             onChanged: (value) {
                               setState(() {
                                 selectedMeal3 = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          const CustomDetails1(name: "Night",subtitle: "09:00",),
+                          const SizedBox(height: 5),
+                          CustomBull(
+                            selectedMeal: selectedMeal4,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedMeal4 = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
+                          const SizedBox(height: 10),
+                          const CustomDetails1(name: "Morning",subtitle: "8:00",),
+                          const SizedBox(height: 5),
+                          CustomBull(
+                            selectedMeal: selectedMeal5,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedMeal5 = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          const CustomDetails1(name: "Afternoon",subtitle: "01:00",),
+                          const SizedBox(height: 5),
+                          CustomBull(
+                            selectedMeal: selectedMeal6,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedMeal6 = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          const CustomDetails1(name: "Evening",subtitle: "05:00 ",),
+                          const SizedBox(height: 5),
+                          CustomBull(
+                            selectedMeal: selectedMeal7,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedMeal7 = value;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          const CustomDetails1(name: "Night",subtitle: "09:00",),
+                          const SizedBox(height: 5),
+                          CustomBull(
+                            selectedMeal: selectedMeal8,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedMeal8 = value;
                               });
                             },
                           ),
