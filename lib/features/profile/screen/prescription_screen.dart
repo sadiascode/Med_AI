@@ -3,6 +3,8 @@ import 'package:care_agent/features/profile/widget/custom_details1.dart';
 import 'package:care_agent/features/profile/widget/custom_info.dart';
 import 'package:care_agent/features/profile/services/prescription_service.dart';
 import 'package:care_agent/features/profile/models/prescription_model.dart';
+import 'package:care_agent/features/doctor/services/doctor_api_service.dart';
+import 'package:care_agent/features/doctor/models/doctor_list_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/app_shell.dart';
@@ -23,25 +25,32 @@ class PrescriptionScreen extends StatefulWidget {
 
 class _PrescriptionScreenState extends State<PrescriptionScreen> {
   PrescriptionModel? prescription;
+  List<DoctorListModel> doctors = [];
   bool isLoading = true;
   String? error;
 
   @override
   void initState() {
     super.initState();
-    _fetchPrescriptionDetails();
+    _fetchData();
   }
 
-  Future<void> _fetchPrescriptionDetails() async {
+  Future<void> _fetchData() async {
     setState(() {
       isLoading = true;
       error = null;
     });
 
     try {
-      final data = await PrescriptionService.getPrescriptionById(widget.prescriptionId);
+      // Fetch both prescription and doctors data in parallel
+      final results = await Future.wait([
+        PrescriptionService.getPrescriptionById(widget.prescriptionId),
+        DoctorApiService.getDoctorList(),
+      ]);
+
       setState(() {
-        prescription = data;
+        prescription = results[0] as PrescriptionModel;
+        doctors = results[1] as List<DoctorListModel>;
         isLoading = false;
       });
     } catch (e) {
@@ -53,7 +62,28 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
   }
 
   Future<void> _refresh() async {
-    await _fetchPrescriptionDetails();
+    await _fetchData();
+  }
+
+  // Helper method to get doctor name by ID
+  String getDoctorName(int doctorId) {
+    try {
+      final doctor = doctors.firstWhere(
+        (doc) => doc.id == doctorId,
+        orElse: () => DoctorListModel(
+          id: 0,
+          name: 'Unknown Doctor',
+          sex: '',
+          specialization: '',
+          hospitalName: '',
+          designation: '',
+        ),
+      );
+      return doctor.name.isNotEmpty ? doctor.name : 'Unknown Doctor';
+    } catch (e) {
+      print('Error finding doctor with ID $doctorId: $e');
+      return 'Unknown Doctor';
+    }
   }
 
   @override
@@ -186,7 +216,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                     const SizedBox(height: 10),
                     CustomDetails(name: "Patient's name", medicine: prescription!.patient.displayName),
                     const SizedBox(height: 10),
-                    CustomDetails(name: "Doctor's name", medicine: 'Dr. ${prescription!.doctor}'),
+                    CustomDetails(name: "Doctor's name", medicine: 'Dr. ${getDoctorName(prescription!.doctor)}'),
                     const SizedBox(height: 10),
                     CustomInfo(
                       name: "Patient's age", 
