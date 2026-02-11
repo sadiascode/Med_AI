@@ -158,7 +158,7 @@ class _ViewScreenState extends State<ViewScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "12/24/2025",
+                          doctor!.nextAppointmentDate ?? 'Date not available',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey[700],
@@ -262,14 +262,14 @@ class _ViewScreenState extends State<ViewScreen> {
                     padding: const EdgeInsets.only(bottom: 15),
                     child: CustomPrescriptions(
                       prescriptionName: 'Prescription-$prescriptionId',
-                      date: '01/05/25',
+                      date: doctor!.nextAppointmentDate ?? 'Date not available',
                       onDownload: () {},
                       onShow: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                            PrescriptionScreen(prescriptionId: prescriptionId),
+                                PrescriptionScreen(prescriptionId: prescriptionId),
                           ),
                         );
                       },

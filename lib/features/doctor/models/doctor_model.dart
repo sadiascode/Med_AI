@@ -32,6 +32,7 @@ class DoctorModel {
   final String? doctorEmail;
   final List<Note> notes;
   final List<int> prescriptions;
+  final String? nextAppointmentDate;
 
   DoctorModel({
     required this.id,
@@ -43,6 +44,7 @@ class DoctorModel {
     this.doctorEmail,
     required this.notes,
     required this.prescriptions,
+    this.nextAppointmentDate,
   });
 
   factory DoctorModel.fromJson(Map<String, dynamic> json) {
@@ -60,6 +62,7 @@ class DoctorModel {
       prescriptions: (json['prescriptions'] as List<dynamic>?)
           ?.map((prescription) => prescription as int)
           .toList() ?? [],
+      nextAppointmentDate: json['next_appointment_date'] as String?,
     );
   }
 
@@ -74,6 +77,7 @@ class DoctorModel {
       'doctor_email': doctorEmail,
       'notes': notes.map((note) => note.toJson()).toList(),
       'prescriptions': prescriptions,
+      'next_appointment_date': nextAppointmentDate,
     };
   }
 }
