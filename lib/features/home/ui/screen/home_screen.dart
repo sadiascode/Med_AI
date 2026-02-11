@@ -223,8 +223,8 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             ...dashboardData!.morning.map((medicine) => MedicineCard(
               time: medicine.formattedTime,
               name: medicine.medicineName,
-              dosage: medicine.mealInfo.isNotEmpty ? medicine.mealInfo : 'As prescribed',
-              subtitle: medicine.mealInfo,
+              dosage: 'As prescribed',
+              subtitle: medicine.mealInfo.isNotEmpty ? medicine.mealInfo : '',
             )),
             const SizedBox(height: 20),
           ],
@@ -235,8 +235,8 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             ...dashboardData!.afternoon.map((medicine) => MedicineCard(
               time: medicine.formattedTime,
               name: medicine.medicineName,
-              dosage: medicine.mealInfo.isNotEmpty ? medicine.mealInfo : 'As prescribed',
-              subtitle: medicine.mealInfo,
+              dosage: 'As prescribed',
+              subtitle: medicine.mealInfo.isNotEmpty ? medicine.mealInfo : '',
             )),
             const SizedBox(height: 20),
           ],
@@ -247,8 +247,8 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             ...dashboardData!.evening.map((medicine) => MedicineCard(
               time: medicine.formattedTime,
               name: medicine.medicineName,
-              dosage: medicine.mealInfo.isNotEmpty ? medicine.mealInfo : 'As prescribed',
-              subtitle: medicine.mealInfo,
+              dosage: 'As prescribed',
+              subtitle: medicine.mealInfo.isNotEmpty ? medicine.mealInfo : '',
             )),
             const SizedBox(height: 20),
           ],
@@ -259,8 +259,8 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             ...dashboardData!.night.map((medicine) => MedicineCard(
               time: medicine.formattedTime,
               name: medicine.medicineName,
-              dosage: medicine.mealInfo.isNotEmpty ? medicine.mealInfo : 'As prescribed',
-              subtitle: medicine.mealInfo,
+              dosage: 'As prescribed',
+              subtitle: medicine.mealInfo.isNotEmpty ? medicine.mealInfo : '',
             )),
             const SizedBox(height: 20),
           ],

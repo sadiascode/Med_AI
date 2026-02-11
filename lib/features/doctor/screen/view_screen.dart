@@ -269,7 +269,7 @@ class _ViewScreenState extends State<ViewScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                            const PrescriptionScreen(),
+                            PrescriptionScreen(prescriptionId: prescriptionId),
                           ),
                         );
                       },

@@ -49,6 +49,7 @@ class Urls {
     return "$baseUrl/users/dashboard/${d.year}-${d.month}-${d.day}/";
   }
 
-
+ // Get all prescriptions
+  static const String Get_all_prescriptions = "$baseUrl/treatments/prescription/";
 
 }

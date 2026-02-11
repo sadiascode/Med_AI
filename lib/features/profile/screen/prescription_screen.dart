@@ -1,19 +1,60 @@
 import 'package:care_agent/features/profile/widget/custom_details.dart';
 import 'package:care_agent/features/profile/widget/custom_details1.dart';
 import 'package:care_agent/features/profile/widget/custom_info.dart';
+import 'package:care_agent/features/profile/services/prescription_service.dart';
+import 'package:care_agent/features/profile/models/prescription_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../common/app_shell.dart';
+import '../models/prescription_medicine_model.dart';
 import '../widget/custom_bull.dart';
 
 class PrescriptionScreen extends StatefulWidget {
-  const PrescriptionScreen({super.key});
+  final int prescriptionId;
+
+  const PrescriptionScreen({
+    super.key,
+    required this.prescriptionId,
+  });
 
   @override
   State<PrescriptionScreen> createState() => _PrescriptionScreenState();
 }
 
 class _PrescriptionScreenState extends State<PrescriptionScreen> {
+  PrescriptionModel? prescription;
+  bool isLoading = true;
+  String? error;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPrescriptionDetails();
+  }
+
+  Future<void> _fetchPrescriptionDetails() async {
+    setState(() {
+      isLoading = true;
+      error = null;
+    });
+
+    try {
+      final data = await PrescriptionService.getPrescriptionById(widget.prescriptionId);
+      setState(() {
+        prescription = data;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _refresh() async {
+    await _fetchPrescriptionDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,46 +81,131 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 13),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xffE0712D), width: 1),
-                  ),
-                  child: const Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Patient's information",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
-                        ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: _buildBody(),
+      ),
+    );
+  }
+
+  Widget _buildBody() {
+    if (isLoading) {
+      return _buildLoadingState();
+    } else if (error != null) {
+      return _buildErrorState();
+    } else if (prescription == null || prescription!.id == 0) {
+      return _buildEmptyState();
+    } else {
+      return _buildContentState();
+    }
+  }
+
+  Widget _buildLoadingState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(color: Color(0xffE0712D)),
+          SizedBox(height: 16),
+          Text('Loading prescription details...'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline, size: 48, color: Colors.red),
+          SizedBox(height: 16),
+          Text(
+            'Failed to load prescription',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 8),
+          Text(
+            error!,
+            style: TextStyle(fontSize: 14, color: Colors.grey),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: _refresh,
+            child: Text('Retry'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.medication_outlined, size: 48, color: Colors.grey),
+          SizedBox(height: 16),
+          Text(
+            'Prescription not found',
+            style: TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildContentState() {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // Patient Information Section
+          Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 13),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: const Color(0xffE0712D), width: 1),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Patient's information",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
                       ),
-                      SizedBox(height: 10),
-                      CustomDetails(name: "Patient's name", medicine: ' Smith Jaman'),
-                      SizedBox(height: 10),
-                      CustomDetails(name: "Doctor's name", medicine: 'Dr. Robert Henry'),
-                      SizedBox(height: 10),
-                      CustomInfo(name: "Patient's age", age: "45", sex: 'Sex', gender: 'Female'),
-                      SizedBox(height: 10),
-                      CustomDetails(name: 'Health Issue', medicine: ' Coronary artery disease'),
-                      SizedBox(height: 10),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 10),
+                    CustomDetails(name: "Patient's name", medicine: prescription!.patient.displayName),
+                    const SizedBox(height: 10),
+                    CustomDetails(name: "Doctor's name", medicine: 'Dr. ${prescription!.doctor}'),
+                    const SizedBox(height: 10),
+                    CustomInfo(
+                      name: "Patient's age", 
+                      age: prescription!.patient.displayAge, 
+                      sex: 'Sex', 
+                      gender: prescription!.patient.displaySex,
+                    ),
+                    const SizedBox(height: 10),
+                    CustomDetails(name: 'Health Issue', medicine: prescription!.patient.displayHealthIssues),
+                    const SizedBox(height: 10),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 15),
+          ),
+          const SizedBox(height: 15),
+          
+          // Prescription Details Section
+          if (prescription!.hasMedicines) ...[
             Column(
               children: [
                 Container(
@@ -105,87 +231,103 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Morning",subtitle: "8:00",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Afternoon",subtitle: "01:00",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Evening",subtitle: "05:00 ",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Night",subtitle: "09:00",),
-                          const SizedBox(height: 20),
-                          const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Morning",subtitle: "8:00",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Afternoon",subtitle: "01:00",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Evening",subtitle: "05:00 ",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Night",subtitle: "09:00",),
-                          const SizedBox(height: 20),
-                          const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Morning",subtitle: "8:00",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Afternoon",subtitle: "01:00",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Evening",subtitle: "05:00 ",),
-                          const SizedBox(height: 10),
-                          const CustomDetails1(name: "Night",subtitle: "09:00",),
-                          const SizedBox(height: 10),
+                          ...prescription!.medicines.map((medicine) => _buildMedicineDetails(medicine)),
                         ],
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 15),
-                Column(
-                  children: [
-                    Container(
-                      color: Colors.white,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 13),
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: const Color(0xffE0712D), width: 1),
-                          ),
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Medical tests',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              CustomDetails(name: 'Test 1', medicine: ' CVC'),
-                              SizedBox(height: 10),
-                              CustomDetails(name: 'Test 2', medicine: 'ECG'),
-                              SizedBox(height: 10),
-                              CustomDetails(name: 'Test 3', medicine: ' IGE'),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    const Center(child: Text("Next follow-up: 12/24/2025", style: TextStyle(color: Color(0xffE0712D)))),
-                    const SizedBox(height: 20),
-                  ],
-                ),
               ],
             ),
           ],
-        ),
+          
+          // Medical Tests Section
+          if (prescription!.hasMedicalTests) ...[
+            Column(
+              children: [
+                Container(
+                  color: Colors.white,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 13),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xffE0712D), width: 1),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Medical tests',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          ...prescription!.medicalTests.asMap().entries.map((entry) {
+                            final index = entry.key + 1;
+                            final test = entry.value;
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: CustomDetails(
+                                name: 'Test $index',
+                                medicine: test.displayName,
+                              ),
+                            );
+                          }),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 15),
+              ],
+            ),
+          ],
+          
+          // Next Follow-up Section
+          if (prescription!.hasNextAppointment) ...[
+            Center(
+              child: Text(
+                "Next follow-up: ${prescription!.formattedNextAppointment}",
+                style: TextStyle(color: Color(0xffE0712D)),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ],
       ),
+    );
+  }
+
+  Widget _buildMedicineDetails(PrescriptionMedicineModel medicine) {
+    return Column(
+      children: [
+        CustomDetails(name: 'Medicine Name', medicine: medicine.name),
+        const SizedBox(height: 10),
+        if (medicine.hasMorning) ...[
+          CustomDetails1(name: "Morning", subtitle: medicine.morningTime),
+          const SizedBox(height: 10),
+        ],
+        if (medicine.hasAfternoon) ...[
+          CustomDetails1(name: "Afternoon", subtitle: medicine.afternoonTime),
+          const SizedBox(height: 10),
+        ],
+        if (medicine.hasEvening) ...[
+          CustomDetails1(name: "Evening", subtitle: medicine.eveningTime),
+          const SizedBox(height: 10),
+        ],
+        if (medicine.hasNight) ...[
+          CustomDetails1(name: "Night", subtitle: medicine.nightTime),
+          const SizedBox(height: 10),
+        ],
+        const SizedBox(height: 20),
+      ],
     );
   }
 }
