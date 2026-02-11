@@ -1,9 +1,9 @@
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:care_agent/features/home/screen/home_screen.dart';
 import 'package:care_agent/features/medicine/screen/medicine_screen.dart';
 import 'package:care_agent/features/doctor/screen/doctor_screen.dart';
-import 'package:care_agent/features/home/screen/notification_screen.dart';
 import 'package:care_agent/features/profile/screen/profile_screen.dart';
+import '../../features/home/ui/screen/home_screen.dart';
+import '../../features/home/ui/screen/notification_screen.dart';
 import 'buttom_tab_item.dart';
 
 final List<BottomTabItem> bottomTabs = [

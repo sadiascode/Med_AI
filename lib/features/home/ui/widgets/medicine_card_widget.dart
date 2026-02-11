@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class MedicineCard extends StatelessWidget {
-  final String time, name, dosage;
+  final String time, name, dosage , subtitle ;
   const MedicineCard({
     super.key,
     required this.time,
     required this.name,
     required this.dosage,
+    required this.subtitle,
   });
 
   @override
@@ -55,7 +56,12 @@ class MedicineCard extends StatelessWidget {
                   ),
                   Text(
                     dosage,
-                    style: const TextStyle(color: Colors.black, fontSize: 12),
+                    style: const TextStyle(color: Colors.black, fontSize: 13),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(color: Colors.black, fontSize: 13),
                   ),
                 ],
               ),

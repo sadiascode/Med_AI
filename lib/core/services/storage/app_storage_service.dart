@@ -7,17 +7,17 @@ class AppStorageService {
   // Token related methods - delegate to TokenStorageService
   static Future<void> storeAccessToken(String token) async {
     await _box.write('access_token', token);
-    print('✅ Access token stored');
+    print('Access token stored');
   }
 
   static Future<void> storeRefreshToken(String token) async {
     await _box.write('refresh_token', token);
-    print('✅ Refresh token stored');
+    print(' Refresh token stored');
   }
 
   static Future<String?> getStoredToken() async {
     final token = _box.read('access_token');
-    print('🔍 Retrieved access token: ${token != null ? 'Found' : 'Not found'}');
+    print('Retrieved access token: ${token != null ? 'Found' : 'Not found'}');
     return token;
   }
 
@@ -28,7 +28,7 @@ class AppStorageService {
   static Future<void> clearTokens() async {
     await _box.remove('access_token');
     await _box.remove('refresh_token');
-    print('🗑️ All tokens cleared');
+    print('All tokens cleared');
   }
 
   static bool isLoggedIn() {
@@ -39,7 +39,7 @@ class AppStorageService {
   // Profile image storage
   static Future<void> storeProfileImagePath(String path) async {
     await _box.write('profile_image_path', path);
-    print('✅ Profile image path stored');
+    print('Profile image path stored');
   }
 
   static Future<String?> getProfileImagePath() async {
@@ -48,7 +48,7 @@ class AppStorageService {
 
   static Future<void> clearProfileImagePath() async {
     await _box.remove('profile_image_path');
-    print('🗑️ Profile image path cleared');
+    print(' Profile image path cleared');
   }
 
   // User preferences
@@ -77,12 +77,12 @@ class AppStorageService {
   static Future<void> clearAppData() async {
     await _box.remove('profile_image_path');
     // Add other app data keys here as needed
-    print('🗑️ App data cleared');
+    print(' App data cleared');
   }
 
   // Clear everything (for logout/reset)
   static Future<void> clearAll() async {
     await _box.erase();
-    print('🗑️ All storage cleared');
+    print(' All storage cleared');
   }
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import '../../../common/app_shell.dart';
-import '../../chat/widget/custom_minibutton.dart';
-import '../../chat/widget/custom_notification.dart';
+import '../../../../common/app_shell.dart';
+import '../../../chat/widget/custom_minibutton.dart';
+import '../../../chat/widget/custom_notification.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});

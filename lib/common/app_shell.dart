@@ -1,9 +1,9 @@
 import 'package:care_agent/features/chat/screen/chats_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import '../features/home/ui/screen/home_screen.dart';
 import 'navbar/buttom_tab_item.dart';
 import 'navbar/custom_bottom_nav.dart';
-import '../features/home/screen/home_screen.dart';
 import '../features/medicine/screen/medicine_screen.dart';
 import '../features/doctor/screen/doctor_screen.dart';
 import '../features/profile/screen/profile_screen.dart';
