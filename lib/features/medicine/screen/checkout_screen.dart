@@ -2,6 +2,8 @@ import 'package:care_agent/common/custom_button.dart';
 import 'package:care_agent/features/medicine/screen/medicine_screen.dart';
 import 'package:care_agent/features/medicine/widget/custom_checkout.dart';
 import 'package:care_agent/features/medicine/widget/custom_pharmacy.dart';
+import 'package:care_agent/features/pharmacy/models/pharmacy_model.dart';
+import 'package:care_agent/features/pharmacy/services/pharmacy_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -17,13 +19,28 @@ class CheckoutScreen extends StatefulWidget {
 
 class _CheckoutScreenState extends State<CheckoutScreen> {
   int selectedPharmacyIndex = 0;
+  List<PharmacyModel> pharmacies = [];
+  bool isLoading = true;
 
-  final List<String> pharmacies = [
-    'CVS Pharmacy',
-    'Rite Aid',
-    'Walgreen',
-    'Health Mart',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchPharmacies();
+  }
+
+  Future<void> _fetchPharmacies() async {
+    try {
+      final pharmacyData = await PharmacyService.fetchPharmacies();
+      setState(() {
+        pharmacies = pharmacyData;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,17 +136,29 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
-                  children: List.generate(pharmacies.length, (index) {
-                    return CustomPharmacy(
-                      pharmacyName: pharmacies[index],
-                      isSelected: selectedPharmacyIndex == index,
-                      onTap: () {
-                        setState(() {
-                          selectedPharmacyIndex = index;
-                        });
-                      },
-                    );
-                  }),
+                  children: [
+                    if (isLoading)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: CircularProgressIndicator(color: Color(0xffE0712D)),
+                        ),
+                      )
+                    else
+                      ...pharmacies.asMap().entries.map((entry) {
+                        final index = entry.key;
+                        final pharmacy = entry.value;
+                        return CustomPharmacy(
+                          pharmacyName: pharmacy.pharmacy_name,
+                          isSelected: selectedPharmacyIndex == index,
+                          onTap: () {
+                            setState(() {
+                              selectedPharmacyIndex = index;
+                            });
+                          },
+                        );
+                      }).toList(),
+                  ],
                 ),
               ),
               Padding(
@@ -214,14 +243,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                     elevation: 0,
                   ),
                   child: Text(
-                    'Your order will be redirected to ${pharmacies[selectedPharmacyIndex]}',
+                    pharmacies.isNotEmpty 
+                        ? 'Your order will be redirected to ${pharmacies[selectedPharmacyIndex].pharmacy_name}'
+                        : 'Your order will be redirected to selected pharmacy',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
                   ),
-
                 ),
               ),
               SizedBox(height: 50),

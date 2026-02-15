@@ -57,6 +57,9 @@ class Urls {
     return "$baseUrl/treatments/medicines/$id/";
   }
 
+ // Medicine List
+  static const String Medicine_list = "$baseUrl/treatments/pharmacy/";
+
   // Get all prescriptions
   static const String Get_all_prescriptions = "$baseUrl/treatments/prescription/";
 
