@@ -10,7 +10,7 @@ class PharmacyModel {
     required this.website_link,
   });
 
-  /// Creates PharmacyModel from JSON response
+  //Creates PharmacyModel from JSON response
   factory PharmacyModel.fromJson(Map<String, dynamic> json) {
     try {
       return PharmacyModel(
@@ -24,7 +24,7 @@ class PharmacyModel {
     }
   }
 
-  /// Converts PharmacyModel to JSON
+  // Converts PharmacyModel to JSON
   Map<String, dynamic> toJson() {
     return {
       'pharmacy_name': pharmacy_name,
@@ -33,7 +33,7 @@ class PharmacyModel {
     };
   }
 
-  /// Creates empty PharmacyModel for fallback
+  // Creates empty PharmacyModel for fallback
   factory PharmacyModel.empty() {
     return const PharmacyModel(
       pharmacy_name: '',

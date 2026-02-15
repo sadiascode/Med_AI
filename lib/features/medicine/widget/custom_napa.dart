@@ -60,7 +60,7 @@ class _CustomNapaState extends State<CustomNapa> {
             Row(
              children: [
                const Text(
-                'You will need 12 more pills',
+                'You will need  more pills',
                 style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

@@ -2,6 +2,7 @@ import 'package:care_agent/common/custom_button.dart';
 import 'package:care_agent/features/medicine/screen/medicine_screen.dart';
 import 'package:care_agent/features/medicine/widget/custom_checkout.dart';
 import 'package:care_agent/features/medicine/widget/custom_pharmacy.dart';
+import 'package:care_agent/features/medicine/models/medicine_model.dart';
 import 'package:care_agent/features/pharmacy/models/pharmacy_model.dart';
 import 'package:care_agent/features/pharmacy/services/pharmacy_service.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,12 @@ import '../../../common/app_shell.dart';
 import '../../profile/widget/custom_edit.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+  final MedicineModel medicine;
+
+  const CheckoutScreen({
+    super.key,
+    required this.medicine,
+  });
 
   @override
   State<CheckoutScreen> createState() => _CheckoutScreenState();
@@ -22,10 +28,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   List<PharmacyModel> pharmacies = [];
   bool isLoading = true;
 
+  // Text controllers for add pharmacy dialog
+  final _pharmacyNameController = TextEditingController();
+  final _pharmacyAddressController = TextEditingController();
+  final _websiteUrlController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _fetchPharmacies();
+  }
+
+  @override
+  void dispose() {
+    _pharmacyNameController.dispose();
+    _pharmacyAddressController.dispose();
+    _websiteUrlController.dispose();
+    super.dispose();
   }
 
   Future<void> _fetchPharmacies() async {
@@ -40,6 +59,88 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         isLoading = false;
       });
     }
+  }
+
+  /// Adds a new pharmacy and refreshes the list
+  Future<void> _addPharmacy() async {
+    try {
+      final pharmacyName = _pharmacyNameController.text.trim();
+      final pharmacyAddress = _pharmacyAddressController.text.trim();
+      final websiteUrl = _websiteUrlController.text.trim();
+
+      if (pharmacyName.isEmpty || pharmacyAddress.isEmpty || websiteUrl.isEmpty) {
+        _showErrorSnackBar('Please fill in all fields');
+        return;
+      }
+
+      // Show loading indicator
+      _showLoadingSnackBar();
+
+      await PharmacyService.addPharmacy(
+        pharmacyName: pharmacyName,
+        pharmacyAddress: pharmacyAddress,
+        websiteUrl: websiteUrl,
+      );
+
+      // Clear controllers
+      _pharmacyNameController.clear();
+      _pharmacyAddressController.clear();
+      _websiteUrlController.clear();
+
+      // Close dialog
+      Navigator.of(context).pop();
+
+      // Refresh pharmacy list
+      await _fetchPharmacies();
+
+      // Show success message
+      _showSuccessSnackBar('Pharmacy added successfully');
+    } catch (e) {
+      _showErrorSnackBar(e.toString());
+    }
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+        duration: const Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _showSuccessSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showLoadingSnackBar() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2,
+              ),
+            ),
+            SizedBox(width: 16),
+            Text('Adding pharmacy...'),
+          ],
+        ),
+        backgroundColor: Color(0xffE0712D),
+        duration: Duration(seconds: 30),
+      ),
+    );
   }
 
   @override
@@ -69,7 +170,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           child: Column(
             children: [
               SizedBox(height: 20),
-              CustomCheckout(),
+              CustomCheckout(medicine: widget.medicine),
 
               SizedBox(height: 24),
               Row(
@@ -96,7 +197,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        '20 Cooper Square, New York, NY 10003, USA',
+                        pharmacies.isNotEmpty 
+                            ? pharmacies[selectedPharmacyIndex].Pharmacy_Address.isNotEmpty
+                                ? pharmacies[selectedPharmacyIndex].Pharmacy_Address
+                                : 'NO Address Found'
+                            : 'NO Address Found',
                         style: TextStyle(
                           fontSize: 12,
                           color: Color(0xff000000),
@@ -181,27 +286,28 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                 CustomEdit(
                                   title: "Pharmacy Name",
                                   hintText: "Type pharmacy name here",
+                                  controller: _pharmacyNameController,
                                 ),
                                 const SizedBox(height: 15),
                                 CustomEdit(
                                   title: "Pharmacy Address",
                                   hintText: "Type your pharmacy address",
+                                  controller: _pharmacyAddressController,
                                 ),
                                 const SizedBox(height: 15),
                                 CustomEdit(
                                   title: "Website URL (order page URL)",
                                   hintText: "Please enter the website URL",
+                                  controller: _websiteUrlController,
                                 ),
                                 const SizedBox(height: 15),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
+                                  onPressed: _addPharmacy,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xffE0712D),
                                     padding: const EdgeInsets.symmetric(horizontal: 70, vertical: 11),
                                   ),
-                                  child: const Text('Confirm',style: TextStyle(color: Colors.white,),),
+                                  child: const Text('Confirm', style: TextStyle(color: Colors.white)),
                                 ),
                               ],
                             ),

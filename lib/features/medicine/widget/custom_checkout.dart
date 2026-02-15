@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import '../models/medicine_model.dart';
 
 class CustomCheckout extends StatelessWidget {
-  const CustomCheckout({super.key});
+  final MedicineModel medicine;
+
+  const CustomCheckout({
+    super.key,
+    required this.medicine,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,27 +38,19 @@ class CustomCheckout extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text(
-                  'Napa Extra',
-                  style: TextStyle(
+                  medicine.name.isNotEmpty ? medicine.name : 'No Medicine ',
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xffE0712D),
                   ),
                 ),
+                const SizedBox(height: 5),
                 Text(
-                  'Quantity: 20',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xffE0712D),
-                  ),
-                ),
-
-                Text(
-                  'Price: \$20',
-                  style: TextStyle(
+                  'Quantity: ${medicine.stock}',
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Color(0xffE0712D),

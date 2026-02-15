@@ -57,8 +57,7 @@ class _AddScreenState extends State<AddScreen> {
             ),
             const SizedBox(height: 35),
             CustomNapa(medicine: widget.medicine),
-            const SizedBox(height: 25),
-
+            const SizedBox(height: 40),
             Padding(
               padding: const EdgeInsets.all(15),
               child: CustomButton(
@@ -66,7 +65,9 @@ class _AddScreenState extends State<AddScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const CheckoutScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => CheckoutScreen(medicine: widget.medicine),
+                    ),
                   );
                 },
               ),

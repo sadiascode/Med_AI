@@ -60,6 +60,9 @@ class Urls {
  // Medicine List
   static const String Medicine_list = "$baseUrl/treatments/pharmacy/";
 
+  // Add Pharmacy
+  static const String Add_pharmacy = "$baseUrl/treatments/pharmacy/";
+
   // Get all prescriptions
   static const String Get_all_prescriptions = "$baseUrl/treatments/prescription/";
 
