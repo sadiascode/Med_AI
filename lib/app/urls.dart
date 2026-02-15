@@ -49,7 +49,15 @@ class Urls {
     return "$baseUrl/users/dashboard/${d.year}-${d.month}-${d.day}/";
   }
 
- // Get all prescriptions
+  // All Medicine
+  static const String All_Medicine = "$baseUrl/treatments/medicines/";
+
+  // Get Medicine By id
+  static String refillMedicine(int id) {
+    return "$baseUrl/treatments/medicines/$id/";
+  }
+
+  // Get all prescriptions
   static const String Get_all_prescriptions = "$baseUrl/treatments/prescription/";
 
 }

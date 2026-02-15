@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../common/app_shell.dart';
 import '../widget/custom_refill.dart';
 import '../widget/custom_search.dart';
+import '../models/medicine_model.dart';
+import '../services/medicine_service.dart';
 
 /// Content-only version for use inside AppShell (no navbar)
 class MedicineScreenContent extends StatelessWidget {
@@ -31,58 +33,76 @@ class MedicineScreenContent extends StatelessWidget {
             const SizedBox(height: 10),
             const CustomSearch(),
             const SizedBox(height: 10),
-            CustomRefill(
-              medicineName: 'Napa Extra',
-              remainingCount: 4,
-              onRefill: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddScreen()),
-                );
-              },
-            ),
-            const SizedBox(height: 13),
-            CustomRefill(
-              medicineName: 'Napa Extra',
-              remainingCount: 4,
-              onRefill: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddScreen()),
-                );
-              },
-            ),
-            const SizedBox(height: 13),
-            CustomRefill(
-              medicineName: 'Napa Extra',
-              remainingCount: 4,
-              onRefill: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddScreen()),
-                );
-              },
-            ),
-            const SizedBox(height: 13),
-            CustomRefill(
-              medicineName: 'Napa Extra',
-              remainingCount: 4,
-              onRefill: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddScreen()),
-                );
-              },
-            ),
-            const SizedBox(height: 13),
-            CustomRefill(
-              medicineName: 'Napa Extra',
-              remainingCount: 4,
-              onRefill: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddScreen()),
-                );
+            FutureBuilder<List<MedicineModel>>(
+              future: MedicineService.fetchMedicines(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: CircularProgressIndicator(color: Color(0xffE0712D)),
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          Icon(Icons.error_outline, size: 48, color: Colors.red),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Failed to load medicines',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            snapshot.error.toString(),
+                            style: TextStyle(fontSize: 14, color: Colors.grey),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          Icon(Icons.medication_outlined, size: 48, color: Colors.grey),
+                          const SizedBox(height: 16),
+                          Text(
+                            'No medicines found',
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  final medicines = snapshot.data!;
+                  return Column(
+                    children: medicines.map((medicine) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 13),
+                        child: CustomRefill(
+                          medicineName: medicine.name,
+                          remainingCount: medicine.stock,
+                          onRefill: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddScreen(medicine: medicine),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  );
+                }
               },
             ),
           ],

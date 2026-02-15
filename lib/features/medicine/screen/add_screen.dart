@@ -3,11 +3,17 @@ import 'package:care_agent/features/medicine/screen/checkout_screen.dart';
 import 'package:care_agent/features/medicine/screen/medicine_screen.dart';
 import 'package:care_agent/features/medicine/widget/custom_dosages.dart';
 import 'package:care_agent/features/medicine/widget/custom_napa.dart';
+import 'package:care_agent/features/medicine/models/medicine_model.dart';
 import 'package:flutter/material.dart';
 import '../../../common/app_shell.dart';
 
 class AddScreen extends StatefulWidget {
-  const AddScreen({super.key});
+  final MedicineModel medicine;
+
+  const AddScreen({
+    super.key,
+    required this.medicine,
+  });
 
   @override
   State<AddScreen> createState() => _AddScreenState();
@@ -50,10 +56,9 @@ class _AddScreenState extends State<AddScreen> {
               ),
             ),
             const SizedBox(height: 35),
-            const CustomNapa(),
+            CustomNapa(medicine: widget.medicine),
             const SizedBox(height: 25),
-            const CustomDosages(),
-            const SizedBox(height: 40),
+
             Padding(
               padding: const EdgeInsets.all(15),
               child: CustomButton(

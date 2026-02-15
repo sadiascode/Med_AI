@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import '../models/medicine_model.dart';
 
 class CustomNapa extends StatefulWidget {
-  const CustomNapa({super.key});
+  final MedicineModel medicine;
+
+  const CustomNapa({
+    super.key,
+    required this.medicine,
+  });
 
   @override
   State<CustomNapa> createState() => _CustomNapaState();
@@ -27,25 +33,25 @@ class _CustomNapaState extends State<CustomNapa> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 5),
-            const Text(
-              'Napa Extra',
-              style: TextStyle(
+            Text(
+              widget.medicine.name,
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
-            const Text(
-              'Tablets || Remaining pills 03 \nRemaining Days 05\nTimes to take 03',
-              style: TextStyle(
+            Text(
+              'Tablets || Remaining pills ${widget.medicine.stock}',
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.black,
               ),
             ),
             const SizedBox(height: 15),
-            const Text(
-              'Medication Category: Paracetamol',
-              style: TextStyle(
+            Text(
+              'Remaining Days ${widget.medicine.howManyDay}',
+              style: const TextStyle(
                 fontSize: 14,
                 color: Colors.black
               ),
