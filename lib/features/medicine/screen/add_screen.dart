@@ -20,6 +20,26 @@ class AddScreen extends StatefulWidget {
 }
 
 class _AddScreenState extends State<AddScreen> {
+  late MedicineModel _currentMedicine;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentMedicine = widget.medicine;
+  }
+
+  void _updateQuantity(int newQuantity) {
+    setState(() {
+      _currentMedicine = MedicineModel(
+        id: _currentMedicine.id,
+        name: _currentMedicine.name,
+        howManyDay: _currentMedicine.howManyDay,
+        stock: _currentMedicine.stock,
+        prescriptionId: _currentMedicine.prescriptionId,
+        quantity: newQuantity,
+      );
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -56,7 +76,10 @@ class _AddScreenState extends State<AddScreen> {
               ),
             ),
             const SizedBox(height: 35),
-            CustomNapa(medicine: widget.medicine),
+            CustomNapa(
+  medicine: _currentMedicine,
+  onQuantityChanged: _updateQuantity,
+),
             const SizedBox(height: 40),
             Padding(
               padding: const EdgeInsets.all(15),
@@ -66,7 +89,7 @@ class _AddScreenState extends State<AddScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => CheckoutScreen(medicine: widget.medicine),
+                      builder: (context) => CheckoutScreen(medicine: _currentMedicine),
                     ),
                   );
                 },

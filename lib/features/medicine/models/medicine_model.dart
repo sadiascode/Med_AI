@@ -4,6 +4,7 @@ class MedicineModel {
   final int howManyDay;
   final int stock;
   final int prescriptionId;
+  final int quantity;
 
   const MedicineModel({
     required this.id,
@@ -11,6 +12,7 @@ class MedicineModel {
     required this.howManyDay,
     required this.stock,
     required this.prescriptionId,
+    required this.quantity,
   });
 
   factory MedicineModel.fromJson(Map<String, dynamic> json) {
@@ -21,6 +23,7 @@ class MedicineModel {
         howManyDay: json['how_many_day'] as int? ?? 0,
         stock: json['stock'] as int? ?? 0,
         prescriptionId: json['prescription_id'] as int? ?? 0,
+        quantity: json['quantity'] as int? ?? 0,
       );
     } catch (e) {
       print('Error parsing MedicineModel: $e');
@@ -35,6 +38,7 @@ class MedicineModel {
       'how_many_day': howManyDay,
       'stock': stock,
       'prescription_id': prescriptionId,
+      'quantity': quantity,
     };
   }
 
@@ -45,11 +49,12 @@ class MedicineModel {
       howManyDay: 0,
       stock: 0,
       prescriptionId: 0,
+      quantity: 0,
     );
   }
 
   @override
   String toString() {
-    return 'MedicineModel(id: $id, name: $name, howManyDay: $howManyDay, stock: $stock, prescriptionId: $prescriptionId)';
+    return 'MedicineModel(id: $id, name: $name, howManyDay: $howManyDay, stock: $stock, prescriptionId: $prescriptionId, quantity: $quantity)';
   }
 }

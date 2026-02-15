@@ -49,7 +49,7 @@ class CustomCheckout extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  'Quantity: ${medicine.stock}',
+                  'Quantity: ${medicine.quantity}',
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,

@@ -6,7 +6,6 @@ import '../widget/custom_search.dart';
 import '../models/medicine_model.dart';
 import '../services/medicine_service.dart';
 
-/// Content-only version for use inside AppShell (no navbar)
 class MedicineScreenContent extends StatelessWidget {
   const MedicineScreenContent({super.key});
 
@@ -112,7 +111,6 @@ class MedicineScreenContent extends StatelessWidget {
   }
 }
 
-/// Standalone version with navbar - redirects to AppShell
 class MedicineScreen extends StatelessWidget {
   const MedicineScreen({super.key});
 

@@ -3,10 +3,12 @@ import '../models/medicine_model.dart';
 
 class CustomNapa extends StatefulWidget {
   final MedicineModel medicine;
+  final Function(int) onQuantityChanged;
 
   const CustomNapa({
     super.key,
     required this.medicine,
+    required this.onQuantityChanged,
   });
 
   @override
@@ -14,7 +16,20 @@ class CustomNapa extends StatefulWidget {
 }
 
 class _CustomNapaState extends State<CustomNapa> {
-  int pillCount = 12;
+  int pillCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    pillCount = widget.medicine.quantity;
+  }
+
+  void _updatePillCount(int newCount) {
+    setState(() {
+      pillCount = newCount;
+    });
+    widget.onQuantityChanged(pillCount);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,9 +95,7 @@ class _CustomNapaState extends State<CustomNapa> {
                      GestureDetector(
                        onTap: () {
                          if (pillCount > 0) {
-                           setState(() {
-                             pillCount--;
-                           });
+                           _updatePillCount(pillCount - 1);
                          }
                        },
                        child: Container(
@@ -118,9 +131,7 @@ class _CustomNapaState extends State<CustomNapa> {
                      ),
                      GestureDetector(
                        onTap: () {
-                         setState(() {
-                           pillCount++;
-                         });
+                         _updatePillCount(pillCount + 1);
                        },
                        child: Container(
                          width: 32,

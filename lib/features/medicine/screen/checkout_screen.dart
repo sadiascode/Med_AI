@@ -27,6 +27,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   int selectedPharmacyIndex = 0;
   List<PharmacyModel> pharmacies = [];
   bool isLoading = true;
+  int selectedQuantity = 0;
 
   // Text controllers for add pharmacy dialog
   final _pharmacyNameController = TextEditingController();
@@ -36,6 +37,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   void initState() {
     super.initState();
+    selectedQuantity = widget.medicine.quantity;
     _fetchPharmacies();
   }
 
@@ -208,11 +210,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ),
                       ),
                     ),
-                    SvgPicture.asset(
-                      'assets/edit.svg',
-                      width: 16,
-                      height: 16,
-                    ),
                   ],
                 ),
               ),
@@ -362,6 +359,16 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               ),
               SizedBox(height: 50),
               CustomButton(text: "Confirm", onTap: (){
+                // Create updated medicine with new stock = original stock + selected quantity
+                final updatedMedicine = MedicineModel(
+                  id: widget.medicine.id,
+                  name: widget.medicine.name,
+                  howManyDay: widget.medicine.howManyDay,
+                  stock: widget.medicine.stock + selectedQuantity, // Add selected quantity to stock
+                  prescriptionId: widget.medicine.prescriptionId,
+                  quantity: 0, // Reset quantity after confirmation
+                );
+                
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const MedicineScreen()),
