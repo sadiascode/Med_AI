@@ -71,4 +71,8 @@ class Urls {
   // Get all prescriptions
   static const String Get_all_prescriptions = "$baseUrl/treatments/prescription/";
 
+  // Delete Prescription
+  static String deletePrescription(int id) {
+    return "$baseUrl/treatments/prescriptions/$id/";
+  }
 }

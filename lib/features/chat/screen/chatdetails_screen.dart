@@ -1,3 +1,6 @@
+import 'package:care_agent/features/chat/screen/chats_screen.dart';
+import 'package:care_agent/features/chat/widget/custom_linkwith.dart';
+import 'package:care_agent/features/doctor/widget/custom_doctor.dart';
 import 'package:flutter/material.dart';
 import '../../../common/app_shell.dart';
 import '../../profile/widget/custom_bull.dart';
@@ -5,7 +8,6 @@ import '../../profile/widget/custom_details.dart';
 import '../../profile/widget/custom_details1.dart';
 import '../../profile/widget/custom_info.dart';
 import '../widget/custom_minibutton.dart';
-import 'chatmed_screen.dart';
 
 class ChatdetailsScreen extends StatefulWidget {
   const ChatdetailsScreen({super.key});
@@ -118,6 +120,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
                           const SizedBox(height: 10),
                           const CustomDetails1(name: "Morning",subtitle: "8:00",),
+                          CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal1,
@@ -129,6 +132,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           ),
                           const SizedBox(height: 15),
                           const CustomDetails1(name: "Afternoon",subtitle: "01:00",),
+                          CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal2,
@@ -140,6 +144,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           ),
                           const SizedBox(height: 15),
                           const CustomDetails1(name: "Evening",subtitle: "05:00 ",),
+                          CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal3,
@@ -151,6 +156,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           ),
                           const SizedBox(height: 15),
                           const CustomDetails1(name: "Night",subtitle: "09:00",),
+                          CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal4,
@@ -164,6 +170,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           const CustomDetails(name: 'Medicine Name', medicine: ' Bisocor Tablet 2.5mg'),
                           const SizedBox(height: 10),
                           const CustomDetails1(name: "Morning",subtitle: "8:00",),
+                          CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal5,
@@ -175,6 +182,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           ),
                           const SizedBox(height: 15),
                           const CustomDetails1(name: "Afternoon",subtitle: "01:00",),
+                          CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal6,
@@ -186,6 +194,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           ),
                           const SizedBox(height: 15),
                           const CustomDetails1(name: "Evening",subtitle: "05:00 ",),
+                          CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal7,
@@ -197,6 +206,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           ),
                           const SizedBox(height: 15),
                           const CustomDetails1(name: "Night",subtitle: "09:00",),
+                          CustomDetails1(name: "How many time/day",subtitle: "3",),
                           const SizedBox(height: 5),
                           CustomBull(
                             selectedMeal: selectedMeal8,
@@ -251,10 +261,33 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                     const Center(
                       child: Text(
                         "Next follow-up: 12/24/2025",
-                        style: TextStyle(color: Color(0xffE0712D)),
+                        style: TextStyle(color: Color(0xffE0712D),fontSize: 17),
                       ),
                     ),
                     const SizedBox(height: 20),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      width: MediaQuery.of(context).size.width * 0.96,
+                      decoration: BoxDecoration(
+                        color: Color(0xffE0712D),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Doctor List",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15),
+                    CustomLinkwith(doctorName: "sadia", specialization: "heart", hospital: "Popular"),
+                    SizedBox(height: 10),
+                    CustomLinkwith(doctorName: "sad", specialization: "heart", hospital: "City Hospital"),
+                    const SizedBox( height: 20),
                     Row(
                       children: [
                         SizedBox(width: screenWidth * 0.18),
@@ -263,7 +296,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const ChatmedScreen()),
+                              MaterialPageRoute(builder: (_) => const ChatsScreen()),
                             );
                           },
                           textcolor: Colors.white,
@@ -275,7 +308,7 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                           onTap: () {
                             // Go back to Home via AppShell
                             Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(builder: (_) => const AppShell(initialIndex: 0)),
+                              MaterialPageRoute(builder: (_) => const AppShell(initialIndex: 3)),
                                   (route) => false,
                             );
                           },
