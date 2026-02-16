@@ -43,6 +43,11 @@ class Urls {
   // Add doctor
   static const String Add_doctor = "$baseUrl/doctors/profile/";
 
+  // Add Doctor Note
+  static String addNote(int doctorId) {
+    return "$baseUrl/doctors/profile/$doctorId/notes/";
+  }
+
   //Home Dashboard
   static String homeDashboard({DateTime? date}) {
     final d = date ?? DateTime.now();

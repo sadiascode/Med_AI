@@ -7,6 +7,7 @@ import '../../profile/widget/custom_prescriptions.dart';
 import '../widget/custom_doctext.dart';
 import '../models/doctor_model.dart';
 import '../services/doctor_api_service.dart';
+import '../services/note_service.dart';
 
 class ViewScreen extends StatefulWidget {
   final int doctorId;
@@ -21,11 +22,56 @@ class _ViewScreenState extends State<ViewScreen> {
   DoctorModel? doctor;
   bool isLoading = true;
   String? error;
+  final TextEditingController _noteController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _fetchDoctor();
+  }
+
+  @override
+  void dispose() {
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _addNote() async {
+    final note = _noteController.text.trim();
+    
+    if (note.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a note'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    try {
+      final success = await NoteService.addNote(
+        doctorId: widget.doctorId,
+        note: note,
+      );
+
+      if (success) {
+        _noteController.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Note added'),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to add note: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _fetchDoctor() async {
@@ -232,24 +278,50 @@ class _ViewScreenState extends State<ViewScreen> {
                     width: 1,
                   ),
                 ),
-                child: TextField(
-                  maxLines: null,
-                  expands: true,
-                  keyboardType: TextInputType.multiline,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
-                  decoration: const InputDecoration(
-                    hintText: 'Type your notes here...',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 12,
+                child: Stack(
+                  children: [
+                    TextField(
+                      controller: _noteController,
+                      maxLines: null,
+                      expands: true,
+                      keyboardType: TextInputType.multiline,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                      decoration: const InputDecoration(
+                        hintText: 'Type your notes here...',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.fromLTRB(12, 12, 40, 12),
+                      ),
                     ),
-                  ),
+                    Positioned(
+                      bottom: 8,
+                      right: 8,
+                      child: InkWell(
+                        onTap: _addNote,
+                        child: Container(
+                          height: 35,
+                          width: 35,
+                          decoration: const BoxDecoration(
+                            color: Color(0xffE0712D),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: const Text("Add", style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold
+                            )
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
+
               const SizedBox(height: 20),
               CustomMedium(
                 text: "Prescriptions from this doctor",

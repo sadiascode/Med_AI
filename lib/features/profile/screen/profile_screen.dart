@@ -542,14 +542,38 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                                             SnackBar(
                                               content: Text('Account deleted successfully'),
                                               backgroundColor: Colors.green,
+                                              duration: const Duration(seconds: 3),
+                                            ),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                              content: Text('Failed to delete account. Please check your password and try again.'),
+                                              backgroundColor: Colors.red,
+                                              duration: const Duration(seconds: 5),
+                                              action: SnackBarAction(
+                                                label: 'Retry',
+                                                textColor: Colors.white,
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
                                             ),
                                           );
                                         }
                                       } catch (e) {
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
-                                            content: Text('Failed to delete account: ${e.toString()}'),
+                                            content: Text('Network error: ${e.toString()}'),
                                             backgroundColor: Colors.red,
+                                            duration: const Duration(seconds: 5),
+                                            action: SnackBarAction(
+                                              label: 'Retry',
+                                              textColor: Colors.white,
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
                                           ),
                                         );
                                       }
