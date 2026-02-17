@@ -1,6 +1,8 @@
 import 'package:care_agent/features/chat/screen/chats_screen.dart';
 import 'package:care_agent/features/chat/widget/custom_linkwith.dart';
 import 'package:care_agent/features/doctor/widget/custom_doctor.dart';
+import 'package:care_agent/features/doctor/models/doctor_list_model.dart';
+import 'package:care_agent/features/doctor/services/doctor_api_service.dart';
 import 'package:flutter/material.dart';
 import '../../../common/app_shell.dart';
 import '../../profile/widget/custom_bull.dart';
@@ -18,6 +20,30 @@ class ChatdetailsScreen extends StatefulWidget {
 
 class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
   String selectedMeal1 = 'After Meal';
+  List<DoctorListModel> doctors = [];
+  bool isLoadingDoctors = true;
+  String? doctorError;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDoctors();
+  }
+
+  Future<void> _fetchDoctors() async {
+    try {
+      final doctorList = await DoctorApiService.getDoctorList();
+      setState(() {
+        doctors = doctorList;
+        isLoadingDoctors = false;
+      });
+    } catch (e) {
+      setState(() {
+        doctorError = e.toString();
+        isLoadingDoctors = false;
+      });
+    }
+  }
   String selectedMeal2 = 'After Meal';
   String selectedMeal3 = 'After Meal';
   String selectedMeal4 = 'After Meal';
@@ -284,9 +310,33 @@ class _ChatdetailsScreenState extends State<ChatdetailsScreen> {
                       ),
                     ),
                     SizedBox(height: 15),
-                    CustomLinkwith(doctorName: "sadia", specialization: "heart", hospital: "Popular"),
-                    SizedBox(height: 10),
-                    CustomLinkwith(doctorName: "sad", specialization: "heart", hospital: "City Hospital"),
+                    // Doctor List from API
+                    Container(
+                      height: 200, // Fixed height for ListView
+                      child: isLoadingDoctors
+                          ? Center(child: CircularProgressIndicator())
+                          : doctorError != null
+                              ? Center(
+                                  child: Text(
+                                    'Error loading doctors',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                )
+                              : ListView.builder(
+                                  itemCount: doctors.length,
+                                  itemBuilder: (context, index) {
+                                    final doctor = doctors[index];
+                                    return Padding(
+                                      padding: const EdgeInsets.only(bottom: 10),
+                                      child: CustomLinkwith(
+                                        doctorName: doctor.name,
+                                        specialization: doctor.specialization,
+                                        hospital: doctor.hospitalName,
+                                      ),
+                                    );
+                                  },
+                                ),
+                    ),
                     const SizedBox( height: 20),
                     Row(
                       children: [
