@@ -16,6 +16,7 @@ class DoctorScreenContent extends StatefulWidget {
 
 class _DoctorScreenContentState extends State<DoctorScreenContent> {
   List<DoctorListModel> doctors = [];
+  List<DoctorListModel> filteredDoctors = [];
   bool isLoading = true;
   String? error;
 
@@ -25,11 +26,11 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
   final TextEditingController _specializationController = TextEditingController();
   final TextEditingController _hospitalNameController = TextEditingController();
   final TextEditingController _designationController = TextEditingController();
-  
+
   // Sex dropdown
   String? _selectedSex;
   final List<String> _sexOptions = ['male', 'female', 'other'];
-  
+
   bool _isAddingDoctor = false;
 
   @override
@@ -43,6 +44,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
       final doctorList = await DoctorApiService.getDoctorList();
       setState(() {
         doctors = doctorList;
+        filteredDoctors = doctorList; // initialize filtered list
         isLoading = false;
       });
     } catch (e) {
@@ -51,6 +53,17 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
         isLoading = false;
       });
     }
+  }
+
+  void searchDoctor(String query) {
+    if (query.isEmpty) {
+      filteredDoctors = doctors;
+    } else {
+      filteredDoctors = doctors
+          .where((d) => d.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+    setState(() {});
   }
 
   // Map UI values to API-compatible lowercase values
@@ -71,7 +84,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
     // Validate fields
     if (_nameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please enter doctor name'),
           backgroundColor: Colors.red,
         ),
@@ -81,7 +94,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
 
     if (_emailController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please enter email address'),
           backgroundColor: Colors.red,
         ),
@@ -91,7 +104,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
 
     if (_selectedSex == null || _selectedSex!.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please select sex'),
           backgroundColor: Colors.red,
         ),
@@ -101,7 +114,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
 
     if (_specializationController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please enter specialization'),
           backgroundColor: Colors.red,
         ),
@@ -111,7 +124,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
 
     if (_hospitalNameController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please enter hospital name'),
           backgroundColor: Colors.red,
         ),
@@ -121,7 +134,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
 
     if (_designationController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please enter designation'),
           backgroundColor: Colors.red,
         ),
@@ -159,7 +172,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
 
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Doctor added successfully!'),
           backgroundColor: Colors.green,
         ),
@@ -245,17 +258,17 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
                   ),
                   child: _isAddingDoctor
                       ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                          ),
-                        )
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
                       : const Text(
-                          'Confirm',
-                          style: TextStyle(color: Colors.white),
-                        ),
+                    'Confirm',
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),
@@ -295,7 +308,10 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
           : SingleChildScrollView(
         child: Column(
           children: [
-            const CustomSearch(),
+            // SEARCH
+            CustomSearch(
+              onChanged: searchDoctor,
+            ),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.only(right: 16),
@@ -325,7 +341,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
               ),
             ),
             const SizedBox(height: 20),
-            if (doctors.isNotEmpty) ...[
+            if (filteredDoctors.isNotEmpty) ...[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -343,27 +359,27 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
                   Padding(
                     padding: const EdgeInsets.all(15),
                     child: Column(
-                      children: [
-                        CustomDoctor(
-                          doctorName: doctors[0].name,
-                          specialization: doctors[0].specialization,
-                          hospital: doctors[0].hospitalName,
+                      children: filteredDoctors.take(1).map((doctor) {
+                        return CustomDoctor(
+                          doctorName: doctor.name,
+                          specialization: doctor.specialization,
+                          hospital: doctor.hospitalName,
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) =>
-                                    ViewScreen(doctorId: doctors[0].id),
+                                    ViewScreen(doctorId: doctor.id),
                               ),
                             );
                           },
-                        ),
-                      ],
+                        );
+                      }).toList(),
                     ),
                   ),
                 ],
               ),
-              if (doctors.length > 1) ...[
+              if (filteredDoctors.length > 1) ...[
                 const SizedBox(height: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -382,7 +398,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
                     Padding(
                       padding: const EdgeInsets.all(15),
                       child: Column(
-                        children: doctors.skip(1).take(2).map((doctor) {
+                        children: filteredDoctors.skip(1).take(2).map((doctor) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: CustomDoctor(
@@ -406,7 +422,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
                   ],
                 ),
               ],
-              if (doctors.length > 3) ...[
+              if (filteredDoctors.length > 3) ...[
                 const SizedBox(height: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -425,7 +441,7 @@ class _DoctorScreenContentState extends State<DoctorScreenContent> {
                     Padding(
                       padding: const EdgeInsets.all(15),
                       child: Column(
-                        children: doctors.skip(3).map((doctor) {
+                        children: filteredDoctors.skip(3).map((doctor) {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: CustomDoctor(
