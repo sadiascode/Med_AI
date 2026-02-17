@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import '../../../app/urls.dart';
 import '../models/profile_model.dart';
 import '../models/delete_account_request_model.dart';
@@ -46,28 +48,155 @@ class ProfileService {
     }
   }
 
-  static Future<ProfileModel> updateProfile(ProfileModel profile) async {
+  static Future<ProfileModel> updateProfile({
+    required ProfileModel profile,
+    String? imagePath,
+  }) async {
     try {
-      final profileData = profile.toJson();
-      print('Sending to API: $profileData');
-      final response = await http.put(
-        Uri.parse(Urls.update_profile),
-        headers: _getAuthHeaders(),
-        body: jsonEncode(profileData),
-      );
-
+      final request = http.MultipartRequest('PUT', Uri.parse(Urls.update_profile));
+      
+      // Add authorization header
+      final token = box.read('access_token');
+      if (token != null) {
+        request.headers['Authorization'] = 'Bearer $token';
+      }
+      
+      // Prepare profile data with proper formatting
+      final Map<String, String> profileData = {
+        'full_name': profile.fullName,
+        'email': profile.email,
+        if (profile.address != null) 'address': profile.address!,
+        if (profile.age != null) 'age': profile.age.toString(),
+        if (profile.healthCondition != null) 'health_condition': profile.healthCondition!,
+        if (profile.wakeupTime != null) 
+          'wakeup_time': _formatTime(profile.wakeupTime!),
+        if (profile.breakfastTime != null) 
+          'breakfast_time': _formatTime(profile.breakfastTime!),
+        if (profile.lunchTime != null) 
+          'lunch_time': _formatTime(profile.lunchTime!),
+        if (profile.dinnerTime != null) 
+          'dinner_time': _formatTime(profile.dinnerTime!),
+      };
+      
+      // Add fields to request
+      profileData.forEach((key, value) {
+        request.fields[key] = value;
+      });
+      
+      // Add image file if provided
+      if (imagePath != null && imagePath.isNotEmpty) {
+        final imageFile = await http.MultipartFile.fromPath(
+          'profile_picture',
+          imagePath,
+        );
+        request.files.add(imageFile);
+      }
+      
+      print('Sending to API: ${request.fields}');
+      print('Sending image: $imagePath');
+      
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      
       print('Update profile response status: ${response.statusCode}');
       print('Update profile response body: ${response.body}');
-
+      
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         print('Profile updated successfully: $data');
         return ProfileModel.fromJson(data);
       } else {
-        throw Exception('Failed to update profile: ${response.statusCode}');
+        String errorMessage = 'Failed to update profile';
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['message'] != null) {
+            errorMessage = errorData['message'];
+          } else if (errorData['detail'] != null) {
+            errorMessage = errorData['detail'];
+          } else if (errorData['error'] != null) {
+            errorMessage = errorData['error'];
+          }
+        } catch (e) {
+          errorMessage = response.body.isNotEmpty ? response.body : 'Something went wrong';
+        }
+        throw Exception(errorMessage);
       }
     } catch (e) {
-      throw Exception('Error updating profile: $e');
+      print('Update Profile Error: $e');
+      throw Exception('Network error: $e');
+    }
+  }
+
+  // Helper method to format time to HH:mm:ss
+  static String _formatTime(String timeString) {
+    try {
+      // Try parsing different time formats
+      List<String> formats = ['HH:mm:ss', 'HH:mm', 'h:mm a', 'h:mm:ss a'];
+      
+      for (String format in formats) {
+        try {
+          final time = DateFormat(format).parse(timeString);
+          return DateFormat('HH:mm:ss').format(time);
+        } catch (e) {
+          continue;
+        }
+      }
+      
+      // If parsing fails, return original string or default format
+      if (timeString.contains(':')) {
+        final parts = timeString.split(':');
+        if (parts.length >= 2) {
+          final hours = parts[0].padLeft(2, '0');
+          final minutes = parts[1].padLeft(2, '0');
+          final seconds = parts.length > 2 ? parts[2].padLeft(2, '0') : '00';
+          return '$hours:$minutes:$seconds';
+        }
+      }
+      
+      // Return default format if all parsing fails
+      return '08:00:00';
+    } catch (e) {
+      return '08:00:00';
+    }
+  }
+
+  // Helper method to convert 24-hour time to 12-hour AM/PM format for UI
+  static String formatTimeForUI(String? timeString) {
+    if (timeString == null || timeString.isEmpty) {
+      return 'Not provided';
+    }
+    
+    try {
+      // Parse the time string
+      List<String> formats = ['HH:mm:ss', 'HH:mm', 'h:mm a', 'h:mm:ss a'];
+      DateTime? parsedTime;
+      
+      for (String format in formats) {
+        try {
+          parsedTime = DateFormat(format).parse(timeString);
+          break;
+        } catch (e) {
+          continue;
+        }
+      }
+      
+      if (parsedTime == null) {
+        // Try manual parsing
+        final parts = timeString.split(':');
+        if (parts.length >= 2) {
+          final hour = int.tryParse(parts[0]) ?? 0;
+          final minute = int.tryParse(parts[1]) ?? 0;
+          parsedTime = DateTime(2024, 1, 1, hour % 24, minute);
+        }
+      }
+      
+      if (parsedTime != null) {
+        return DateFormat('h:mm a').format(parsedTime);
+      }
+      
+      return timeString; // Return original if parsing fails
+    } catch (e) {
+      return timeString;
     }
   }
 

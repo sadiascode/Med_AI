@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/intl.dart';
 import 'dart:io';
 import '../../../common/app_shell.dart';
 import '../../../common/custom_medium.dart';
+import '../../auth/ui/screen/signin_screen.dart';
 import '../services/profile_services.dart';
 import '../widget/custom_txt.dart';
 import '../models/profile_model.dart';
 import 'edit_screen.dart';
-import '../../auth/ui/screen/signin_screen.dart';
+
+// Helper function to format time for UI display
+String _formatTimeForUI(String? timeString) {
+  if (timeString == null || timeString.isEmpty) {
+    return 'Not provided';
+  }
+  
+  try {
+    // Parse 24-hour time and convert to 12-hour AM/PM
+    final parsedTime = DateFormat('HH:mm:ss').parse(timeString);
+    return DateFormat('h:mm a').format(parsedTime);
+  } catch (e) {
+    return timeString; // Return original if parsing fails
+  }
+}
+
 
 class MyprofileScreen extends StatefulWidget {
   const MyprofileScreen({super.key});
@@ -307,8 +324,6 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
               const SizedBox(height: 5),
               CustomTxt(title: "Email:", subtitle: _profile?.email ?? 'N/A'),
               const SizedBox(height: 5),
-              const CustomTxt(title: "Phone Number:", subtitle: "Not provided"),
-              const SizedBox(height: 5),
               CustomTxt(
                 title: "Address:",
                 subtitle: _profile?.address ?? 'Not provided',
@@ -320,7 +335,7 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
               const SizedBox(height: 15),
               CustomTxt(
                 title: "Age:",
-                subtitle: _profile?.age ?? 'Not provided',
+                subtitle: _profile?.age?.toString() ?? 'Not provided',
               ),
               const SizedBox(height: 5),
               CustomTxt(
@@ -330,22 +345,22 @@ class _MyprofileScreenState extends State<MyprofileScreen> {
               const SizedBox(height: 5),
               CustomTxt(
                 title: "Wakeup time:",
-                subtitle: _profile?.wakeupTime ?? 'Not provided',
+                subtitle: _formatTimeForUI(_profile?.wakeupTime),
               ),
               const SizedBox(height: 5),
               CustomTxt(
                 title: "Breakfast time:",
-                subtitle: _profile?.breakfastTime ?? 'Not provided',
+                subtitle: _formatTimeForUI(_profile?.breakfastTime),
               ),
               const SizedBox(height: 5),
               CustomTxt(
                 title: "Lunch time:",
-                subtitle: _profile?.lunchTime ?? 'Not provided',
+                subtitle: _formatTimeForUI(_profile?.lunchTime),
               ),
               const SizedBox(height: 5),
               CustomTxt(
                 title: "Dinner time:",
-                subtitle: _profile?.dinnerTime ?? 'Not provided',
+                subtitle: _formatTimeForUI(_profile?.dinnerTime),
               ),
               SizedBox(height: 15),
             ],

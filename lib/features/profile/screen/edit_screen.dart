@@ -82,7 +82,7 @@ class _EditScreenState extends State<EditScreen> {
         _nameController.text = profile.fullName;
         _emailController.text = profile.email;
         _addressController.text = profile.address ?? '';
-        _ageController.text = profile.age ?? '';
+        _ageController.text = profile.age?.toString() ?? '';
         _healthConditionController.text = profile.healthCondition ?? '';
         _wakeupTimeController.text = profile.wakeupTime ?? '';
         _breakfastTimeController.text = profile.breakfastTime ?? '';
@@ -137,7 +137,7 @@ class _EditScreenState extends State<EditScreen> {
         address: _addressController.text.isEmpty
             ? null
             : _addressController.text,
-        age: _ageController.text.isEmpty ? null : _ageController.text,
+        age: _ageController.text.isEmpty ? null : int.tryParse(_ageController.text),
         healthCondition: _healthConditionController.text.isEmpty
             ? null
             : _healthConditionController.text,
@@ -156,7 +156,10 @@ class _EditScreenState extends State<EditScreen> {
       );
 
       print('Updating profile via API...');
-      await ProfileService.updateProfile(updatedProfile);
+      await ProfileService.updateProfile(
+        profile: updatedProfile,
+        imagePath: _selectedImagePath,
+      );
       print('Profile updated successfully');
 
       if (mounted) {

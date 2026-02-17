@@ -3,7 +3,7 @@ class ProfileModel {
   final String fullName;
   final String email;
   final String? address;
-  final String? age;
+  final int? age;
   final String? healthCondition;
   final String? wakeupTime;
   final String? breakfastTime;
@@ -24,18 +24,26 @@ class ProfileModel {
   });
 
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
-    return ProfileModel(
-      profilePicture: json['profile_picture'],
-      fullName: json['full_name'] ?? '',
-      email: json['email'] ?? '',
-      address: json['address'],
-      age: json['age'],
-      healthCondition: json['health_condition'],
-      wakeupTime: json['wakeup_time'],
-      breakfastTime: json['breakfast_time'],
-      lunchTime: json['lunch_time'],
-      dinnerTime: json['dinner_time'],
-    );
+    try {
+      return ProfileModel(
+        profilePicture: json['profile_picture'] as String?,
+        fullName: json['full_name'] as String? ?? '',
+        email: json['email'] as String? ?? '',
+        address: json['address'] as String?,
+        age: json['age'] != null ? int.tryParse(json['age'].toString()) : null,
+        healthCondition: json['health_condition'] as String?,
+        wakeupTime: json['wakeup_time'] as String?,
+        breakfastTime: json['breakfast_time'] as String?,
+        lunchTime: json['lunch_time'] as String?,
+        dinnerTime: json['dinner_time'] as String?,
+      );
+    } catch (e) {
+      // Return empty model on parsing error
+      return ProfileModel(
+        fullName: '',
+        email: '',
+      );
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -58,7 +66,7 @@ class ProfileModel {
     String? fullName,
     String? email,
     String? address,
-    String? age,
+    int? age,
     String? healthCondition,
     String? wakeupTime,
     String? breakfastTime,
