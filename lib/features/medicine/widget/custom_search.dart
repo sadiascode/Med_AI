@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 class CustomSearch extends StatelessWidget {
+  final Function(String)? onChanged;
+
   const CustomSearch({
     super.key,
+    this.onChanged,
   });
 
   @override
@@ -10,31 +13,31 @@ class CustomSearch extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 11),
+        padding: const EdgeInsets.symmetric(horizontal: 11),
         decoration: BoxDecoration(
-          color: Color(0xffffffff),
+          color: const Color(0xffffffff),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: Color(0xFFFFF0E6),
+            color: const Color(0xFFFFF0E6),
             width: 1,
           ),
         ),
         child: Row(
           children: [
-            Icon(Icons.search, color: Color(0xff333333)),
-            SizedBox(width: 10),
+            const Icon(Icons.search, color: Color(0xff333333)),
+            const SizedBox(width: 10),
             Expanded(
               child: TextField(
+                onChanged: onChanged,
                 style: const TextStyle(color: Colors.black),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: "Search your medicines...",
                   border: InputBorder.none,
-                  hintStyle: TextStyle(color: Color(0xff333333),
+                  hintStyle: TextStyle(color: Color(0xff333333)),
                 ),
               ),
             ),
-           ),
-         ]
+          ],
         ),
       ),
     );

@@ -6,8 +6,54 @@ import '../widget/custom_search.dart';
 import '../models/medicine_model.dart';
 import '../services/medicine_service.dart';
 
-class MedicineScreenContent extends StatelessWidget {
+class MedicineScreenContent extends StatefulWidget {
   const MedicineScreenContent({super.key});
+
+  @override
+  State<MedicineScreenContent> createState() =>
+      _MedicineScreenContentState();
+}
+
+class _MedicineScreenContentState extends State<MedicineScreenContent> {
+  List<MedicineModel> medicines = [];
+  List<MedicineModel> filteredMedicines = [];
+  bool isLoading = true;
+  String searchText = "";
+
+  @override
+  void initState() {
+    super.initState();
+    loadMedicines();
+  }
+
+  Future<void> loadMedicines() async {
+    try {
+      final data = await MedicineService.fetchMedicines();
+      medicines = data;
+      filteredMedicines = data;
+    } catch (e) {
+      debugPrint(e.toString());
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void searchMedicine(String query) {
+    searchText = query;
+
+    if (query.isEmpty) {
+      filteredMedicines = medicines;
+    } else {
+      filteredMedicines = medicines
+          .where((m) =>
+          m.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,80 +76,61 @@ class MedicineScreenContent extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 10),
-            const CustomSearch(),
-            const SizedBox(height: 10),
-            FutureBuilder<List<MedicineModel>>(
-              future: MedicineService.fetchMedicines(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: CircularProgressIndicator(color: Color(0xffE0712D)),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          Icon(Icons.error_outline, size: 48, color: Colors.red),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Failed to load medicines',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            snapshot.error.toString(),
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        children: [
-                          Icon(Icons.medication_outlined, size: 48, color: Colors.grey),
-                          const SizedBox(height: 16),
-                          Text(
-                            'No medicines found',
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                } else {
-                  final medicines = snapshot.data!;
-                  return Column(
-                    children: medicines.map((medicine) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 13),
-                        child: CustomRefill(
-                          medicineName: medicine.name,
-                          remainingCount: medicine.stock,
-                          onRefill: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AddScreen(medicine: medicine),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    }).toList(),
-                  );
-                }
-              },
+
+            //SEARCH
+            CustomSearch(
+              onChanged: searchMedicine,
             ),
+
+            const SizedBox(height: 10),
+
+            if (isLoading)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: CircularProgressIndicator(
+                    color: Color(0xffE0712D),
+                  ),
+                ),
+              )
+            else if (filteredMedicines.isEmpty)
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: const [
+                      Icon(Icons.medication_outlined,
+                          size: 48, color: Colors.grey),
+                      SizedBox(height: 16),
+                      Text(
+                        'No medicines found',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            else
+              Column(
+                children: filteredMedicines.map((medicine) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 13),
+                    child: CustomRefill(
+                      medicineName: medicine.name,
+                      remainingCount: medicine.stock,
+                      onRefill: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                AddScreen(medicine: medicine),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }).toList(),
+              ),
           ],
         ),
       ),
