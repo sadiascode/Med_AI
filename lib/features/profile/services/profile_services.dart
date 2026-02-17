@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import '../../../app/urls.dart';
-import '../data/profile_model.dart';
-import '../data/delete_account_request_model.dart';
-import '../data/change_password_model.dart';
+import '../models/profile_model.dart';
+import '../models/delete_account_request_model.dart';
+import '../models/change_password_model.dart';
 
 class ProfileService {
   static final box = GetStorage();

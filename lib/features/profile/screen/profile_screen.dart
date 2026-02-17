@@ -10,7 +10,7 @@ import '../../auth/ui/screen/signin_screen.dart';
 import '../../chat/widget/custom_minibutton.dart';
 import '../services/profile_services.dart';
 import '../widget/custom_edit.dart';
-import '../data/profile_model.dart';
+import '../models/profile_model.dart';
 
 class ProfileScreenContent extends StatefulWidget {
   const ProfileScreenContent({super.key});

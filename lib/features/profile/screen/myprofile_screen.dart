@@ -6,7 +6,7 @@ import '../../../common/app_shell.dart';
 import '../../../common/custom_medium.dart';
 import '../services/profile_services.dart';
 import '../widget/custom_txt.dart';
-import '../data/profile_model.dart';
+import '../models/profile_model.dart';
 import 'edit_screen.dart';
 import '../../auth/ui/screen/signin_screen.dart';
 

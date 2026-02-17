@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../../../common/app_shell.dart';
-import '../data/profile_model.dart';
+import '../models/profile_model.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../auth/ui/screen/signin_screen.dart';
 import '../services/profile_services.dart';
