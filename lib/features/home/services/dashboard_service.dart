@@ -27,7 +27,7 @@ class DashboardService {
       // Build request URL
       final url = Urls.homeDashboard(date: date);
       
-      print('🔍 Fetching dashboard data from: $url');
+      print(' Fetching dashboard data from: $url');
       
       final response = await http.get(
         Uri.parse(url),
@@ -37,8 +37,8 @@ class DashboardService {
         onTimeout: () => throw Exception('Request timeout'),
       );
 
-      print('📊 Dashboard API Response status: ${response.statusCode}');
-      print('📊 Dashboard API Response body: ${response.body}');
+      print(' Dashboard API Response status: ${response.statusCode}');
+      print('Dashboard API Response body: ${response.body}');
 
       // Handle different response codes
       if (response.statusCode == 200) {
@@ -52,7 +52,7 @@ class DashboardService {
           
           return DashboardModel.fromJson(responseData);
         } catch (parseError) {
-          print('❌ JSON parsing error: $parseError');
+          print(' JSON parsing error: $parseError');
           throw Exception('Failed to parse dashboard response: $parseError');
         }
       } else if (response.statusCode == 401) {
@@ -64,13 +64,13 @@ class DashboardService {
         throw Exception('Failed to load dashboard data: ${response.statusCode} - $errorMessage');
       }
     } on http.ClientException catch (e) {
-      print('🌐 Network error: $e');
+      print(' Network error: $e');
       throw Exception('Network connection failed: ${e.message}');
     } on FormatException catch (e) {
-      print('📝 Format error: $e');
+      print(' Format error: $e');
       throw Exception('Invalid response format: ${e.message}');
     } catch (e) {
-      print('💥 Unexpected error: $e');
+      print(' Unexpected error: $e');
       throw Exception('Unexpected error occurred: $e');
     }
   }

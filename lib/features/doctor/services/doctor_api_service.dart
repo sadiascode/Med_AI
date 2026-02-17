@@ -72,6 +72,7 @@ class DoctorApiService {
         Uri.parse(Urls.Add_doctor),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
         },
         body: jsonEncode(doctorData),
       );

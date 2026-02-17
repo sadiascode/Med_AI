@@ -73,6 +73,6 @@ class Urls {
 
   // Delete Prescription
   static String deletePrescription(int id) {
-    return "$baseUrl/treatments/prescriptions/$id/";
+    return "$baseUrl/treatments/prescription/$id/";
   }
 }

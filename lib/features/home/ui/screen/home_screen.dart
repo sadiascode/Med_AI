@@ -8,6 +8,7 @@ import '../widgets/appointment_cart_widget.dart';
 import '../widgets/medicine_card_widget.dart';
 import '../widgets/time_header_widget.dart';
 import 'notification_screen.dart';
+import '../../../profile/models/prescription_model.dart';
 
 class HomeScreenContent extends StatefulWidget {
   const HomeScreenContent({super.key});
@@ -297,7 +298,7 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 15),
-           AppointmentCartWidget(
+          AppointmentCartWidget(
           ),
           const SizedBox(height: 10),
         ] else ...[

@@ -47,6 +47,89 @@ class _PrescpScreenState extends State<PrescpScreen> {
     await _fetchPrescriptions();
   }
 
+  Future<void> _deletePrescription(int prescriptionId, String prescriptionName) async {
+    // Show confirmation dialog
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFFFFFAF7),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        title: const Text(
+          'Confirm Delete',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: Text(
+          'Are you sure you want to delete "$prescriptionName"?\n\nThis action cannot be undone.',
+          style: const TextStyle(
+            color: Colors.black,
+            fontSize: 15,
+            height: 1.4,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 16,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text(
+              'Delete',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      final success = await PrescriptionService.deletePrescription(prescriptionId);
+      
+      if (success) {
+        // Remove from local list immediately
+        setState(() {
+          prescriptions.removeWhere((p) => p.id == prescriptionId);
+        });
+        
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Prescription deleted successfully!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete prescription: ${e.toString()}'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SubPageScaffold(
@@ -159,7 +242,6 @@ class _PrescpScreenState extends State<PrescpScreen> {
                 prescriptionName: prescription.prescriptionName,
                 date: prescription.formattedNextAppointment,
                 onDownload: () {
-                  // TODO: Implement download functionality
                   _showNotImplementedMessage('Download', context);
                 },
                 onShow: () {
@@ -171,8 +253,7 @@ class _PrescpScreenState extends State<PrescpScreen> {
                   );
                 },
                 onDelete: () {
-                  // TODO: Implement delete functionality
-                  _showNotImplementedMessage('Delete', context);
+                  _deletePrescription(prescription.id, prescription.prescriptionName);
                 },
               ),
             );

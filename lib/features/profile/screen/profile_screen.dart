@@ -421,7 +421,6 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
               ),
 
               SizedBox(height: 10),
-
               CustomNew(
                 text: "Your Prescriptions",
                 onTap: () {
@@ -434,7 +433,6 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
                 },
               ),
               SizedBox(height: 10),
-
               CustomNew(
                 text: "Edit Profile Info",
                 onTap: () {
@@ -693,7 +691,7 @@ class _ProfileScreenContentState extends State<ProfileScreenContent> {
   }
 }
 
-/// Standalone version with navbar - redirects to AppShell
+// Standalone version with navbar - redirects to AppShell
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
