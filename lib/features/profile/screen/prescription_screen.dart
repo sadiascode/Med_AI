@@ -13,10 +13,12 @@ import '../widget/custom_bull.dart';
 
 class PrescriptionScreen extends StatefulWidget {
   final int prescriptionId;
+  final int parentTabIndex;
 
   const PrescriptionScreen({
     super.key,
     required this.prescriptionId,
+    required this.parentTabIndex,
   });
 
   @override
@@ -89,7 +91,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
   @override
   Widget build(BuildContext context) {
     return SubPageScaffold(
-      parentTabIndex: 4,
+      parentTabIndex: widget.parentTabIndex,
       backgroundColor: const Color(0xFFFFFAF7),
       appBar: AppBar(
         centerTitle: true,

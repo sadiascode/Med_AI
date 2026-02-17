@@ -298,12 +298,16 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 15),
-          AppointmentCartWidget(
-            doctorName: dashboardData!.nextAppointment.isNotEmpty 
-                ? dashboardData!.nextAppointment.first.doctorName 
-                : '',
-          ),
-          const SizedBox(height: 10),
+          ...dashboardData!.nextAppointment.map((appointment) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: AppointmentCartWidget(
+                doctorName: appointment.doctorName.isNotEmpty 
+                    ? appointment.doctorName 
+                    : 'Not specified',
+              ),
+            );
+          }).toList(),
         ] else ...[
           const Text(
             "Today's Appointments",

@@ -248,7 +248,7 @@ class _PrescpScreenState extends State<PrescpScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PrescriptionScreen(prescriptionId: prescription.id),
+                      builder: (context) => PrescriptionScreen(prescriptionId: prescription.id,  parentTabIndex: 4,),
                     ),
                   );
                 },

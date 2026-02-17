@@ -25,7 +25,7 @@ class CustomSearch extends StatelessWidget {
             SizedBox(width: 10),
             Expanded(
               child: TextField(
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black),
                 decoration: InputDecoration(
                   hintText: "Search your medicines...",
                   border: InputBorder.none,
