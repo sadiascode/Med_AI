@@ -299,6 +299,9 @@ class _HomeScreenContentState extends State<HomeScreenContent> {
           ),
           const SizedBox(height: 15),
           AppointmentCartWidget(
+            doctorName: dashboardData!.nextAppointment.isNotEmpty 
+                ? dashboardData!.nextAppointment.first.doctorName 
+                : '',
           ),
           const SizedBox(height: 10),
         ] else ...[

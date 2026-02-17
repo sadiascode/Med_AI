@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class AppointmentCartWidget extends StatelessWidget {
-  const AppointmentCartWidget({super.key});
+  final String doctorName;
+
+  const AppointmentCartWidget({
+    super.key,
+    required this.doctorName,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +33,14 @@ class AppointmentCartWidget extends StatelessWidget {
             color: Colors.grey,
           ),
           const SizedBox(width: 12),
-          const Expanded(
+           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("02:00 PM", style: TextStyle(fontWeight: FontWeight.bold)),
+                Text("Appointment", style: TextStyle(fontWeight: FontWeight.bold)),
                 SizedBox(height: 4),
                 Text(
-                  "You have an appointment with Dr. Shakil Mirja\nCardiologist",
+                  "You have an appointment with Dr. ${doctorName.isNotEmpty ? doctorName : 'Not specified'}",
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.black87,

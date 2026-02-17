@@ -1,11 +1,12 @@
 import 'medicine_model.dart';
+import 'next_appointment_model.dart';
 
 class DashboardModel {
   final List<MedicineModel> morning;
   final List<MedicineModel> afternoon;
   final List<MedicineModel> evening;
   final List<MedicineModel> night;
-  final List<dynamic> nextAppointment;
+  final List<NextAppointmentModel> nextAppointment;
 
   const DashboardModel({
     required this.morning,
@@ -33,7 +34,9 @@ class DashboardModel {
         afternoon: _parseMedicineList(json['Afternoon']),
         evening: _parseMedicineList(json['Evening']),
         night: _parseMedicineList(json['Night']),
-        nextAppointment: json['next_appointment'] ?? [],
+        nextAppointment: (json['next_appointment'] as List?)
+            ?.map((e) => NextAppointmentModel.fromJson(e))
+            .toList() ?? [],
       );
     } catch (e) {
       print('❌ Error parsing DashboardModel: $e');
@@ -65,7 +68,7 @@ class DashboardModel {
       'Afternoon': afternoon.map((item) => item.toJson()).toList(),
       'Evening': evening.map((item) => item.toJson()).toList(),
       'Night': night.map((item) => item.toJson()).toList(),
-      'next_appointment': nextAppointment,
+      'next_appointment': nextAppointment.map((item) => item.toJson()).toList(),
     };
   }
 
