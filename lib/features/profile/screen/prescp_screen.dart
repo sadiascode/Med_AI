@@ -1,9 +1,11 @@
 import 'package:care_agent/common/app_shell.dart';
 import 'package:care_agent/features/profile/screen/prescription_screen.dart';
 import 'package:care_agent/features/profile/services/prescription_service.dart';
+import 'package:care_agent/features/profile/services/prescription_pdf_service.dart';
 import 'package:care_agent/features/profile/models/prescription_model.dart';
 import 'package:care_agent/features/profile/widget/custom_prescriptions.dart';
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 class PrescpScreen extends StatefulWidget {
   const PrescpScreen({super.key});
@@ -241,8 +243,49 @@ class _PrescpScreenState extends State<PrescpScreen> {
               child: CustomPrescriptions(
                 prescriptionName: prescription.prescriptionName,
                 date: prescription.formattedNextAppointment,
-                onDownload: () {
-                  _showNotImplementedMessage('Download', context);
+                onDownload: () async {
+                  try {
+                    // Generate PDF locally with platform-specific handling
+                    final bool success = await PrescriptionPdfService.generateAndSavePrescriptionPdf(prescription);
+                    
+                    if (success) {
+                      // Show platform-specific success message
+                      String successMessage = Platform.isIOS 
+                          ? 'Prescription PDF ready for sharing!' 
+                          : 'Prescription PDF saved to Downloads folder!';
+                          
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(successMessage),
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 3),
+                          action: SnackBarAction(
+                            label: 'OK',
+                            textColor: Colors.white,
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            },
+                          ),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    // Show error message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Failed to generate PDF: ${e.toString()}'),
+                        backgroundColor: Colors.red,
+                        duration: Duration(seconds: 3),
+                        action: SnackBarAction(
+                          label: 'OK',
+                          textColor: Colors.white,
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          },
+                        ),
+                      ),
+                    );
+                  }
                 },
                 onShow: () {
                   Navigator.push(
