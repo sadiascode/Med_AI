@@ -75,4 +75,7 @@ class Urls {
   static String deletePrescription(int id) {
     return "$baseUrl/treatments/prescription/$id/";
   }
+
+  // Delete Account
+  static const String delete_account = "$baseUrl/users/account/delete/";
 }

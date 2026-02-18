@@ -194,7 +194,7 @@ class ProfileService {
         return DateFormat('h:mm a').format(parsedTime);
       }
       
-      return timeString; // Return original if parsing fails
+      return timeString;
     } catch (e) {
       return timeString;
     }
@@ -280,20 +280,71 @@ class ProfileService {
 
   static Future<bool> deleteAccount(String password) async {
     try {
+      // Check if token exists before making request
+      final token = box.read('access_token');
+      print(' Raw token from storage: "$token"');
+      print(' Token is null: ${token == null}');
+      print(' Token is empty: ${token?.isEmpty ?? true}');
+      print(' Token length: ${token?.length ?? 0}');
+      
+      if (token == null || token.isEmpty) {
+        print(' No access token found - user not authenticated');
+        throw Exception('Authentication required: Please log in again');
+      }
+
+      // Use correct endpoint for deleting user's own account
+      final deleteUrl = Urls.delete_account;
       final deleteRequest = DeleteAccountRequestModel(password: password);
 
-      final response = await http.post(
-        Uri.parse(Urls.Delete_Account),
-        headers: _getAuthHeaders(),
+      print(' Delete Account Request URL: $deleteUrl');
+      print(' Request body: ${deleteRequest.toJson()}');
+      print(' Full Authorization header: "Authorization: Bearer $token"');
+
+      final response = await http.delete(
+        Uri.parse(deleteUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
         body: jsonEncode(deleteRequest.toJson()),
       );
 
+      print(' Delete Account Response status: ${response.statusCode}');
+      print(' Delete Account Response body: ${response.body}');
+
       if (response.statusCode == 200 || response.statusCode == 204) {
+        print(' Account deleted successfully');
         return true;
+      } else if (response.statusCode == 401) {
+        print(' Authentication failed - token expired or invalid');
+        throw Exception('Session expired: Please log in again');
+      } else if (response.statusCode == 403) {
+        print(' Permission denied - insufficient privileges');
+        throw Exception('Permission denied: You do not have permission to delete this account');
       } else {
-        throw Exception('Failed to delete account');
+        // Extract backend error message from response.body
+        String errorMessage = 'Failed to delete account';
+        try {
+          final responseData = jsonDecode(response.body);
+          if (responseData['message'] != null) {
+            errorMessage = responseData['message'];
+          } else if (responseData['error'] != null) {
+            errorMessage = responseData['error'];
+          } else if (responseData['detail'] != null) {
+            errorMessage = responseData['detail'];
+          } else if (responseData['non_field_errors'] != null) {
+            errorMessage = responseData['non_field_errors'][0];
+          }
+        } catch (e) {
+          print(' Error parsing response: $e');
+          errorMessage = 'Server error: ${response.statusCode}';
+        }
+        
+        print(' Delete Account Error: $errorMessage');
+        throw Exception(errorMessage);
       }
     } catch (e) {
+      print(' Network error during delete: $e');
       throw Exception('Network error: $e');
     }
   }
