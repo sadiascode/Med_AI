@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class CustomText extends StatelessWidget {
   final TextEditingController messageController;
   final Function(String) onSend;
+  final Function(Map<String, dynamic>)? onVoiceRecorded;
 
   const CustomText({
     super.key,
     required this.messageController,
     required this.onSend,
+    this.onVoiceRecorded,
   });
 
   @override
@@ -60,7 +62,9 @@ class CustomText extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          ActionInputBarWidget(),
+          ActionInputBarWidget(
+            onVoiceRecorded: onVoiceRecorded,
+          ),
         ],
       ),
     );

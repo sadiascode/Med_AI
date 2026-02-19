@@ -45,6 +45,8 @@
 		<true/>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
+		<key>NSMicrophoneUsageDescription</key>
+		<string>This app needs access to microphone to record voice messages</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>

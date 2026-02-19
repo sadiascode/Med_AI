@@ -1,6 +1,7 @@
 import 'package:care_agent/features/chat/screen/chatdetails_screen.dart';
 import 'package:care_agent/features/chat/widget/custom_text.dart';
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../../../common/app_shell.dart';
 
 
@@ -16,6 +17,13 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _showPlaceholderImage = true;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
 
   void _sendMessage(String text) {
     if (text.trim().isEmpty) return;
@@ -34,6 +42,29 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
         });
       });
     });
+  }
+
+  void _sendVoiceMessage(Map<String, dynamic> voiceData) {
+    setState(() {
+      _messages.add({
+        'sender': 'user',
+        'type': 'voice',
+        'audioPath': voiceData['audioPath'],
+        'duration': voiceData['duration'],
+      });
+      _showPlaceholderImage = false;
+    });
+
+
+    _scrollToBottom();
+  }
+
+  Future<void> _playVoiceMessage(String audioPath) async {
+    try {
+      await _audioPlayer.play(DeviceFileSource(audioPath));
+    } catch (e) {
+      print('Error playing voice message: $e');
+    }
   }
 
   void _scrollToBottom() {
@@ -100,6 +131,8 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
                 final msgIndex = _showPlaceholderImage ? index - 1 : index;
                 final msg = _messages[msgIndex];
                 final isUser = msg['sender'] == 'user';
+                final messageType = msg['type'] ?? 'text';
+                
                 return Align(
                   alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
@@ -110,12 +143,33 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
                       borderRadius: BorderRadius.circular(12),
                       border: isUser ? null : Border.all(color: Colors.grey.shade300),
                     ),
-                    child: Text(
-                      msg['text'],
-                      style: TextStyle(
-                        color: isUser ? Colors.white : Colors.black,
-                      ),
-                    ),
+                    child: messageType == 'voice'
+                        ? GestureDetector(
+                            onTap: () => _playVoiceMessage(msg['audioPath']),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.play_arrow,
+                                  color: isUser ? Colors.white : const Color(0xFFE0712D),
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "Voice message",
+                                  style: TextStyle(
+                                    color: isUser ? Colors.white : Colors.black,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Text(
+                            msg['text'],
+                            style: TextStyle(
+                              color: isUser ? Colors.white : Colors.black,
+                            ),
+                          ),
                   ),
                 );
               },
@@ -129,6 +183,9 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
                 onSend: (text) {
                   _sendMessage(text);
                   _scrollToBottom();
+                },
+                onVoiceRecorded: (voiceData) {
+                  _sendVoiceMessage(voiceData);
                 },
               ),
             ),
