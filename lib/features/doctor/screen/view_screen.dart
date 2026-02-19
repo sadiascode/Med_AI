@@ -1,8 +1,12 @@
 import 'package:care_agent/common/custom_medium.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'dart:io';
 import '../../../common/app_shell.dart';
 import '../../profile/screen/prescription_screen.dart';
+import '../../profile/services/prescription_service.dart';
+import '../../profile/services/prescription_pdf_service.dart';
+import '../../profile/models/prescription_model.dart';
 import '../../profile/widget/custom_prescriptions.dart';
 import '../widget/custom_doctext.dart';
 import '../models/doctor_model.dart';
@@ -88,6 +92,137 @@ class _ViewScreenState extends State<ViewScreen> {
         error = e.toString();
         isLoading = false;
       });
+    }
+  }
+
+  Future<void> _downloadPrescription(int prescriptionId) async {
+    try {
+      // Fetch full prescription details
+      final prescription = await PrescriptionService.getPrescriptionById(prescriptionId);
+      
+      // Generate PDF locally with platform-specific handling
+      final bool success = await PrescriptionPdfService.generateAndSavePrescriptionPdf(prescription);
+      
+      if (success) {
+        // Show platform-specific success message
+        String successMessage = Platform.isIOS 
+            ? 'Prescription PDF ready for sharing!' 
+            : 'Prescription PDF saved to Downloads folder!';
+            
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(successMessage),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+            action: SnackBarAction(
+              label: 'OK',
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to generate PDF: ${e.toString()}'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+          action: SnackBarAction(
+            label: 'OK',
+            textColor: Colors.white,
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _deletePrescription(int prescriptionId) async {
+    // Show confirmation dialog
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFFFFFAF7),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        title: const Text(
+          'Confirm Delete',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: const Text(
+          'Are you sure you want to delete this prescription? This action cannot be undone.',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 15,
+            height: 1.4,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 16,
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text(
+              'Delete',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      final success = await PrescriptionService.deletePrescription(prescriptionId);
+      
+      if (success) {
+        // Remove from local list immediately
+        setState(() {
+          doctor!.prescriptions.remove(prescriptionId);
+        });
+        
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Prescription deleted successfully!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete prescription: ${e.toString()}'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
+        ),
+      );
     }
   }
 
@@ -335,7 +470,9 @@ class _ViewScreenState extends State<ViewScreen> {
                     child: CustomPrescriptions(
                       prescriptionName: 'Prescription-$prescriptionId',
                       date: doctor!.nextAppointmentDate ?? 'Date not available',
-                      onDownload: () {},
+                      onDownload: () {
+                        _downloadPrescription(prescriptionId);
+                      },
                       onShow: () {
                         Navigator.push(
                           context,
@@ -345,7 +482,9 @@ class _ViewScreenState extends State<ViewScreen> {
                           ),
                         );
                       },
-                      onDelete: () {},
+                      onDelete: () {
+                        _deletePrescription(prescriptionId);
+                      },
                     ),
                   );
                 }).toList()
