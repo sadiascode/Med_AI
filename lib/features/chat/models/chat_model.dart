@@ -2,12 +2,14 @@ class ChatModel {
   final String? conversationId;
   final String? response;
   final String? messageType;
+  final String? voiceUrl;
   final String? createdAt;
 
   ChatModel({
     this.conversationId,
     this.response,
     this.messageType,
+    this.voiceUrl,
     this.createdAt,
   });
 
@@ -32,11 +34,13 @@ class ChatModel {
       final conversationId = json['conversation_id']?.toString();
       final response = json['response']?.toString() ?? '';
       final messageType = json['message_type']?.toString() ?? 'text';
+      final voiceUrl = json['voice_url']?.toString();
       final createdAt = json['created_at']?.toString();
       
       print(' conversation_id: $conversationId (${json['conversation_id'].runtimeType})');
       print(' response: $response (${json['response'].runtimeType})');
       print(' message_type: $messageType (${json['message_type'].runtimeType})');
+      print(' voice_url: $voiceUrl (${json['voice_url'].runtimeType})');
       print(' created_at: $createdAt (${json['created_at'].runtimeType})');
       
       // Validate required fields
@@ -54,6 +58,7 @@ class ChatModel {
         conversationId: conversationId,
         response: response,
         messageType: messageType,
+        voiceUrl: voiceUrl,
         createdAt: createdAt,
       );
     } catch (e) {
@@ -65,6 +70,7 @@ class ChatModel {
         conversationId: null,
         response: 'Error parsing response: ${e.toString()}',
         messageType: 'error',
+        voiceUrl: null,
         createdAt: null,
       );
     }
@@ -75,13 +81,14 @@ class ChatModel {
       'conversation_id': conversationId,
       'response': response,
       'message_type': messageType,
+      'voice_url': voiceUrl,
       'created_at': createdAt,
     };
   }
 
   @override
   String toString() {
-    return 'ChatModel(conversationId: $conversationId, response: $response, messageType: $messageType, createdAt: $createdAt)';
+    return 'ChatModel(conversationId: $conversationId, response: $response, messageType: $messageType, voiceUrl: $voiceUrl, createdAt: $createdAt)';
   }
 
   @override
@@ -91,6 +98,7 @@ class ChatModel {
         other.conversationId == conversationId &&
         other.response == response &&
         other.messageType == messageType &&
+        other.voiceUrl == voiceUrl &&
         other.createdAt == createdAt;
   }
 
@@ -99,6 +107,7 @@ class ChatModel {
     return conversationId.hashCode ^
         response.hashCode ^
         messageType.hashCode ^
+        voiceUrl.hashCode ^
         createdAt.hashCode;
   }
 }

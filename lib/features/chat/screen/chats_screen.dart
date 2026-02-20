@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:care_agent/features/chat/screen/chatdetails_screen.dart';
 import 'package:care_agent/features/chat/widget/custom_text.dart';
 import 'package:care_agent/features/chat/services/chat_service.dart';
+import 'package:care_agent/features/chat/services/voice_chat_service.dart';
 import 'package:care_agent/features/chat/models/chat_model.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../../auth/services/auth_service.dart';
 import '../../../common/app_shell.dart';
+import '../services/voice_recording_service.dart';
 
 class ChatsScreenContent extends StatefulWidget {
   const ChatsScreenContent({super.key});
@@ -47,26 +49,26 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
     try {
       print(' Calling ChatService.sendMessage()');
       print(' API call started at: ${DateTime.now()}');
-      
+
 
       final currentUserId = await _getCurrentUserId();
       final authToken = await _getCurrentAuthToken();
-      
+
       print(' Using user ID: $currentUserId');
       print(' Auth token available: ${authToken.isNotEmpty}');
-      
+
       final ChatModel response = await ChatService.sendMessage(text, currentUserId, token: authToken);
-      
+
       print(' API Response received: $response');
       print(' Response text: "${response.response}"');
       print(' Response type: ${response.messageType}');
       print(' API call completed at: ${DateTime.now()}');
-      
+
       setState(() {
 
         _messages.removeWhere((element) => element['isTyping'] == true);
         print(' Removed typing messages');
-        
+
 
         _messages.add({
           'sender': 'bot',
@@ -74,12 +76,12 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
           'type': response.messageType ?? 'text',
           'conversationId': response.conversationId,
         });
-        
+
         print(' Updated messages count: ${_messages.length}');
       });
     } on TimeoutException {
       print(' Error in _sendMessage: TimeoutException');
-      
+
       setState(() {
 
         _messages.removeWhere((msg) => msg['isTyping'] == true);
@@ -114,14 +116,14 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
         shouldRetry = false;
         errorType = 'authentication';
       } else if (errorString.contains('network') ||
-                 errorString.contains('socket') ||
-                 errorString.contains('connection')) {
+          errorString.contains('socket') ||
+          errorString.contains('connection')) {
         errorMessage = 'Network error. Please check your connection.';
         shouldRetry = true;
         errorType = 'network';
       } else if (errorString.contains('parse') ||
-                 errorString.contains('json') ||
-                 errorString.contains('format')) {
+          errorString.contains('json') ||
+          errorString.contains('format')) {
         errorMessage = 'Server response format error. Please try again.';
         shouldRetry = true;
         errorType = 'parse';
@@ -130,7 +132,7 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
         shouldRetry = true;
         errorType = 'timeout';
       }
-      
+
       setState(() {
         _messages.removeWhere((msg) => msg['isTyping'] == true);
         print(' Removed typing messages');
@@ -143,7 +145,7 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
           'errorType': errorType,
           'debugInfo': e.toString(),
         });
-        
+
         print('Updated messages count after error: ${_messages.length}');
         print(' Should retry: $shouldRetry');
         print(' Error type: $errorType');
@@ -171,7 +173,8 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
     }
   }
 
-  void _sendVoiceMessage(Map<String, dynamic> voiceData) {
+  Future<void> _sendVoiceMessage(Map<String, dynamic> voiceData) async {
+
     setState(() {
       _messages.add({
         'sender': 'user',
@@ -183,13 +186,96 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
     });
 
     _scrollToBottom();
+
+    try {
+
+      final currentUserId = await _getCurrentUserId();
+      
+
+      final response = await VoiceChatService.sendVoiceMessage(
+        audioPath: voiceData['audioPath'],
+        userId: currentUserId,
+      );
+
+
+      if (response.messageType == 'voice') {
+
+        setState(() {
+          _messages.add({
+            'sender': 'bot',
+            'type': 'voice',
+            'voiceUrl': response.voiceUrl,
+            'text': response.response,
+            'conversationId': response.conversationId,
+            'createdAt': response.createdAt,
+          });
+        });
+      } else {
+
+        setState(() {
+          _messages.add({
+            'sender': 'bot',
+            'type': 'text',
+            'text': response.response,
+            'conversationId': response.conversationId,
+            'createdAt': response.createdAt,
+          });
+        });
+      }
+      
+      _scrollToBottom();
+    } catch (e) {
+      print('Error sending voice message: $e');
+
+      setState(() {
+        _messages.add({
+          'sender': 'bot',
+          'type': 'error',
+          'text': 'Failed to send voice message. Please try again.',
+          'shouldRetry': true,
+        });
+      });
+      _scrollToBottom();
+    }
   }
 
-  Future<void> _playVoiceMessage(String audioPath) async {
+  Future<void> _playVoiceMessage(String? audioPath, {String? voiceUrl}) async {
     try {
-      await _audioPlayer.play(DeviceFileSource(audioPath));
+      print(' Attempting to play voice message...');
+      print('   - Audio path: $audioPath');
+      print('   - Voice URL: $voiceUrl');
+      
+
+      if (voiceUrl != null && voiceUrl.isNotEmpty) {
+
+        await VoiceRecordingService.playAudio(voiceUrl, isUrl: true);
+        print(' Playing voice from URL: $voiceUrl');
+      } else if (audioPath != null && audioPath.isNotEmpty) {
+
+        await VoiceRecordingService.playAudio(audioPath, isUrl: false);
+        print(' Playing voice from file: $audioPath');
+      } else {
+        print(' No valid audio path provided');
+        _showErrorSnackBar('No audio file available');
+        return;
+      }
+      
+      print(' Audio playback started successfully');
     } catch (e) {
-      print('Error playing voice message: $e');
+      print(' Error playing voice message: $e');
+      _showErrorSnackBar('Failed to play voice message: ${e.toString()}');
+    }
+  }
+
+  void _showErrorSnackBar(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+        ),
+      );
     }
   }
 
@@ -259,8 +345,8 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
                 final isUser = msg['sender'] == 'user';
                 final messageType = msg['type'] ?? 'text';
                 final isTyping = msg['isTyping'] == true;
-                
-                // Show typing indicator
+
+
                 if (isTyping) {
                   return Align(
                     alignment: Alignment.centerLeft,
@@ -283,7 +369,7 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
                     ),
                   );
                 }
-                
+
                 return Align(
                   alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
@@ -296,31 +382,46 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
                     ),
                     child: messageType == 'voice'
                         ? GestureDetector(
-                            onTap: () => _playVoiceMessage(msg['audioPath']),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.play_arrow,
-                                  color: isUser ? Colors.white : const Color(0xFFE0712D),
-                                  size: 20,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  "Voice message",
-                                  style: TextStyle(
-                                    color: isUser ? Colors.white : Colors.black,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
+                      onTap: () {
+                        print(' Voice message tapped!');
+                        print('   - Audio path: ${msg['audioPath']}');
+                        print('   - Voice URL: ${msg['voiceUrl']}');
+                        print('   - Message data: $msg');
+                        _playVoiceMessage(msg['audioPath'], voiceUrl: msg['voiceUrl']);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: isUser ? Colors.white.withOpacity(0.2) : Colors.orange.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.play_arrow,
+                              color: isUser ? Colors.white : const Color(0xFFE0712D),
+                              size: 20,
                             ),
-                          )
+                            const SizedBox(width: 8),
+                            Text(
+                              " Voice (${msg['duration'] ?? '?'}s)",
+                              style: TextStyle(
+                                color: isUser ? Colors.white : Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
                         : Text(
-                            msg['text'],
-                            style: TextStyle(
-                              color: isUser ? Colors.white : Colors.black,
-                            ),
-                          ),
+                      msg['text'],
+                      style: TextStyle(
+                        color: isUser ? Colors.white : Colors.black,
+                      ),
+                    ),
                   ),
                 );
               },

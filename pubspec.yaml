@@ -51,6 +51,8 @@ dependencies:
   share_plus: ^10.1.2
   audioplayers: ^6.1.0
   permission_handler: ^11.3.1
+  record: ^6.2.0
+  mime: ^1.0.4
 
 dev_dependencies:
   flutter_test:

@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import '../services/voice_recording_service.dart';
+import '../services/voice_chat_service.dart';
 
 class ActionInputBarWidget extends StatefulWidget {
   final VoidCallback? onTap;
@@ -22,45 +22,58 @@ class _ActionInputBarWidgetState extends State<ActionInputBarWidget> {
   DateTime? _recordingStartTime;
 
   @override
+  void initState() {
+    super.initState();
+    _initializeVoiceService();
+  }
+
+  @override
   void dispose() {
     if (_isRecording) {
       _cancelRecording();
     }
+    VoiceRecordingService.dispose();
     super.dispose();
+  }
+
+  Future<void> _initializeVoiceService() async {
+    try {
+      final initialized = await VoiceRecordingService.initialize();
+      if (!initialized) {
+        _showSnackBar('Voice recording initialization failed');
+      }
+    } catch (e) {
+      print('❌ Error initializing voice service: $e');
+      _showSnackBar('Failed to initialize voice recording');
+    }
   }
 
   Future<void> _startRecording() async {
     try {
-
-      final PermissionStatus permissionStatus = await Permission.microphone.status;
-      
-      if (permissionStatus.isDenied) {
-
-        final PermissionStatus newStatus = await Permission.microphone.request();
-        if (newStatus.isDenied) {
-          _showSnackBar('Microphone permission denied');
-          return;
-        }
-      } else if (permissionStatus.isPermanentlyDenied) {
-        _showSnackBar('Microphone permission permanently denied. Please enable in app settings.');
-
-        await openAppSettings();
+      if (_isRecording) {
+        print('⚠️ Already recording');
         return;
       }
 
-      if (_isRecording) return;
-
-
-      final Directory tempDir = await getTemporaryDirectory();
-      final String fileName = 'voice_${DateTime.now().millisecondsSinceEpoch}.wav';
-      _currentRecordingPath = '${tempDir.path}/$fileName';
-
+      print('🎤 Starting voice recording...');
+      
+      // Start recording using VoiceRecordingService
+      final recordingPath = await VoiceRecordingService.startRecording();
+      
+      if (recordingPath == null) {
+        _showSnackBar('Failed to start recording. Please check microphone permissions.');
+        return;
+      }
 
       setState(() {
         _isRecording = true;
+        _currentRecordingPath = recordingPath;
+        _recordingStartTime = DateTime.now();
       });
-      _recordingStartTime = DateTime.now();
+
+      print('✅ Recording started: $recordingPath');
     } catch (e) {
+      print('❌ Error starting recording: $e');
       _showSnackBar('Error starting recording: ${e.toString()}');
     }
   }
@@ -69,32 +82,95 @@ class _ActionInputBarWidgetState extends State<ActionInputBarWidget> {
     if (!_isRecording) return;
 
     try {
+      print('🛑 Stopping voice recording...');
+      
+      // Stop recording using VoiceRecordingService
+      final recordingPath = await VoiceRecordingService.stopRecording();
+      
+      if (recordingPath == null) {
+        print('❌ Recording failed or was too short');
+        _showSnackBar('Recording failed or was too short. Please record for at least 1 second.');
+        setState(() {
+          _isRecording = false;
+          _currentRecordingPath = null;
+          _recordingStartTime = null;
+        });
+        return;
+      }
 
       final int duration = _recordingStartTime != null
           ? DateTime.now().difference(_recordingStartTime!).inSeconds
           : 0;
 
+      print('✅ Recording stopped: $recordingPath');
+      print('⏱️ Duration: $duration seconds');
 
-      if (duration < 1) {
-        _cancelRecording();
-        return;
-      }
-
-
-      if (widget.onVoiceRecorded != null) {
-        widget.onVoiceRecorded!({
-          'audioPath': _currentRecordingPath,
-          'duration': duration,
-        });
-      }
+      // Send voice message to API
+      await _sendVoiceMessage(recordingPath, duration);
     } catch (e) {
+      print('❌ Error stopping recording: $e');
       _showSnackBar('Error stopping recording: ${e.toString()}');
     } finally {
       setState(() {
         _isRecording = false;
+        _recordingStartTime = null;
       });
-      _currentRecordingPath = null;
-      _recordingStartTime = null;
+    }
+  }
+
+  Future<void> _sendVoiceMessage(String audioPath, int duration) async {
+    try {
+      // Get current user ID (you can modify this based on your auth system)
+      final userId = 6; // TODO: Replace with dynamic user ID
+
+      print('📤 Sending voice message: $audioPath (${duration}s)');
+
+      // Call callback with voice data for local display immediately
+      if (widget.onVoiceRecorded != null) {
+        widget.onVoiceRecorded!({
+          'audioPath': audioPath,
+          'duration': duration,
+        });
+      }
+
+      try {
+        // Send voice message to API
+        final response = await VoiceChatService.sendVoiceMessage(
+          audioPath: audioPath,
+          userId: userId,
+        );
+
+        // Call callback with API response for bot message
+        if (widget.onVoiceRecorded != null) {
+          widget.onVoiceRecorded!({
+            'sender': 'bot',
+            'text': response.response ?? 'Voice message sent',
+            'type': 'voice',
+            'conversationId': response.conversationId,
+            'voiceUrl': response.voiceUrl,
+            'createdAt': response.createdAt,
+          });
+        }
+
+        // Clean up temporary file after successful upload
+        await VoiceChatService.cleanupTempFile(audioPath);
+
+        print('✅ Voice message sent successfully');
+      } catch (apiError) {
+        print('⚠️ API failed but local voice message saved: $apiError');
+        
+        // Add error message but keep the voice message
+        if (widget.onVoiceRecorded != null) {
+          widget.onVoiceRecorded!({
+            'sender': 'bot',
+            'text': 'Voice message saved locally (API failed)',
+            'type': 'error',
+          });
+        }
+      }
+    } catch (e) {
+      print('❌ Error sending voice message: $e');
+      _showSnackBar('Error sending voice message: ${e.toString()}');
     }
   }
 
@@ -111,17 +187,20 @@ class _ActionInputBarWidgetState extends State<ActionInputBarWidget> {
 
   Future<void> _cancelRecording() async {
     try {
-      if (_currentRecordingPath != null && await File(_currentRecordingPath!).exists()) {
-        await File(_currentRecordingPath!).delete();
-      }
-    } catch (e) {
-      print('Error canceling recording: $e');
-    } finally {
+      print('🚫 Canceling voice recording...');
+      
+      // Cancel recording using VoiceRecordingService
+      await VoiceRecordingService.cancelRecording();
+      
       setState(() {
         _isRecording = false;
+        _currentRecordingPath = null;
+        _recordingStartTime = null;
       });
-      _currentRecordingPath = null;
-      _recordingStartTime = null;
+
+      print('✅ Recording canceled');
+    } catch (e) {
+      print('❌ Error canceling recording: $e');
     }
   }
 
