@@ -4,6 +4,43 @@ import '../../../app/urls.dart';
 import '../data/signup_model.dart';
 
 class AuthService {
+  // Static properties for current user session
+  // In a real app, these would be managed dynamically
+  static int currentUserId = 0;
+  static String currentToken = '';
+  static bool isLoggedIn = false;
+
+  /// Initialize user session (call after successful login)
+  static void initializeUserSession(int userId, String token) {
+    currentUserId = userId;
+    currentToken = token;
+    isLoggedIn = true;
+    print('✅ User session initialized: ID=$userId, Token=${token.length > 0 ? '***' : 'empty'}');
+  }
+
+  /// Clear user session (call after logout)
+  static void clearUserSession() {
+    currentUserId = 0;
+    currentToken = '';
+    isLoggedIn = false;
+    print('🔒 User session cleared');
+  }
+
+  /// Get current user ID
+  static int getCurrentUserId() {
+    return currentUserId;
+  }
+
+  /// Get current auth token
+  static String getCurrentToken() {
+    return currentToken;
+  }
+
+  /// Check if user is logged in
+  static bool isUserLoggedIn() {
+    return isLoggedIn;
+  }
+
   static Future<Map<String, dynamic>> signup(SignupMode signupData) async {
     try {
       final response = await http.post(

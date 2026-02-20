@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'package:care_agent/features/chat/screen/chatdetails_screen.dart';
 import 'package:care_agent/features/chat/widget/custom_text.dart';
+import 'package:care_agent/features/chat/services/chat_service.dart';
+import 'package:care_agent/features/chat/models/chat_model.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../../auth/services/auth_service.dart';
 import '../../../common/app_shell.dart';
-
 
 class ChatsScreenContent extends StatefulWidget {
   const ChatsScreenContent({super.key});
@@ -22,26 +25,150 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
   @override
   void dispose() {
     _audioPlayer.dispose();
+    _messageController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  void _sendMessage(String text) {
+  Future<void> _sendMessage(String text) async {
     if (text.trim().isEmpty) return;
+
+    print(' User message: "$text"');
+    print(' Current messages count: ${_messages.length}');
 
     setState(() {
       _messages.add({'sender': 'user', 'text': text});
       _showPlaceholderImage = false;
       _messageController.clear();
+
+      _messages.add({'sender': 'bot', 'text': 'Typing...', 'isTyping': true});
     });
 
-    Future.delayed(const Duration(milliseconds: 500), () {
+    try {
+      print(' Calling ChatService.sendMessage()');
+      print(' API call started at: ${DateTime.now()}');
+      
+
+      final currentUserId = await _getCurrentUserId();
+      final authToken = await _getCurrentAuthToken();
+      
+      print(' Using user ID: $currentUserId');
+      print(' Auth token available: ${authToken.isNotEmpty}');
+      
+      final ChatModel response = await ChatService.sendMessage(text, currentUserId, token: authToken);
+      
+      print(' API Response received: $response');
+      print(' Response text: "${response.response}"');
+      print(' Response type: ${response.messageType}');
+      print(' API call completed at: ${DateTime.now()}');
+      
       setState(() {
+
+        _messages.removeWhere((element) => element['isTyping'] == true);
+        print(' Removed typing messages');
+        
+
         _messages.add({
           'sender': 'bot',
-          'text': "MedAI: I received your message \"$text\""
+          'text': response.response ?? 'Sorry, I could not process your message.',
+          'type': response.messageType ?? 'text',
+          'conversationId': response.conversationId,
         });
+        
+        print(' Updated messages count: ${_messages.length}');
       });
-    });
+    } on TimeoutException {
+      print(' Error in _sendMessage: TimeoutException');
+      
+      setState(() {
+
+        _messages.removeWhere((msg) => msg['isTyping'] == true);
+        print(' Removed typing messages');
+
+        _messages.add({
+          'sender': 'bot',
+          'text': 'Response took too long. Please try again.',
+          'type': 'error',
+          'shouldRetry': true,
+          'errorType': 'timeout',
+        });
+
+        print(' Updated messages count after error: ${_messages.length}');
+        print('Should retry: true');
+      });
+    } catch (e) {
+      print(' Error in _sendMessage: $e');
+      print(' Error Type: ${e.runtimeType}');
+      print(' Error Stack Trace: ${StackTrace.current}');
+
+      String errorMessage = 'Something went wrong. Please try again.';
+      bool shouldRetry = false;
+      String errorType = 'unknown';
+
+      final errorString = e.toString().toLowerCase();
+
+      if (errorString.contains('authentication') ||
+          errorString.contains('401') ||
+          errorString.contains('unauthorized')) {
+        errorMessage = 'Authentication failed. Please log in again.';
+        shouldRetry = false;
+        errorType = 'authentication';
+      } else if (errorString.contains('network') ||
+                 errorString.contains('socket') ||
+                 errorString.contains('connection')) {
+        errorMessage = 'Network error. Please check your connection.';
+        shouldRetry = true;
+        errorType = 'network';
+      } else if (errorString.contains('parse') ||
+                 errorString.contains('json') ||
+                 errorString.contains('format')) {
+        errorMessage = 'Server response format error. Please try again.';
+        shouldRetry = true;
+        errorType = 'parse';
+      } else if (errorString.contains('timeout')) {
+        errorMessage = 'Request timeout. Please try again.';
+        shouldRetry = true;
+        errorType = 'timeout';
+      }
+      
+      setState(() {
+        _messages.removeWhere((msg) => msg['isTyping'] == true);
+        print(' Removed typing messages');
+
+        _messages.add({
+          'sender': 'bot',
+          'text': errorMessage,
+          'type': 'error',
+          'shouldRetry': shouldRetry,
+          'errorType': errorType,
+          'debugInfo': e.toString(),
+        });
+        
+        print('Updated messages count after error: ${_messages.length}');
+        print(' Should retry: $shouldRetry');
+        print(' Error type: $errorType');
+      });
+    }
+
+    _scrollToBottom();
+  }
+
+  Future<int> _getCurrentUserId() async {
+    try {
+      return AuthService.currentUserId;
+    } catch (e) {
+      print(' Error getting user ID: $e');
+      return 0;
+    }
+  }
+
+  Future<String> _getCurrentAuthToken() async {
+    try {
+      return '';
+    } catch (e) {
+      print(' Error getting auth token: $e');
+      return '';
+    }
   }
 
   void _sendVoiceMessage(Map<String, dynamic> voiceData) {
@@ -54,7 +181,6 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
       });
       _showPlaceholderImage = false;
     });
-
 
     _scrollToBottom();
   }
@@ -132,6 +258,31 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
                 final msg = _messages[msgIndex];
                 final isUser = msg['sender'] == 'user';
                 final messageType = msg['type'] ?? 'text';
+                final isTyping = msg['isTyping'] == true;
+                
+                // Show typing indicator
+                if (isTyping) {
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 6),
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: Text(
+                        "Typing...",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                  );
+                }
                 
                 return Align(
                   alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -195,7 +346,6 @@ class _ChatsScreenContentState extends State<ChatsScreenContent> {
     );
   }
 }
-
 
 class ChatsScreen extends StatelessWidget {
   const ChatsScreen({super.key});

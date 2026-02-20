@@ -76,6 +76,9 @@ class Urls {
     return "$baseUrl/treatments/prescription/$id/";
   }
 
+  // ChatBot
+  static const String Chat_Bot = "$baseUrl/chatbot/chat/";
+
   // Delete Account
   static const String delete_account = "$baseUrl/users/account/delete/";
 }
